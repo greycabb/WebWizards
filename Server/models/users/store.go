@@ -3,7 +3,7 @@ package users
 import (
 	"errors"
 
-	"github.com/info344-a17/challenges-leemeli/servers/gateway/indexes"
+	"github.com/greycabb/WebWizards/server/indexes"
 	"gopkg.in/mgo.v2/bson"
 )
 
