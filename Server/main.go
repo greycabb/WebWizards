@@ -1,17 +1,51 @@
 package main
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
+	"net/http/httputil"
 	"os"
+	"strings"
+	"sync"
 	"time"
 
-	"github.com/greycabb/WebWizards/server/handlers"
-	"github.com/greycabb/WebWizards/server/sessions"
-	"github.com/greycabb/WebWizards/server/models/users"
 	"github.com/go-redis/redis"
+	"github.com/greycabb/WebWizards/server/handlers"
+	"github.com/greycabb/WebWizards/server/models/users"
+	"github.com/greycabb/WebWizards/server/sessions"
 	mgo "gopkg.in/mgo.v2"
 )
+
+//NewServiceProxy creates a new service proxy
+func NewServiceProxy(addrs []string, ctx *handlers.HandlerContext) *httputil.ReverseProxy {
+	nextIndex := 0
+	mx := sync.Mutex{}
+	return &httputil.ReverseProxy{
+		Director: func(r *http.Request) {
+			if ctx != nil {
+				r.Header.Del("X-User")
+				state := &handlers.SessionState{} //Initialize an empty state to populate
+				_, err := sessions.GetState(r, ctx.SigningKey, ctx.SessionStore, state)
+				if err != nil {
+					log.Println(err.Error())
+				} else {
+					userJSON, err := json.Marshal(state.Authenticated)
+					if err != nil {
+						log.Println(err.Error())
+					} else {
+						r.Header.Add("X-User", string(userJSON))
+					}
+				}
+			}
+			mx.Lock()
+			r.URL.Host = addrs[nextIndex%len(addrs)]
+			nextIndex++
+			mx.Unlock()
+			r.URL.Scheme = "http"
+		},
+	}
+}
 
 //main is the main entry point for the server
 func main() {
@@ -51,6 +85,9 @@ func main() {
 	//Initalize new handle context struct
 	sessionKey := os.Getenv("SESSIONKEY")
 	ctx := handlers.NewHandlerContext(sessionKey, SessionStore, userStore, trie)
+	//Initialize microservices addresses
+	htmlsvcaddr := os.Getenv("HTMLSVCADDR")
+	splitHTMLSvcAddrs := strings.Split(htmlsvcaddr, ",")
 	//Initalize new mux
 	mux := http.NewServeMux()
 	//Handlers
@@ -58,6 +95,7 @@ func main() {
 	mux.HandleFunc("/v1/users/me", ctx.UsersMeHandler)
 	mux.HandleFunc("/v1/sessions", ctx.SessionsHandler)
 	mux.HandleFunc("/v1/sessions/mine", ctx.SessionsMineHandler)
+	mux.Handle("/v1/htmlblocks", NewServiceProxy(splitHTMLSvcAddrs, ctx))
 	//Wrap mux with CORS middleware handler
 	corsHandler := handlers.NewCORSHandler(mux)
 	log.Printf("server is listening at %s...", addr)
