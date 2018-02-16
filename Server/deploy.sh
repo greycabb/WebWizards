@@ -12,6 +12,7 @@ docker run -d \
 -e REDISADDR=redissvr:6379 \
 -e DBADDR=mymongo:27017 \
 -e SESSIONKEY='secretpassword1234!@melody' \
+-e HTMLSVCADDR=wwhtml \
 -p 443:443 \
 --name wwgateway \
 -v /etc/letsencrypt:/etc/letsencrypt:ro \

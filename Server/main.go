@@ -96,6 +96,8 @@ func main() {
 	mux.HandleFunc("/v1/sessions", ctx.SessionsHandler)
 	mux.HandleFunc("/v1/sessions/mine", ctx.SessionsMineHandler)
 	mux.Handle("/v1/htmlblocks", NewServiceProxy(splitHTMLSvcAddrs, ctx))
+	mux.Handle("/v1/cssgroups", NewServiceProxy(splitHTMLSvcAddrs, ctx))
+	mux.Handle("/v1/cssattributes", NewServiceProxy(splitHTMLSvcAddrs, ctx))
 	//Wrap mux with CORS middleware handler
 	corsHandler := handlers.NewCORSHandler(mux)
 	log.Printf("server is listening at %s...", addr)

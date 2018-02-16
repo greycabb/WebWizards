@@ -1,0 +1,10 @@
+[
+	{
+        "id": 0,
+        "name": "div",
+		"translation": "block",
+		"description": "A 'div' is a section that is a block element. Block elements appear on a new row.",
+		"type": "wrapper",
+		"css_groups": ["font", "border", "sizing"]
+    }
+]
