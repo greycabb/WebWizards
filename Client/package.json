@@ -4,12 +4,27 @@
   "private": true,
   "dependencies": {
     "react": "^16.2.0",
-    "react-dom": "^16.2.0"
+    "react-dom": "^16.2.0",
+    "bootstrap": "^3.3.7",
+    "chart.js": "^2.4.0",
+    "enzyme": "^2.6.0",
+    "inline-style-prefixer": "^2.0.5",
+    "js-md5": "^0.4.1",
+    "lodash": "^4.16.6",
+    "moment": "^2.15.2",
+    "react-bootstrap": "^0.30.6",
+    "react-chartjs-2": "^1.5.5",
+    "react-fade": "^1.1.1",
+    "react-loader": "^2.4.0",
+    "react-router": "^3.0.0",
+    "react-time": "^4.2.0",
+    "whatwg-fetch": "^1.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy": "gh-pages -d build"
   }
 }
