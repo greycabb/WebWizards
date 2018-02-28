@@ -81,7 +81,7 @@ export default class LoginPage extends React.Component {
     render() {
         //field validation
         var usernameErrors = this.validate(this.state.username, { required: true, username: true });
-        var passwordErrors = this.validate(this.state.password, { required: true, minLength: 3 });
+        var passwordErrors = this.validate(this.state.password, { required: true, minLength: 6 });
 
         //button validation
         var signInEnabled = (usernameErrors.isValid && passwordErrors.isValid);

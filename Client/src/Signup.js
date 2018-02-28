@@ -32,6 +32,18 @@ export default class SignupPage extends React.Component {
         event.preventDefault(); //don't submit
         console.log(this.state.password);
         console.log(this.state.username);
+
+        var email = this.state.username + '@computingkids.com';
+
+        console.log(JSON.stringify({
+                'email': email,
+                'password': this.state.password,
+                'passwordConf': this.state.password,
+                'username': this.state.username,
+                'firstName': '',
+                'lastName': ''
+            }));
+
         fetch('https://api.webwizards.me/v1/users', {
 
             method: 'POST',
@@ -40,27 +52,34 @@ export default class SignupPage extends React.Component {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                email: '',
-                password: this.state.password,
-                passwordConf: this.state.password,
-                username: this.state.username,
-                firstName: '',
-                lastName: ''
+                'email': email,
+                'password': this.state.password,
+                'passwordConf': this.state.password,
+                'username': this.state.username,
+                'firstName': '',
+                'lastName': ''
             })
-
-        })
-        .then((response) => response.json())
-        .then((responseJson, status, xhr) => {
-            var auth = xhr.getResponseHeader("Authorization");
-            localStorage.setItem("Authorization", auth);
-            //loggedIn(); // aka go to log in state
-
-        })
-        .catch((error) => {
-            console.error(error);
-        })
+        }
+        )
+            .then(function(response) {
+                if (!response.ok) {
+                    throw Error(response.statusText);
+                }
+                return response;
+            })
+            .then(function(response) {
+                console.log('ok');
+                console.log(response.status);
+                if (response.status === 400) {
+                    console.log(response.json());
+                    return response.json();
+                }
+                return response;
+            }).catch(function(response) {
+                //console.log(response.body());
+                console.log(response.json());
+            });
     }
-
 
     /**
      * A helper function to validate a value based on a hash of validations
@@ -117,7 +136,7 @@ export default class SignupPage extends React.Component {
     render() {
         //field validation
         var usernameErrors = this.validate(this.state.username, { required: true, username: true });
-        var passwordErrors = this.validate(this.state.password, { required: true, minLength: 3 });
+        var passwordErrors = this.validate(this.state.password, { required: true, minLength: 6 });
         var passwordMatch = this.validate(this.state.passwordMatch, { required: true, match: true });
 
         //button validation
@@ -127,11 +146,11 @@ export default class SignupPage extends React.Component {
             <div className="bluebox">
                 <h1>Sign Up</h1>
                 <form>
-                    <ValidatedInput field="username" maxlength="15" type="username" label="Username" changeCallback={this.handleChange} errors={usernameErrors} />
+                    <ValidatedInput field="username" maxLength="15" type="username" label="Username" changeCallback={this.handleChange} errors={usernameErrors} />
 
-                    <ValidatedInput field="password" maxlength="30" type="password" label="Password" changeCallback={this.handleChange} errors={passwordErrors} />
+                    <ValidatedInput field="password" maxLength="30" type="password" label="Password" changeCallback={this.handleChange} errors={passwordErrors} />
 
-                    <ValidatedInput field="passwordMatch" maxlength="30" type="password" label="Re-enter Password" changeCallback={this.handleChange} errors={passwordMatch} />
+                    <ValidatedInput field="passwordMatch" maxLength="30" type="password" label="Re-enter Password" changeCallback={this.handleChange} errors={passwordMatch} />
 
 
                     <div className="form-group">
@@ -153,7 +172,7 @@ class ValidatedInput extends React.Component {
         return (
             <div className={"form-group " + this.props.errors.style}>
                 <label htmlFor={this.props.field} className="control-label">{this.props.label}</label>
-                <input id={this.props.field} type={this.props.type} maxlength={this.props.maxlength}name={this.props.field} className="form-control" onChange={this.props.changeCallback} />
+                <input id={this.props.field} type={this.props.type} maxLength={this.props.maxlength}name={this.props.field} className="form-control" onChange={this.props.changeCallback} />
                 <ValidationErrors errors={this.props.errors} />
             </div>
         );
@@ -175,7 +194,7 @@ class ValidationErrors extends React.Component {
                     <p className="help-block">Must be at least {this.props.errors.minLength} {/* space */}characters.</p>
                 }
                 {this.props.errors.match &&
-                    <p className="help-block">Password does not match!</p>
+                    <p className="help-block">Passwords need to be the same</p>
                 }
             </div>
         );
