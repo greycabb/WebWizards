@@ -12,6 +12,7 @@ import ReactDOM from 'react-dom';
 import App from './App'; //import our component
 import { Router, Route, hashHistory, IndexRoute } from 'react-router';
 import LoginPage from './Login';
+import SignupPage from './Signup';
 
 //can load other CSS files (e.g,. Bootstrap) here
 import 'bootstrap/dist/css/bootstrap.css';
@@ -25,6 +26,7 @@ ReactDOM.render(
     <Route path="/" component={App}>
       <IndexRoute component={LoginPage} />
       <Route path="login" component={LoginPage} />
+      <Route path="signup" component={SignupPage} />
     </Route>
   </Router>,
   document.getElementById('root')

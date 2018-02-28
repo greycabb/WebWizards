@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router';
 
 export default class LoginPage extends React.Component {
     constructor(props) {
@@ -56,7 +57,7 @@ export default class LoginPage extends React.Component {
             if (validations.username) {
                 //pattern comparison from w3c
                 //https://www.w3.org/TR/html-markup/input.email.html#input.email.attrs.value.single
-                var valid = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(value)
+                var valid = /^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*$/.test(value)
                 if (!valid) {
                     errors.username = true;
                     errors.isValid = false;
@@ -80,20 +81,20 @@ export default class LoginPage extends React.Component {
     render() {
         //field validation
         var usernameErrors = this.validate(this.state.username, { required: true, username: true });
-        var passwordErrors = this.validate(this.state.password, { required: true, minLength: 4 });
+        var passwordErrors = this.validate(this.state.password, { required: true, minLength: 3 });
 
         //button validation
         var signInEnabled = (usernameErrors.isValid && passwordErrors.isValid);
 
         return (
-            <div className="bluebox" role="region">
+            <div className="bluebox">
                 <h1>Web Wizards</h1>
                 <form>
                     <div>
-                        <ValidatedInput field="username" type="username" label="Username" tabIndex={1} changeCallback={this.handleChange} errors={usernameErrors} />
+                        <ValidatedInput field="username" type="username"  maxlength="15" label="Username" tabIndex={1} changeCallback={this.handleChange} errors={usernameErrors} />
                     </div>
                     <div>
-                        <ValidatedInput field="password" type="password" label="Password" tabIndex={2} changeCallback={this.handleChange} errors={passwordErrors} />
+                        <ValidatedInput field="password" type="password"   maxlength="30" label="Password" tabIndex={2} changeCallback={this.handleChange} errors={passwordErrors} />
                     </div>
 
                     <div className="form-group">
@@ -101,6 +102,8 @@ export default class LoginPage extends React.Component {
                     </div>
 
                 </form>
+                <div className="black-link"><Link to="/signup">Don't have an account? Sign up!</Link></div>
+                {/* <div className="black-link">Forgot Username or Password</div> */}
             </div>
         );
     }
@@ -115,7 +118,7 @@ class ValidatedInput extends React.Component {
         return (
             <div className="black-link">
                 <label htmlFor={this.props.field} className="control-label">{this.props.label}</label>
-                <input id={this.props.field} type={this.props.type} tabIndex={this.props.tabIndex} name={this.props.field} className="form-control" onChange={this.props.changeCallback} />
+                <input id={this.props.field} type={this.props.type} maxlength={this.props.maxlength} tabIndex={this.props.tabIndex} name={this.props.field} className="form-control" onChange={this.props.changeCallback} />
             </div>
         );
     }
