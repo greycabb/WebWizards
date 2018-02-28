@@ -28,7 +28,7 @@ export default class LoginPage extends React.Component {
     //handle signIn button
     signIn(event) {
         event.preventDefault(); //don't submit
-        this.props.signInCallback(this.state.username, this.state.password);
+        //this.props.signInCallback(this.state.username, this.state.password);
     }
 
     /**
@@ -109,9 +109,9 @@ export default class LoginPage extends React.Component {
     }
 }
 
-LoginPage.propTypes = {
-    signInCallback: PropTypes.func.isRequired
-};
+// LoginPage.propTypes = {
+//     signInCallback: PropTypes.func.isRequired
+// };
 
 class ValidatedInput extends React.Component {
     render() {

@@ -30,10 +30,35 @@ export default class SignupPage extends React.Component {
     //signUp button
     signUp(event) {
         event.preventDefault(); //don't submit
-        this.props.signUpCallback(
-            this.state.username,
-            this.state.password
-        );
+        console.log(this.state.password);
+        console.log(this.state.username);
+        fetch('https://api.webwizards.me/v1/users', {
+
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: '',
+                password: this.state.password,
+                passwordConf: this.state.password,
+                username: this.state.username,
+                firstName: '',
+                lastName: ''
+            })
+
+        })
+        .then((response) => response.json())
+        .then((responseJson, status, xhr) => {
+            var auth = xhr.getResponseHeader("Authorization");
+            localStorage.setItem("Authorization", auth);
+            //loggedIn(); // aka go to log in state
+
+        })
+        .catch((error) => {
+            console.error(error);
+        })
     }
 
 
@@ -119,9 +144,9 @@ export default class SignupPage extends React.Component {
     }
 }
 
-SignupPage.propTypes = {
-    signUpCallback: PropTypes.func.isRequired,
-};
+// SignupPage.propTypes = {
+//     signUpCallback: PropTypes.func.isRequired,
+// };
 
 class ValidatedInput extends React.Component {
     render() {
