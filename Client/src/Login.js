@@ -161,7 +161,7 @@ export default class LoginPage extends React.Component {
 class ValidatedInput extends React.Component {
     render() {
         return (
-            <div className="black-link">
+            <div>
                 <label htmlFor={this.props.field} className="control-label">{this.props.label}</label>
                 <input id={this.props.field} type={this.props.type} maxLength={this.props.maxLength} tabIndex={this.props.tabIndex} name={this.props.field} className="form-control" onChange={this.props.changeCallback} />
             </div>
