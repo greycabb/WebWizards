@@ -7,7 +7,7 @@ export default class MainPage extends React.Component {
         super(props);
 
         this.state = {
-            'error': undefined,
+            'error': undefined, 
             'username': undefined,
         };
 
