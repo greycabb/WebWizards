@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router';
+import { Link, browserHistory } from 'react-router';
 
 export default class LoginPage extends React.Component {
     constructor(props) {
@@ -8,7 +8,8 @@ export default class LoginPage extends React.Component {
 
         this.state = {
             'username': undefined,
-            'password': undefined
+            'password': undefined,
+            'error': undefined
         };
 
         //function binding
@@ -29,7 +30,44 @@ export default class LoginPage extends React.Component {
     signIn(event) {
         event.preventDefault(); //don't submit
 
-        
+        var that = this;
+
+        that.setState({
+            error: ''
+        });
+
+        fetch('https://api.webwizards.me/v1/sessions', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+                //'Access-Control-Expose-Headers': 'Authorization'
+            },
+            body: JSON.stringify({
+                'password': this.state.password,
+                'username': this.state.username,
+            })
+        })
+        .then(function(response) {
+            
+            if (response.ok) {
+                console.log('Success');
+                let auth = response.headers.get('Authorization');
+                localStorage.setItem('Authorization', auth);
+                let Router = require('react-router');
+                Router.browserHistory.push('/main');
+            } else {
+                response.text().then(text => {
+                    that.setState({
+                        error: text
+                    });
+                });
+                
+            }
+        })
+        .catch(err => {
+            console.log('caught it!',err);
+        })
     }
 
     /**
@@ -92,15 +130,16 @@ export default class LoginPage extends React.Component {
                 <h1>Web Wizards</h1>
                 <form>
                     <div>
-                        <ValidatedInput field="username" type="username"  maxlength="15" label="Username" tabIndex={1} changeCallback={this.handleChange} errors={usernameErrors} />
+                        <ValidatedInput field="username" type="username"  maxLength="15" label="Username" tabIndex={1} changeCallback={this.handleChange} errors={usernameErrors} />
                     </div>
                     <div>
-                        <ValidatedInput field="password" type="password"   maxlength="30" label="Password" tabIndex={2} changeCallback={this.handleChange} errors={passwordErrors} />
+                        <ValidatedInput field="password" type="password"   maxLength="30" label="Password" tabIndex={2} changeCallback={this.handleChange} errors={passwordErrors} />
                     </div>
 
                     <div className="form-group">
                         <button className="btn green-button" disabled={!signInEnabled} onClick={(e) => this.signIn(e)}>Login</button>
                     </div>
+                    <div id="postError" className="help-block error">{this.state.error}</div>
 
                 </form>
                 <div className="black-link"><Link to="/signup">Don't have an account? Sign up!</Link></div>
@@ -110,16 +149,12 @@ export default class LoginPage extends React.Component {
     }
 }
 
-// LoginPage.propTypes = {
-//     signInCallback: PropTypes.func.isRequired
-// };
-
 class ValidatedInput extends React.Component {
     render() {
         return (
             <div className="black-link">
                 <label htmlFor={this.props.field} className="control-label">{this.props.label}</label>
-                <input id={this.props.field} type={this.props.type} maxlength={this.props.maxlength} tabIndex={this.props.tabIndex} name={this.props.field} className="form-control" onChange={this.props.changeCallback} />
+                <input id={this.props.field} type={this.props.type} maxLength={this.props.maxLength} tabIndex={this.props.tabIndex} name={this.props.field} className="form-control" onChange={this.props.changeCallback} />
             </div>
         );
     }

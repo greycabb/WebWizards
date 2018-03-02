@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router';
+import { Link, browserHistory } from 'react-router';
 
 export default class SignupPage extends React.Component {
     constructor(props) {
@@ -42,7 +42,7 @@ export default class SignupPage extends React.Component {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 'email': email,
@@ -54,12 +54,13 @@ export default class SignupPage extends React.Component {
             })
         })
         .then(function(response) {
-            console.log(response);
-
+            
             if (response.ok) {
-                // Success
                 console.log('Success');
-                return response.json();
+                let auth = response.headers.get('Authorization');
+                localStorage.setItem('Authorization', auth);
+                let Router = require('react-router');
+                Router.browserHistory.push('/main');
             } else {
                 response.text().then(text => {
                     // switch(text) {
