@@ -17,6 +17,10 @@ export default class LoginPage extends React.Component {
         localStorage.clear();
     }
 
+    componentDidMount() {
+        document.title = 'Login - Web Wizards';
+    }
+
     //update state for specific field
     handleChange(event) {
         var field = event.target.name;

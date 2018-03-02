@@ -23,6 +23,10 @@ export default class MainPage extends React.Component {
         }
     }
 
+    componentDidMount() {
+        document.title = 'Web Wizards';
+    }
+
     render() {
         return (
             <div className="bluebox">
