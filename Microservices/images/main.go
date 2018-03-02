@@ -1,6 +1,9 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -24,12 +27,37 @@ func main() {
 //Without the `id` query, all image information will be returned
 func Handler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
-	url := r.URL.Query().Get("id")
-	if len(url) == 0 {
+	query := r.URL.Query().Get("cat")
+	if len(query) == 0 {
 		//Case where all image data should be returned
+		jsonFile, err := os.Open("./images.json")
+		if err != nil {
+			fmt.Println(err)
+		}
+		byteValue, err := ioutil.ReadAll(jsonFile)
+		if err != nil {
+			fmt.Println(err)
+		}
+		var objmap map[string]*json.RawMessage
+		err = json.Unmarshal(byteValue, &objmap)
+		if err != nil {
+			fmt.Println(err)
+		}
+		respond(w, objmap)
 	} else {
-		//Case where one image data is returned based on id query
-		//json.NewEncoder(w).Encode(image)
-		//request.Close()
+		jsonFile, err := os.Open("./images.json")
+		if err != nil {
+			fmt.Println(err)
+		}
+		byteValue, err := ioutil.ReadAll(jsonFile)
+		if err != nil {
+			fmt.Println(err)
+		}
+		var objmap map[string]*json.RawMessage
+		err = json.Unmarshal(byteValue, &objmap)
+		if err != nil {
+			fmt.Println(err)
+		}
+		respond(w, objmap[query])
 	}
 }
