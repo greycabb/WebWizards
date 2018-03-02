@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, browserHistory } from 'react-router';
+import { Link, hashHistory } from 'react-router';
 
 export default class MainPage extends React.Component {
     constructor(props) {
@@ -13,7 +13,7 @@ export default class MainPage extends React.Component {
         let auth = localStorage.getItem('Authorization');
 
         if (!auth) {
-            browserHistory.push('/login');
+            hashHistory.push('/login');
         }
         let ud = JSON.parse(localStorage.getItem('USERDATA'));
         if (ud) {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, browserHistory } from 'react-router';
+import { Link, hashHistory } from 'react-router';
 
 export default class SignupPage extends React.Component {
     constructor(props) {
@@ -68,7 +68,7 @@ export default class SignupPage extends React.Component {
                     localStorage.setItem('USERDATA', userdata);
                     //
 
-                    browserHistory.push('/main');
+                    hashHistory.push('/main');
                 } else {
                     response.text().then(text => {
                         // switch(text) {

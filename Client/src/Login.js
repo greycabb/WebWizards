@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, browserHistory } from 'react-router';
+import { Link, hashHistory } from 'react-router';
 
 export default class LoginPage extends React.Component {
     constructor(props) {
@@ -62,7 +62,7 @@ export default class LoginPage extends React.Component {
                     localStorage.setItem('Authorization', auth);
                     localStorage.setItem('USERDATA', userdata);
                     //
-                    browserHistory.push('/main');
+                    hashHistory.push('/main');
                 } else {
                     response.text().then(text => {
                         that.setState({

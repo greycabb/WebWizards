@@ -10,7 +10,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App'; //import our component
-import { Router, Route, browserHistory, IndexRoute } from 'react-router';
+import { Router, Route, hashHistory, IndexRoute } from 'react-router';
 import LoginPage from './Login';
 import SignupPage from './Signup';
 import MainPage from './Main';
@@ -23,7 +23,7 @@ import './index.css';
 
 //render the Application view with routes!
 ReactDOM.render(
-  <Router history={browserHistory}>
+  <Router history={hashHistory}>
     <Route path="/" component={App}>
       <IndexRoute component={MainPage} />
       <Route path="login" component={LoginPage} />
