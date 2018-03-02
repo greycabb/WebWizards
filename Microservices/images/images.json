@@ -1,0 +1,43 @@
+{
+    "Animals": {
+        "images": [
+            "https://webwizards.me/img/Bunnies/bunnies1.jpeg",
+            "https://webwizards.me/img/Bunnies/bunnies2.jpeg",
+            "https://webwizards.me/img/Bunnies/bunnies3.jpeg",
+            "https://webwizards.me/img/Cats/cats1.jpeg",
+            "https://webwizards.me/img/Cats/cats2.jpeg",
+            "https://webwizards.me/img/Cats/cats3.jpeg",
+            "https://webwizards.me/img/Dinosaurs/dinosaurs1.jpeg",
+            "https://webwizards.me/img/Dinosaurs/dinosaurs2.jpeg",
+            "https://webwizards.me/img/Dinosaurs/dinosaurs3.jpeg",
+            "https://webwizards.me/img/Dogs/puppy1.jpeg",
+            "https://webwizards.me/img/Dogs/puppy2.jpeg",
+            "https://webwizards.me/img/Dogs/puppy3.jpeg",
+            "https://webwizards.me/img/Frogs/frog1.jpeg",
+            "https://webwizards.me/img/Frogs/frog2.jpeg",
+            "https://webwizards.me/img/Frogs/frog3.jpeg"
+        ]
+    },
+
+    "Places": {
+        "images": [
+           "https://webwizards.me/img/Disney/disney1.jpeg",
+           "https://webwizards.me/img/Disney/disney2.jpeg",
+           "https://webwizards.me/img/Disney/disney3.jpeg",
+           "https://webwizards.me/img/Landscapes/landscape1.jpeg", 
+           "https://webwizards.me/img/Landscapes/landscape2.jpeg",
+           "https://webwizards.me/img/Landscapes/landscape3.jpeg",
+           "https://webwizards.me/img/Park/park1.jpeg",
+           "https://webwizards.me/img/Park/park2.jpeg",
+           "https://webwizards.me/img/Park/park3.jpeg"
+        ]
+    },
+
+    "Things": {
+        "images": [
+           "https://webwizards.me/img/Food/pizza1.jpeg",
+           "https://webwizards.me/img/Food/pizza2.jpeg",
+           "https://webwizards.me/img/Food/pizza3.jpeg"
+        ]
+    }
+}

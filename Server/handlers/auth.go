@@ -57,9 +57,11 @@ func (ctx *HandlerContext) UsersHandler(w http.ResponseWriter, r *http.Request) 
 			http.Error(w, fmt.Sprintf("username already in use"), http.StatusBadRequest)
 			return
 		}
-		if _, err := ctx.usersStore.GetByEmail(newUser.Email); err == nil {
-			http.Error(w, fmt.Sprintf("email already in use"), http.StatusBadRequest)
-			return
+		if len(newUser.Email) > 0 {
+			if _, err := ctx.usersStore.GetByEmail(newUser.Email); err == nil {
+				http.Error(w, fmt.Sprintf("email already in use"), http.StatusBadRequest)
+				return
+			}
 		}
 		user, err := ctx.usersStore.Insert(newUser)
 		if err != nil {
@@ -148,7 +150,7 @@ func (ctx *HandlerContext) SessionsHandler(w http.ResponseWriter, r *http.Reques
 			return
 		}
 		// Check if user email is found. If so, check authentication
-		user, err := ctx.usersStore.GetByEmail(creds.Email)
+		user, err := ctx.usersStore.GetByUserName(creds.UserName)
 		if err != nil {
 			http.Error(w, fmt.Sprintf("invalid credentials"), http.StatusUnauthorized)
 			return

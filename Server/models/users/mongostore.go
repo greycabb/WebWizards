@@ -66,6 +66,7 @@ func (s *MongoStore) GetByEmail(email string) (*User, error) {
 
 //GetByUserName returns the User structure with given username
 func (s *MongoStore) GetByUserName(username string) (*User, error) {
+	username = strings.ToLower(username)
 	user := &User{}
 	err := s.col.Find(bson.M{"username": username}).One(user)
 	if err != nil {

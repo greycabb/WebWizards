@@ -13,18 +13,18 @@ var bcryptCost = 13
 
 //User represents a user account in the database
 type User struct {
-	ID        bson.ObjectId `json:"id" bson:"_id"`
-	Email     string        `json:"email"`
-	PassHash  []byte        `json:"-"` //stored, but not encoded to clients
-	UserName  string        `json:"userName"`
-	FirstName string        `json:"firstName"`
-	LastName  string        `json:"lastName"`
-	DateJoined time.Time `json:"dateJoined,string"`
+	ID         bson.ObjectId `json:"id" bson:"_id"`
+	Email      string        `json:"email"`
+	PassHash   []byte        `json:"-"` //stored, but not encoded to clients
+	UserName   string        `json:"userName"`
+	FirstName  string        `json:"firstName"`
+	LastName   string        `json:"lastName"`
+	DateJoined time.Time     `json:"dateJoined,string"`
 }
 
 //Credentials represents user sign-in credentials
 type Credentials struct {
-	Email    string `json:"email"`
+	UserName string `json:"userName"`
 	Password string `json:"password"`
 }
 
@@ -47,9 +47,11 @@ type Updates struct {
 //Validate validates the new user and returns an error if
 //any of the validation rules fail, or nil if its valid
 func (nu *NewUser) Validate() error {
-	_, err := mail.ParseAddress(nu.Email)
-	if err != nil {
-		return ErrInvalidEmail
+	if len(nu.Email) > 0 {
+		_, err := mail.ParseAddress(nu.Email)
+		if err != nil {
+			return ErrInvalidEmail
+		}
 	}
 	if len(nu.Password) < 6 {
 		return ErrPasswordLen
@@ -68,7 +70,7 @@ func (nu *NewUser) ToUser() (*User, error) {
 	user := &User{}
 	user.ID = bson.NewObjectId()
 	user.Email = strings.TrimSpace(strings.ToLower(nu.Email))
-	user.UserName = nu.UserName
+	user.UserName = strings.ToLower(nu.UserName)
 	user.FirstName = nu.FirstName
 	user.LastName = nu.LastName
 	//Setting User Structure's PassHash field
