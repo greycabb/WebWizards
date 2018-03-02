@@ -53,7 +53,15 @@ export default class LoginPage extends React.Component {
             if (response.ok) {
                 console.log('Success');
                 let auth = response.headers.get('Authorization');
+                let userdata = {
+                    'username': that.state.username
+                }
+
+                // Local storage Data setting
                 localStorage.setItem('Authorization', auth);
+                localStorage.setItem('USERDATA', userdata);
+                //
+
                 let Router = require('react-router');
                 Router.browserHistory.push('/main');
             } else {

@@ -31,7 +31,7 @@ export default class SignupPage extends React.Component {
     //signUp button
     signUp(event) {
         event.preventDefault(); //don't submit
-        var email = this.state.username + '@computingkids.com';
+        var email = null; // Change this!
 
         var that = this;
         that.setState({
@@ -58,7 +58,15 @@ export default class SignupPage extends React.Component {
             if (response.ok) {
                 console.log('Success');
                 let auth = response.headers.get('Authorization');
+                let userdata = {
+                    'username': that.state.username
+                }
+
+                // Local storage Data setting
                 localStorage.setItem('Authorization', auth);
+                localStorage.setItem('USERDATA', userdata);
+                //
+
                 let Router = require('react-router');
                 Router.browserHistory.push('/main');
             } else {
