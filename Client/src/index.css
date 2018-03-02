@@ -32,3 +32,8 @@ h1 {
 input {
   color: black;
 }
+
+.error {
+  font-size: 16pt;
+  color: red;
+}

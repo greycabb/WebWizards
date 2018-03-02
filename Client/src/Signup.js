@@ -9,7 +9,8 @@ export default class SignupPage extends React.Component {
         this.state = {
             'username': undefined,
             'password': undefined,
-            'passwordMatch': undefined
+            'passwordMatch': undefined,
+            'error': undefined,
         };
 
         //function binding
@@ -30,22 +31,14 @@ export default class SignupPage extends React.Component {
     //signUp button
     signUp(event) {
         event.preventDefault(); //don't submit
-        console.log(this.state.password);
-        console.log(this.state.username);
-
         var email = this.state.username + '@computingkids.com';
 
-        console.log(JSON.stringify({
-                'email': email,
-                'password': this.state.password,
-                'passwordConf': this.state.password,
-                'username': this.state.username,
-                'firstName': '',
-                'lastName': ''
-            }));
+        var that = this;
+        that.setState({
+            error: ''
+        });
 
         fetch('https://api.webwizards.me/v1/users', {
-
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -59,26 +52,42 @@ export default class SignupPage extends React.Component {
                 'firstName': '',
                 'lastName': ''
             })
-        }
-        )
-            .then(function(response) {
-                if (!response.ok) {
-                    throw Error(response.statusText);
-                }
-                return response;
-            })
-            .then(function(response) {
-                console.log('ok');
-                console.log(response.status);
-                if (response.status === 400) {
-                    console.log(response.json());
-                    return response.json();
-                }
-                return response;
-            }).catch(function(response) {
-                //console.log(response.body());
-                console.log(response.json());
-            });
+        })
+        .then(function(response) {
+            console.log(response);
+
+            if (response.ok) {
+                // Success
+                console.log('Success');
+                return response.json();
+            } else {
+                response.text().then(text => {
+                    // switch(text) {
+                    //     case 'email already in use':
+
+                    //         break;
+                    //     case 'password must be at least 6 characters':
+
+                    //         break;
+                    //     case 'passwords do not match':
+
+                    //         break;
+                    //     case 'username already in use':
+
+                    //         break;
+                    // }
+                    that.setState({
+                        error: text
+                    });
+                    //alert(that.state.error);
+                    // change this
+                });
+                
+            }
+        })
+        .catch(err => {
+            console.log('caught it!',err);
+        })
     }
 
     /**
@@ -142,6 +151,7 @@ export default class SignupPage extends React.Component {
         //button validation
         var signUpEnabled = (usernameErrors.isValid && passwordErrors.isValid && passwordMatch.isValid);
 
+
         return (
             <div className="bluebox">
                 <h1>Sign Up</h1>
@@ -156,6 +166,7 @@ export default class SignupPage extends React.Component {
                     <div className="form-group">
                         <button className="btn green-button" disabled={!signUpEnabled} onClick={(e) => this.signUp(e)}>Sign-up</button>
                     </div>
+                    <div id="postError" className="help-block error">{this.state.error}</div>
                 </form>
                 <div className="black-link"><Link to="/login">Already have an account? Log in!</Link></div>
             </div>
