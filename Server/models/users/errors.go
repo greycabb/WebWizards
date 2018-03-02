@@ -34,3 +34,6 @@ var ErrMarshalling = errors.New("error marshalling")
 
 //ErrUnmarshalling is used when unmarshalling fails
 var ErrUnmarshalling = errors.New("error unmarshalling")
+
+//ErrUserNotFound is returned when the user can't be found
+var ErrUserNotFound = errors.New("user not found")
