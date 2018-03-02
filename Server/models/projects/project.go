@@ -10,9 +10,9 @@ var bcryptCost = 13
 
 //NewProject represents a user creating a new project
 type NewProject struct {
-	UserID    bson.ObjectId `json:"userid" bson:"_userid"`
-	Content   []*Block      `json:"content"`
-	Created   time.Time     `json:"created,string"`
+	UserID  bson.ObjectId `json:"userid" bson:"_userid"`
+	Content []*Block      `json:"content"`
+	Created time.Time     `json:"created,string"`
 }
 
 //Project represents a project in the database
@@ -26,13 +26,13 @@ type Project struct {
 
 //Block represents one html block
 type Block struct {
-	BlockType int `json:"blocktype"`
-	Css []*Css `json:"css"
-`	Children []*Block `json:"children"`
+	BlockType int      `json:"blocktype"`
+	CSS       []*CSS   `json:"css"`
+	Children  []*Block `json:"children"`
 }
 
-//Css represents one css configuration
-type Css struct {
+//CSS represents one css configuration
+type CSS struct {
 	Attribute string `json:"attribute"`
-	Value string `json:"value"`
+	Value     string `json:"value"`
 }
