@@ -24,12 +24,98 @@
 		}
 	},
 	"text-align": {
-		"translation": "Text centering",
+		"translation": "Text position",
 		"description": "Moves the text to be on the left, right, or middle",
 		"units": "EO_choices",
 		"default": "left",
 		"extra_options": {
 			"choices": ["left", "center", "right"]
+		}
+	},
+	"background-color": {
+		"translation": "Background color",
+		"description": "Changes the color of the background",
+		"units": "rgb",
+		"default": "white"
+	},
+	"background-image": {
+		"translation": "Background image",
+		"description": "Add a background image",
+		"units": "image",
+		"default": "none"
+	},
+	"background-repeat": {
+		"translation": "Background image repeat",
+		"description": "Edit how a background image repeats",
+		"units": "EO_choices",
+		"default": "repeat",
+		"extra_options": {
+			"choices": ["repeat", "repeat-x", "repeat-y", "no-repeat"]
+		}
+	},
+	"background-position": {
+		"translation": "Background image position",
+		"description": "Edit where a background image shows up",
+		"units": "EO_choices",
+		"default": "top left",
+		"extra_options": {
+			"horizontal": ["left", "center", "top"],
+			"vertical": ["left", "center", "top"]
+		}
+	},
+	"background-attachment": {
+		"translation": "Background image scroll",
+		"description": "Edit whether the background image scrolls",
+		"units": "EO_choices",
+		"default": "scroll",
+		"extra_options": {
+			"choices": ["scroll", "fixed"]
+		}
+	},
+	"border-style": {
+		"translation": "Border Style",
+		"description": "Change border styles",
+		"units": "EO_choices",
+		"default": "none",
+		"extra_options": {
+			"choices": ["none", "dotted", "dashed", "solid"]
+		}
+	},
+	"border-width": {
+		"translation": "Border Width",
+		"description": "Change border width",
+		"units": "EO_choices",
+		"default": "0",
+		"extra_options": {
+			"range": ["0", "20"]
+		}
+	},
+	"border-color": {
+		"translation": "Border color",
+		"description": "Changes the color of the border",
+		"units": "rgb",
+		"default": "black"
+	},
+	"width": {
+		"translation": "Width",
+		"description": "Change width of element",
+		"units": "EO_choices",
+		"default": "auto",
+		"extra_options": {
+			"choices": ["auto", "pixels", "percentage"],
+			"pixels": ["0", "2000"],
+			"percentage": ["0", "100"]
+		}
+	},
+	"height": {
+		"translation": "Height",
+		"description": "Change height of element",
+		"units": "EO_choices",
+		"default": "auto",
+		"extra_options": {
+			"choices": ["auto", "pixels", "percentage"],
+			"pixels": ["0", "2000"],
+			"percentage": ["0", "100"]
 		}
 	}
 }

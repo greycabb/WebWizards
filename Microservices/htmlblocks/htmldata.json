@@ -1,10 +1,102 @@
 [
 	{
         "id": 0,
+        "name": "html",
+		"translation": "html",
+		"description": "A 'html' block defines a HTML document",
+		"type": "wrapper",
+		"css_groups": ["font", "background", "border", "sizing"]
+	},
+	{
+        "id": 1,
+        "name": "head",
+		"translation": "head",
+		"description": "A 'head' block defines information about HTML document",
+		"type": "wrapper",
+		"css_groups": ["font", "background", "border", "sizing"]
+	},
+	{
+        "id": 2,
+        "name": "title",
+		"translation": "title",
+		"description": "A 'title' block defines the page title",
+		"type": "wrapper"
+	},
+	{
+        "id": 3,
+        "name": "body",
+		"translation": "body",
+		"description": "A 'body' block defines the page body",
+		"type": "textwrapper",
+		"css_groups": ["font", "background", "border", "sizing"]
+	},
+	{
+        "id": 4,
+        "name": "p",
+		"translation": "paragraph",
+		"description": "A 'p' block defines a paragraph",
+		"type": "wrapper",
+		"css_groups": ["font", "background", "border", "sizing"]
+    },
+	{
+        "id": 5,
         "name": "div",
 		"translation": "block",
 		"description": "A 'div' is a section that is a block element. Block elements appear on a new row.",
 		"type": "wrapper",
-		"css_groups": ["font", "border", "sizing"]
+		"css_groups": ["font", "background", "border", "sizing"]
+	},
+	{
+        "id": 6,
+        "name": "text",
+		"translation": "text",
+		"description": "A 'text' block allows you to add text",
+		"type": "content"
+	},
+	{
+        "id": 7,
+        "name": "h1",
+		"translation": "header 1",
+		"description": "Largest heading",
+		"type": "textwrapper",
+		"css_groups": ["font", "background", "border", "sizing"]
+	},
+	{
+        "id": 8,
+        "name": "h2",
+		"translation": "header 2",
+		"description": "Second largest heading",
+		"type": "textwrapper",
+		"css_groups": ["font", "background", "border", "sizing"]
+	},
+	{
+        "id": 9,
+        "name": "h3",
+		"translation": "header 3",
+		"description": "Third largest heading",
+		"type": "textwrapper",
+		"css_groups": ["font", "background", "border", "sizing"]
+	},
+	{
+        "id": 10,
+        "name": "h4",
+		"translation": "header 4",
+		"description": "Fourth largest heading",
+		"type": "textwrapper",
+		"css_groups": ["font", "background", "border", "sizing"]
+	},
+	{
+        "id": 11,
+        "name": "strong",
+		"translation": "strong",
+		"description": "Bolded text",
+		"type": "textwrapper"
+	},
+	{
+        "id": 12,
+        "name": "em",
+		"translation": "emphasized",
+		"description": "Bolded text",
+		"type": "textwrapper"
     }
 ]

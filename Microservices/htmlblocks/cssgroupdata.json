@@ -1,25 +1,21 @@
 [
-    { 
-        "name": "all",
-        "translation": "Anything",
-        "description": "These styles can be applied to anything",
-        "attributes": ["width", "height", "color", "font-family", "font-size"]
-    },
     {
         "name": "font",
-        "translation": "Font",
         "description": "These styles change the color, size, and font of text",
-        "attributes": ["color", "font-family", "font-size"]
+        "attributes": ["color", "font-family", "font-size", "text-align"]
+    },
+    {
+        "name": "background",
+        "description": "These styles change the background styles of an element",
+        "attributes": ["background-color", "background-image", "background-repeat", "background-position", "background-attachment"]
     },
     {
         "name": "border",
-        "translation": "Border",
         "description": "These styles change the border of an element",
         "attributes": ["border-style", "border-width", "border-color"]
     },
     {
         "name": "size",
-        "translation": "Size",
         "description": "These styles change size of elements",
         "attributes": ["width", "height"]
     }
