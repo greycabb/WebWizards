@@ -37,3 +37,13 @@ input {
   font-size: 16pt;
   color: red;
 }
+
+body > div > .signin-page {
+  background-image: url('img/signup.png');
+  background-size: cover;
+  
+}
+body > div > .login-page {
+  background-image: url('img/login.png');
+  background-size: cover;
+}
