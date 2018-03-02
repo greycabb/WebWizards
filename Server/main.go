@@ -88,6 +88,8 @@ func main() {
 	//Initialize microservices addresses
 	htmlsvcaddr := os.Getenv("HTMLSVCADDR")
 	splitHTMLSvcAddrs := strings.Split(htmlsvcaddr, ",")
+	imagesvcaddr := os.Getenv("IMAGEADDR")
+	splitImagesSvcAddrs := strings.Split(imagesvcaddr, ",")
 	//Initalize new mux
 	mux := http.NewServeMux()
 	//Handlers
@@ -98,6 +100,7 @@ func main() {
 	mux.Handle("/v1/htmlblocks", NewServiceProxy(splitHTMLSvcAddrs, ctx))
 	mux.Handle("/v1/cssgroups", NewServiceProxy(splitHTMLSvcAddrs, ctx))
 	mux.Handle("/v1/cssattributes", NewServiceProxy(splitHTMLSvcAddrs, ctx))
+	mux.Handle("/v1/images", NewServiceProxy(splitImagesSvcAddrs, ctx))
 	//Wrap mux with CORS middleware handler
 	corsHandler := handlers.NewCORSHandler(mux)
 	log.Printf("server is listening at %s...", addr)
