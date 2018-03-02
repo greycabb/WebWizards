@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Link, browserHistory } from 'react-router';
 
 export default class SignupPage extends React.Component {
@@ -15,6 +14,8 @@ export default class SignupPage extends React.Component {
 
         //function binding
         this.handleChange = this.handleChange.bind(this);
+
+        localStorage.clear();
     }
 
     //update state for specific field
@@ -53,50 +54,49 @@ export default class SignupPage extends React.Component {
                 'lastName': ''
             })
         })
-        .then(function(response) {
-            
-            if (response.ok) {
-                console.log('Success');
-                let auth = response.headers.get('Authorization');
-                let userdata = {
-                    'username': that.state.username
-                }
+            .then(function (response) {
 
-                // Local storage Data setting
-                localStorage.setItem('Authorization', auth);
-                localStorage.setItem('USERDATA', userdata);
-                //
-
-                let Router = require('react-router');
-                Router.browserHistory.push('/main');
-            } else {
-                response.text().then(text => {
-                    // switch(text) {
-                    //     case 'email already in use':
-
-                    //         break;
-                    //     case 'password must be at least 6 characters':
-
-                    //         break;
-                    //     case 'passwords do not match':
-
-                    //         break;
-                    //     case 'username already in use':
-
-                    //         break;
-                    // }
-                    that.setState({
-                        error: text
+                if (response.ok) {
+                    console.log('Success');
+                    let auth = response.headers.get('Authorization');
+                    let userdata = JSON.stringify({
+                        'username': that.state.username
                     });
-                    //alert(that.state.error);
-                    // change this
-                });
-                
-            }
-        })
-        .catch(err => {
-            console.log('caught it!',err);
-        })
+
+                    // Local storage Data setting
+                    localStorage.setItem('Authorization', auth);
+                    localStorage.setItem('USERDATA', userdata);
+                    //
+
+                    browserHistory.push('/main');
+                } else {
+                    response.text().then(text => {
+                        // switch(text) {
+                        //     case 'email already in use':
+
+                        //         break;
+                        //     case 'password must be at least 6 characters':
+
+                        //         break;
+                        //     case 'passwords do not match':
+
+                        //         break;
+                        //     case 'username already in use':
+
+                        //         break;
+                        // }
+                        that.setState({
+                            error: text
+                        });
+                        //alert(that.state.error);
+                        // change this
+                    });
+
+                }
+            })
+            .catch(err => {
+                console.log('caught it!', err);
+            })
     }
 
     /**
@@ -162,22 +162,24 @@ export default class SignupPage extends React.Component {
 
 
         return (
-            <div className="bluebox">
-                <h1>Sign Up</h1>
-                <form>
-                    <ValidatedInput field="username" maxLength="15" type="username" label="Username" changeCallback={this.handleChange} errors={usernameErrors} />
+            <div className="signup-page">
+                <div className="bluebox">
+                    <h1>Sign Up</h1>
+                    <form>
+                        <ValidatedInput field="username" maxLength="15" type="username" label="Username" changeCallback={this.handleChange} errors={usernameErrors} />
 
-                    <ValidatedInput field="password" maxLength="30" type="password" label="Password" changeCallback={this.handleChange} errors={passwordErrors} />
+                        <ValidatedInput field="password" maxLength="30" type="password" label="Password" changeCallback={this.handleChange} errors={passwordErrors} />
 
-                    <ValidatedInput field="passwordMatch" maxLength="30" type="password" label="Re-enter Password" changeCallback={this.handleChange} errors={passwordMatch} />
+                        <ValidatedInput field="passwordMatch" maxLength="30" type="password" label="Re-enter Password" changeCallback={this.handleChange} errors={passwordMatch} />
 
 
-                    <div className="form-group">
-                        <button className="btn green-button" disabled={!signUpEnabled} onClick={(e) => this.signUp(e)}>Sign-up</button>
-                    </div>
-                    <div id="postError" className="help-block error">{this.state.error}</div>
-                </form>
-                <div className="black-link"><Link to="/login">Already have an account? Log in!</Link></div>
+                        <div className="form-group">
+                            <button className="btn green-button" disabled={!signUpEnabled} onClick={(e) => this.signUp(e)}>Sign-up</button>
+                        </div>
+                        <div id="postError" className="help-block error">{this.state.error}</div>
+                    </form>
+                    <div className="black-link"><Link to="/login">Already have an account? Log in!</Link></div>
+                </div>
             </div>
         );
     }
@@ -192,7 +194,7 @@ class ValidatedInput extends React.Component {
         return (
             <div className={"form-group " + this.props.errors.style}>
                 <label htmlFor={this.props.field} className="control-label">{this.props.label}</label>
-                <input id={this.props.field} type={this.props.type} maxLength={this.props.maxlength}name={this.props.field} className="form-control" onChange={this.props.changeCallback} />
+                <input id={this.props.field} type={this.props.type} maxLength={this.props.maxlength} name={this.props.field} className="form-control" onChange={this.props.changeCallback} />
                 <ValidationErrors errors={this.props.errors} />
             </div>
         );
