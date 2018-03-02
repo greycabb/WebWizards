@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Link, browserHistory } from 'react-router';
 
 export default class LoginPage extends React.Component {
@@ -14,6 +13,8 @@ export default class LoginPage extends React.Component {
 
         //function binding
         this.handleChange = this.handleChange.bind(this);
+
+        localStorage.clear();
     }
 
     //update state for specific field
@@ -53,17 +54,15 @@ export default class LoginPage extends React.Component {
             if (response.ok) {
                 console.log('Success');
                 let auth = response.headers.get('Authorization');
-                let userdata = {
+                let userdata = JSON.stringify({
                     'username': that.state.username
-                }
+                });
 
                 // Local storage Data setting
                 localStorage.setItem('Authorization', auth);
                 localStorage.setItem('USERDATA', userdata);
                 //
-
-                let Router = require('react-router');
-                Router.browserHistory.push('/main');
+                browserHistory.push('/main');
             } else {
                 response.text().then(text => {
                     that.setState({
