@@ -28,6 +28,14 @@ h1 {
   border-radius: 15%;
   margin: 5px;
   padding: 10px 20px 10px 20px;
+  color: white;
+}
+.orange-button {
+  background-color: rgb(241,131,48);
+  border-radius: 15%;
+  margin: 5px;
+  padding: 10px 20px 10px 20px;
+  color: white;
 }
 input {
   color: black;
@@ -46,4 +54,76 @@ body > div > .signin-page {
 body > div > .login-page {
   background-image: url('img/login.png');
   background-size: cover;
+}
+
+.header {
+  background-color: rgb(75,194,244);
+  left: 0;
+  top: 0;
+  padding: 10px;
+}
+.navbar-title {
+  font-size: 32pt;
+  font-weight: bold;
+  color: white;
+}
+
+.navbar-default .navbar-brand {
+  color: white;
+}
+
+.profile-picture {
+  border: 1px solid lightgrey;
+  width: 210px;
+  height: 160px;
+  background-image: url('img/lizard.png')
+}
+
+.main-content {
+  padding: 30px;
+  color: rgb(109,227,98);
+  font-size: 20pt;
+  font-weight: bold;
+  
+}
+
+.profile-and-awards > div {
+  float: left;
+  display: inline-block;
+}
+.profile-and-awards {
+  height: 200px;
+}
+
+.profile-name {
+  padding-left: 40px;
+}
+
+.projects-list {
+  background-color: rgb(216,216,216);
+  height: 170px;
+  border-radius: 10px;
+  border: 1px solid rgb(151,151,151);
+  padding-top: 10px;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+.project-in-list {
+  height: 100%;
+  width: 180px;
+  
+  display: inline-block;
+  margin-right: 40px;
+}
+
+.project-square {
+  border: 1px solid rgb(181,181,181);
+  background-color: white;
+  height: 120px;
+  width: 180px;
+}
+.project-title {
+  color: rgb(236,79,147);
+  text-align: center;
 }
