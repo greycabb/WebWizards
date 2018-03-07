@@ -1,7 +1,6 @@
 package projects
 
 import (
-	"github.com/greycabb/WebWizards/server/indexes"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -10,25 +9,22 @@ type Store interface {
 	//GetByProjectID returns the Project with the given ID
 	GetByProjectID(projectID bson.ObjectId) (*Project, error)
 
-	//GetByUserID returns the Project with the given ID
-	GetByUserID(userID bson.ObjectId) ([]*Project, error)
-
-	//GetByEmail returns the Projects with the given email
-	GetByEmail(email string) ([]*Project, error)
-
-	//GetByUserName returns the Projects with the given Username
-	GetByUserName(username string) ([]*Project, error)
+	//GetByUserID returns the Projects with the given userID
+	GetByUserID(userID string) ([]*Project, error)
 
 	//Insert converts the NewProject to a Project, inserts
 	//it into the database, and returns it
 	Insert(newProject *NewProject) (*Project, error)
 
-	//Update applied the given project ID
-	UpdateProject(projectID bson.ObjectId, updates *Updates) error
+	//InsertBlock inserts a new block into the project
+	InsertBlock(block *Block, projectID bson.ObjectId) error
 
-	//Delete deletes the project with the given ID
-	Delete(projectID bson.ObjectId) error
+	//UpdateBlock applies updates to block
+	UpdateBlock(blockID bson.ObjectId, updates *BlockUpdates)
 
-	//LoadProjectsToTrie returns a Trie struct with all of the store's projects
-	LoadProjectsToTrie() (*indexes.Trie, error)
+	//DeleteProject deletes the project with the given ID
+	DeleteProject(projectID bson.ObjectId) error
+
+	//DeleteBlock deletes the block with the given ID
+	DeleteBlock(blockID bson.ObjectId, projectID bson.ObjectId) error
 }
