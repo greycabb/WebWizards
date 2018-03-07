@@ -110,7 +110,7 @@ func FindAndDeleteBlock(arr []*Block, blockid string) {
 	//Grab parent's child array
 	var parent *Block
 	for i, block := range arr {
-		b, found, index := block.TraverseBlockArray(parentID, i)
+		b, found, _ := block.TraverseBlockArray(parentID, i)
 		if found {
 			parent = b
 			break
