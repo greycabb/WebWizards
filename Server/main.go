@@ -77,6 +77,7 @@ func main() {
 		log.Fatalf("error dialing mongo: %v", err)
 	}
 	userStore := users.NewMongoStore(mongoSess, "userDB", "users")
+	projectStore := users.NewMongoStore(mongoSess, "projectDB", "projects")
 	trie, err := userStore.LoadUsersToTrie()
 	if err != nil {
 		log.Fatalf("error loading users to trie: %v", err)
@@ -84,7 +85,7 @@ func main() {
 	defer mongoSess.Close()
 	//Initalize new handle context struct
 	sessionKey := os.Getenv("SESSIONKEY")
-	ctx := handlers.NewHandlerContext(sessionKey, SessionStore, userStore, trie)
+	ctx := handlers.NewHandlerContext(sessionKey, SessionStore, userStore, projectStore, trie)
 	//Initialize microservices addresses
 	htmlsvcaddr := os.Getenv("HTMLSVCADDR")
 	splitHTMLSvcAddrs := strings.Split(htmlsvcaddr, ",")

@@ -11,6 +11,7 @@ var bcryptCost = 13
 //NewProject represents a user creating a new project
 type NewProject struct {
 	UserID  string   `json:"userid"`
+	Name    string   `json:"Name"`
 	Content []*Block `json:"content"`
 }
 
@@ -18,6 +19,7 @@ type NewProject struct {
 type Project struct {
 	ID      bson.ObjectId `json:"id" bson:"_id"`
 	UserID  string        `json:"userid"`
+	Name    string        `json:"Name"`
 	Content []*Block      `json:"content"`
 	Created time.Time     `json:"created,string"`
 	Edited  time.Time     `json:"edited,string"`
@@ -38,6 +40,13 @@ type CSS struct {
 	Value     string `json:"value"`
 }
 
+//ProjectUpdates represents possible project updates
+type ProjectUpdates struct {
+	Name    string    `json:"Name"`
+	Content []*Block  `json:"content"`
+	Edited  time.Time `json:"edited,string"`
+}
+
 //BlockUpdates represents possible updates to a block
 type BlockUpdates struct {
 	CSS      []*CSS   `json:"css"`
@@ -49,14 +58,23 @@ type BlockUpdates struct {
 func (np *NewProject) ToProject() *Project {
 	project := &Project{}
 	project.ID = bson.NewObjectId()
+	project.Name = np.Name
 	project.UserID = np.UserID
 	project.Created = time.Now()
 	project.Edited = time.Now()
 	return project
 }
 
-//ApplyUpdates applies the updates to the project.
-func (b *Block) ApplyUpdates(updates *BlockUpdates) {
+//ApplyProjectUpdates applies the updates to the project
+func (p *Project) ApplyProjectUpdates(updates *ProjectUpdates) {
+	//Need to add error handling
+	p.Name = updates.Name
+	p.Content = updates.Content
+	p.Edited = time.Now()
+}
+
+//ApplyBlockUpdates applies the updates to the block.
+func (b *Block) ApplyBlockUpdates(updates *BlockUpdates) {
 	if len(updates.CSS) > 0 {
 		b.CSS = updates.CSS
 	}
@@ -74,7 +92,7 @@ func FindAndUpdateBlock(arr []*Block, blockid string, updates *BlockUpdates) err
 	for i, block := range arr {
 		b, found, _ := block.TraverseBlockArray(blockid, i)
 		if found {
-			b.ApplyUpdates(updates)
+			b.ApplyBlockUpdates(updates)
 			return nil
 		}
 	}
