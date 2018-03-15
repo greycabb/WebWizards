@@ -14,17 +14,19 @@ type HandlerContext struct {
 	SessionStore sessions.Store
 	usersStore   users.Store
 	projectStore projects.Store
+	blockStore   blocks.Store
 	trie         *indexes.Trie
 }
 
 //NewHandlerContext constructs a new HandlerContext
 func NewHandlerContext(SigningKey string, SessionStore sessions.Store,
-	usersStore users.Store, projectStore projects.Store, trie *indexes.Trie) *HandlerContext {
+	usersStore users.Store, projectStore projects.Store, blockStore blocks.Store, trie *indexes.Trie) *HandlerContext {
 	return &HandlerContext{
 		SigningKey:   SigningKey,
 		SessionStore: SessionStore,
 		usersStore:   usersStore,
 		projectStore: projectStore,
+		blockStore:   blockStore,
 		trie:         trie,
 	}
 }

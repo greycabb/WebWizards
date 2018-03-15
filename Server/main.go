@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/go-redis/redis"
+	"github.com/greycabb/WebWizards/Server/models/projects"
 	"github.com/greycabb/WebWizards/server/handlers"
 	"github.com/greycabb/WebWizards/server/models/users"
 	"github.com/greycabb/WebWizards/server/sessions"
@@ -77,7 +78,8 @@ func main() {
 		log.Fatalf("error dialing mongo: %v", err)
 	}
 	userStore := users.NewMongoStore(mongoSess, "userDB", "users")
-	projectStore := users.NewMongoStore(mongoSess, "projectDB", "projects")
+	projectStore := projects.NewMongoStore(mongoSess, "projectDB", "projects")
+	blockStore := projects.NewMongoStore(mongoSess, "blockDB", "blocks")
 	trie, err := userStore.LoadUsersToTrie()
 	if err != nil {
 		log.Fatalf("error loading users to trie: %v", err)
@@ -85,7 +87,7 @@ func main() {
 	defer mongoSess.Close()
 	//Initalize new handle context struct
 	sessionKey := os.Getenv("SESSIONKEY")
-	ctx := handlers.NewHandlerContext(sessionKey, SessionStore, userStore, projectStore, trie)
+	ctx := handlers.NewHandlerContext(sessionKey, SessionStore, userStore, projectStore, blockStore, trie)
 	//Initialize microservices addresses
 	htmlsvcaddr := os.Getenv("HTMLSVCADDR")
 	splitHTMLSvcAddrs := strings.Split(htmlsvcaddr, ",")

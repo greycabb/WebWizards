@@ -16,15 +16,6 @@ type Store interface {
 	//it into the database, and returns it
 	Insert(newProject *NewProject) (*Project, error)
 
-	//InsertBlock inserts a new block into the project
-	InsertBlock(block *Block, projectID bson.ObjectId) error
-
-	//UpdateBlock applies updates to block
-	UpdateBlock(blockID bson.ObjectId, updates *BlockUpdates)
-
 	//DeleteProject deletes the project with the given ID
 	DeleteProject(projectID bson.ObjectId) error
-
-	//DeleteBlock deletes the block with the given ID
-	DeleteBlock(blockID bson.ObjectId, projectID bson.ObjectId) error
 }

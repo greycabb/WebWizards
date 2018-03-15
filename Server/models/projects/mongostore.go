@@ -36,23 +36,6 @@ func (s *MongoStore) Insert(newProject *NewProject) (*Project, error) {
 	return proj, nil
 }
 
-//InsertBlock inserts a new block into the project
-func (s *MongoStore) InsertBlock(block *Block, projectid bson.ObjectId) error {
-	proj, err := s.GetByProjectID(projectid)
-	if err != nil {
-		return ErrProjectNotFound
-	}
-	err = FindParentAndInsertBlock(proj.Content, block.ParentID, block)
-	if err != nil {
-		return err
-	}
-	prev, err := s.GetByProjectID(projectid)
-	if err != nil {
-		return ErrProjectNotFound
-	}
-	return s.col.Update(prev, proj)
-}
-
 //GetByProjectID returns the Project with the given ID
 func (s *MongoStore) GetByProjectID(id bson.ObjectId) (*Project, error) {
 	proj := &Project{}
@@ -73,23 +56,6 @@ func (s *MongoStore) GetByUserID(userid string) ([]*Project, error) {
 	return projects, nil
 }
 
-//UpdateBlock applies UserUpdates to the given user ID
-func (s *MongoStore) UpdateBlock(blockid string, projectid bson.ObjectId, updates *BlockUpdates) error {
-	proj, err := s.GetByProjectID(projectid)
-	if err != nil {
-		return ErrProjectNotFound
-	}
-	err = FindAndUpdateBlock(proj.Content, blockid, updates)
-	if err != nil {
-		return ErrBlockNotFound
-	}
-	prev, err := s.GetByProjectID(projectid)
-	if err != nil {
-		return ErrProjectNotFound
-	}
-	return s.col.Update(prev, proj)
-}
-
 //DeleteProject deletes all state data associated with the projectID from the store.
 func (s *MongoStore) DeleteProject(projectID bson.ObjectId) error {
 	proj, err := s.GetByProjectID(projectID) // Check for any errors
@@ -99,14 +65,14 @@ func (s *MongoStore) DeleteProject(projectID bson.ObjectId) error {
 	return s.col.Remove(proj)
 }
 
-//DeleteBlock deletes a block from the project
-func (s *MongoStore) DeleteBlock(blockid string, projectid bson.ObjectId) error {
-	proj, err := s.GetByProjectID(projectid)
+//Update applies UserUpdates to the given user ID
+func (s *MongoStore) Update(projID bson.ObjectId, updates *ProjectUpdates) error {
+	proj, err := s.GetByProjectID(projID)
 	if err != nil {
 		return ErrProjectNotFound
 	}
-	FindAndDeleteBlock(proj.Content, blockid)
-	prev, err := s.GetByProjectID(projectid)
+	proj.ApplyProjectUpdates(updates)
+	prev, err := s.GetByProjectID(projID)
 	if err != nil {
 		return ErrProjectNotFound
 	}
