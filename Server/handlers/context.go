@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"github.com/greycabb/WebWizards/Server/models/blocks"
 	"github.com/greycabb/WebWizards/Server/models/projects"
 	"github.com/greycabb/WebWizards/server/indexes"
 	"github.com/greycabb/WebWizards/server/models/users"
