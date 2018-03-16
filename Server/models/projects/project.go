@@ -11,24 +11,24 @@ import (
 //NewProject represents a user creating a new project
 type NewProject struct {
 	UserID  bson.ObjectId `json:"userid"`
-	Name    string        `json:"Name"`
-	Content []*string     `json:"content"`
+	Name    string        `json:"name"`
+	Content []string      `json:"content"`
 }
 
 //Project represents a project in the database
 type Project struct {
 	ID      bson.ObjectId `json:"id" bson:"_id"`
 	UserID  bson.ObjectId `json:"userid"`
-	Name    string        `json:"Name"`
-	Content []*string     `json:"content"`
+	Name    string        `json:"name"`
+	Content []string      `json:"content"`
 	Created time.Time     `json:"created,string"`
 	Edited  time.Time     `json:"edited,string"`
 }
 
 //ProjectUpdates represents possible project updates
 type ProjectUpdates struct {
-	Name    string    `json:"Name"`
-	Content []*string `json:"content"`
+	Name    string    `json:"name"`
+	Content []string  `json:"content"`
 	Edited  time.Time `json:"edited,string"`
 }
 
@@ -55,5 +55,5 @@ func (p *Project) ApplyProjectUpdates(updates *ProjectUpdates) (*Project, error)
 		p.Content = updates.Content
 	}
 	p.Edited = time.Now()
-	return nil, nil
+	return p, nil
 }

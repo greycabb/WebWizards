@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/go-redis/redis"
+	"github.com/greycabb/WebWizards/Server/models/blocks"
 	"github.com/greycabb/WebWizards/Server/models/projects"
 	"github.com/greycabb/WebWizards/server/handlers"
 	"github.com/greycabb/WebWizards/server/models/users"
@@ -79,7 +80,7 @@ func main() {
 	}
 	userStore := users.NewMongoStore(mongoSess, "userDB", "users")
 	projectStore := projects.NewMongoStore(mongoSess, "projectDB", "projects")
-	blockStore := projects.NewMongoStore(mongoSess, "blockDB", "blocks")
+	blockStore := blocks.NewMongoStore(mongoSess, "blockDB", "blocks")
 	trie, err := userStore.LoadUsersToTrie()
 	if err != nil {
 		log.Fatalf("error loading users to trie: %v", err)
@@ -100,6 +101,8 @@ func main() {
 	mux.HandleFunc("/v1/users/me", ctx.UsersMeHandler)
 	mux.HandleFunc("/v1/sessions", ctx.SessionsHandler)
 	mux.HandleFunc("/v1/sessions/mine", ctx.SessionsMineHandler)
+	mux.HandleFunc("/v1/blocks", ctx.BlocksHandler)
+	mux.HandleFunc("/v1/projects", ctx.ProjectHandler)
 	mux.Handle("/v1/htmlblocks", NewServiceProxy(splitHTMLSvcAddrs, ctx))
 	mux.Handle("/v1/cssgroups", NewServiceProxy(splitHTMLSvcAddrs, ctx))
 	mux.Handle("/v1/cssattributes", NewServiceProxy(splitHTMLSvcAddrs, ctx))

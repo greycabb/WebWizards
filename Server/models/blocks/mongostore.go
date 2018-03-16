@@ -46,21 +46,21 @@ func (s *MongoStore) InsertBlock(newBlock *NewBlock) (*Block, error) {
 }
 
 //UpdateBlock applies UserUpdates to the given user ID
-func (s *MongoStore) UpdateBlock(blockid bson.ObjectId, updates *BlockUpdates) error {
+func (s *MongoStore) UpdateBlock(blockid bson.ObjectId, updates *BlockUpdates) (*Block, error) {
 	block, err := s.GetByBlockID(blockid)
 	if err != nil {
-		return ErrBlockNotFound
+		return nil, ErrBlockNotFound
 	}
 	new := block.UpdateBlock(updates)
 	prev, err := s.GetByBlockID(blockid)
 	if err != nil {
-		return ErrBlockNotFound
+		return nil, ErrBlockNotFound
 	}
-	return s.col.Update(prev, new)
+	return new, s.col.Update(prev, new)
 }
 
 //DeleteBlock deletes a block from the project
-func (s *MongoStore) DeleteBlock(blockid bson.ObjectId, projectid bson.ObjectId) error {
+func (s *MongoStore) DeleteBlock(blockid bson.ObjectId) error {
 	block, err := s.GetByBlockID(blockid) // Check for any errors
 	if err != nil {
 		return ErrBlockNotFound

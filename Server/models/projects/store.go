@@ -18,4 +18,7 @@ type Store interface {
 
 	//DeleteProject deletes the project with the given ID
 	DeleteProject(projectID bson.ObjectId) error
+
+	//Update updates the project
+	Update(projID bson.ObjectId, updates *ProjectUpdates) error
 }

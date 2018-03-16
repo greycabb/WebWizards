@@ -6,12 +6,16 @@ import (
 
 //Store represents a store for Projects
 type Store interface {
+
+	//GetByBlockID gets a block by its id
+	GetByBlockID(id bson.ObjectId) (*Block, error)
+
 	//InsertBlock inserts a new block into the project
-	InsertBlock(block *Block, projectID bson.ObjectId) error
+	InsertBlock(newBlock *NewBlock) (*Block, error)
 
 	//UpdateBlock applies updates to block
-	UpdateBlock(blockID bson.ObjectId, updates *BlockUpdates)
+	UpdateBlock(blockID bson.ObjectId, updates *BlockUpdates) (*Block, error)
 
 	//DeleteBlock deletes the block with the given ID
-	DeleteBlock(blockID bson.ObjectId, projectID bson.ObjectId) error
+	DeleteBlock(blockID bson.ObjectId) error
 }
