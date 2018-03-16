@@ -42,6 +42,10 @@ func (ctx *HandlerContext) ProjectHandler(w http.ResponseWriter, r *http.Request
 		if err != nil {
 			http.Error(w, fmt.Sprintf("error getting project id: %v", err), http.StatusBadRequest)
 		}
+		if proj.UserID != userID && proj.Private == "y" {
+			http.Error(w, fmt.Sprintf("this project is private"), http.StatusBadRequest)
+			return
+		}
 		respond(w, proj)
 
 	//Case for creating a new project
