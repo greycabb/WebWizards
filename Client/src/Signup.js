@@ -18,6 +18,10 @@ export default class SignupPage extends React.Component {
         localStorage.clear();
     }
 
+    componentDidMount() {
+        document.title = 'Sign Up - Web Wizards';
+    }
+
     //update state for specific field
     handleChange(event) {
         var field = event.target.name;
