@@ -127,3 +127,16 @@ body > div > .login-page {
   color: rgb(236,79,147);
   text-align: center;
 }
+
+#create-banner-div {
+  text-align: center;
+  margin: 20px 0px 50px 0px;
+}
+
+.banner-img {
+  margin:3px;
+}
+
+area { 
+  outline: none;
+}
