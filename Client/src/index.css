@@ -4,6 +4,8 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Roboto Condensed', sans-serif;
+  height: 100%;
+  width: 100%;
 }
 
 .welcomebox {
@@ -82,13 +84,14 @@ body > div > .login-page {
 .navbar-title {
   font-size: 30pt;
   color: white;
-  webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-     -khtml-user-select: none; /* Konqueror HTML */
-       -moz-user-select: none; /* Firefox */
-        -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome and Opera */
+}
+.disable-select {
+  -webkit-user-select: none; /* Safari */
+   -khtml-user-select: none; /* Konqueror HTML */
+     -moz-user-select: none; /* Firefox */
+      -ms-user-select: none; /* Internet Explorer/Edge */
+          user-select: none; /* Non-prefixed version, currently
+                                supported by Chrome and Opera */
 }
 
 .navbar-default .navbar-brand {
@@ -152,17 +155,4 @@ body > div > .login-page {
 .project-title {
   color:#F07E2B;
   text-align: center;
-}
-
-#create-banner-div {
-  text-align: center;
-  margin: 20px 0px 50px 0px;
-}
-
-.banner-img {
-  margin:3px;
-}
-
-area { 
-  outline: none;
 }

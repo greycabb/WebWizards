@@ -168,7 +168,7 @@ export default class SignupPage extends React.Component {
         return (
             <div className="signup-page">
                 <div className="welcomebox">
-                    <h1 className="title">Sign Up</h1>
+                    <h1>Sign Up</h1>
                     <form>
                         <ValidatedInput field="username" maxLength="15" type="username" label="Username" changeCallback={this.handleChange} errors={usernameErrors} />
 

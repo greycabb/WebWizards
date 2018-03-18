@@ -18,7 +18,7 @@ export default class Nav extends React.Component {
             <nav className="navbar navbar-default header">
                 <div className="container-fluid">
                     <div className="navbar-header">
-                        <h1 className="title navbar-title">Web Wizards</h1>
+                        <h1 className="title navbar-title disable-select">Web Wizards</h1>
                     </div>
                     <div className="form-group pull-right navbar-welcome">
                         Welcome, {this.props.username}!
