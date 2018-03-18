@@ -49,7 +49,8 @@ func (s *MongoStore) GetByProjectID(id bson.ObjectId) (*Project, error) {
 //GetByUserID returns the Projects structure array with given userID
 func (s *MongoStore) GetByUserID(userid string) ([]*Project, error) {
 	projects := []*Project{}
-	err := s.col.Find(bson.M{"userid": userid}).All(&projects)
+	hexed := bson.ObjectIdHex(userid)
+	err := s.col.Find(bson.M{"userid": hexed}).All(&projects)
 	if err != nil {
 		return nil, ErrProjectNotFound
 	}
