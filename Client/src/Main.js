@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, hashHistory } from 'react-router';
 import Nav from './Nav';
+import CreateBanner from './CreateBanner';
 
 export default class MainPage extends React.Component {
     constructor(props) {
@@ -32,17 +33,17 @@ export default class MainPage extends React.Component {
         return (
             <div>
                 <Nav username={this.state.username}/>
-                {/* <div className="bluebox">
+                {/* <div className="welcomebox">
                     <div>Welcome, {this.state.username}!</div>
                     <br />
                     
                 </div> */}
                 <div className="main-content">
+                    <CreateBanner />
                     <div id="profileAndAwards" className="profile-and-awards">
                         <div className="profile-picture"></div>
                         <div className="profile-name">
-                            <div>Hi, {this.state.username}!</div><br/>
-                            <div>Awards</div>
+                            <div>My Awards</div>
                         </div>
                     </div>
                     <div id="yourProjects" className="your-projects">

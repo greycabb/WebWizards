@@ -13,6 +13,27 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+//UserProjectHandler handles requests to get user projects
+func (ctx *HandlerContext) UserProjectHandler(w http.ResponseWriter, r *http.Request) {
+	//Check for authentication
+	_, err := sessions.GetSessionID(r, ctx.SigningKey)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("error getting sessionID"), http.StatusUnauthorized)
+		return
+	}
+	id := r.URL.Query().Get("id")
+	if len(id) == 0 {
+		http.Error(w, "Please provide a correct user id", http.StatusBadRequest)
+		return
+	}
+	projs, err := ctx.projectStore.GetByUserID(id)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("error retrieving projects"), http.StatusUnauthorized)
+		return
+	}
+	respond(w, projs)
+}
+
 //ProjectHandler handles requests for the "project" resource if authenticated
 func (ctx *HandlerContext) ProjectHandler(w http.ResponseWriter, r *http.Request) {
 	//Check for authentication

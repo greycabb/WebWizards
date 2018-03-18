@@ -1,39 +1,58 @@
+@import url('https://fonts.googleapis.com/css?family=Fontdiner+Swanky|Roboto+Condensed:300,400,400i,700');
+
 body {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
+  font-family: 'Roboto Condensed', sans-serif;
+  height: 100%;
+  width: 100%;
 }
 
-.bluebox {
-  background-color: rgb(75,194,244);
+.welcomebox {
+  background-color: #196AB5;
   border-radius: 5%;
   padding: 20px;
   color: white;
-  width: 300px;
-  margin: auto;
-  margin-top: 20px;
+  width: 350px;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 h1 {
   font-size: 32pt;
 }
 
-.black-link {
-  color: black;
+.box-link a, .box-link a:hover {
+  color:white;
   text-decoration: underline;
   font-size: 10pt;
 }
+
 .green-button {
-  background-color: rgb(109,227,98);
+  font-size: 16px;
+  background-color: #30B04C;
   border-radius: 15%;
   margin: 5px;
   padding: 10px 20px 10px 20px;
   color: white;
 }
 .orange-button {
-  background-color: rgb(241,131,48);
+  font-size: 16px;
+  background-color: #F07E2B;
   border-radius: 15%;
   margin: 5px;
+  padding: 10px 20px 10px 20px;
+  color: white;
+}
+.yellow-button {
+  font-size: 16px;
+  background-color: #E0A738;
+  border-radius: 15%;
+  margin: 5px 10px;
   padding: 10px 20px 10px 20px;
   color: white;
 }
@@ -43,7 +62,7 @@ input {
 
 .error {
   font-size: 16pt;
-  color: red;
+  color: #E0A738;
 }
 
 body > div > .signin-page {
@@ -57,18 +76,33 @@ body > div > .login-page {
 }
 
 .header {
-  background-color: rgb(75,194,244);
+  background-color: #196AB5;
   left: 0;
   top: 0;
   padding: 10px;
 }
+.title {
+  font-family: 'Fontdiner Swanky', cursive;
+}
 .navbar-title {
-  font-size: 32pt;
-  font-weight: bold;
+  font-size: 30pt;
   color: white;
+}
+.disable-select {
+  -webkit-user-select: none; /* Safari */
+   -khtml-user-select: none; /* Konqueror HTML */
+     -moz-user-select: none; /* Firefox */
+      -ms-user-select: none; /* Internet Explorer/Edge */
+          user-select: none; /* Non-prefixed version, currently
+                                supported by Chrome and Opera */
 }
 
 .navbar-default .navbar-brand {
+  color: white;
+}
+
+.navbar-welcome {
+  padding-top: 15px;
   color: white;
 }
 
@@ -81,10 +115,8 @@ body > div > .login-page {
 
 .main-content {
   padding: 30px;
-  color: rgb(109,227,98);
+  color: #169C94;
   font-size: 20pt;
-  font-weight: bold;
-  
 }
 
 .profile-and-awards > div {
@@ -100,10 +132,10 @@ body > div > .login-page {
 }
 
 .projects-list {
-  background-color: rgb(216,216,216);
+  background-color: rgb(241, 240, 240);
   height: 170px;
   border-radius: 10px;
-  border: 1px solid rgb(151,151,151);
+  border: 1px solid rgb(182, 182, 182);
   padding-top: 10px;
   padding-left: 30px;
   padding-right: 30px;
@@ -124,6 +156,6 @@ body > div > .login-page {
   width: 180px;
 }
 .project-title {
-  color: rgb(236,79,147);
+  color:#F07E2B;
   text-align: center;
 }

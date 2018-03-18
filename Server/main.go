@@ -103,6 +103,7 @@ func main() {
 	mux.HandleFunc("/v1/sessions/mine", ctx.SessionsMineHandler)
 	mux.HandleFunc("/v1/blocks", ctx.BlocksHandler)
 	mux.HandleFunc("/v1/projects", ctx.ProjectHandler)
+	mux.HandleFunc("/v1/user/projects", ctx.UserProjectHandler)
 	mux.Handle("/v1/htmlblocks", NewServiceProxy(splitHTMLSvcAddrs, ctx))
 	mux.Handle("/v1/cssgroups", NewServiceProxy(splitHTMLSvcAddrs, ctx))
 	mux.Handle("/v1/cssattributes", NewServiceProxy(splitHTMLSvcAddrs, ctx))

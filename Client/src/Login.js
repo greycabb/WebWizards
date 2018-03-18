@@ -138,8 +138,8 @@ export default class LoginPage extends React.Component {
 
         return (
             <div className="login-page">
-                <div className="bluebox">
-                    <h1>Web Wizards</h1>
+                <div className="welcomebox">
+                    <h1 className="title">Web Wizards</h1>
                     <form>
                         <div>
                             <ValidatedInput field="username" type="username" maxLength="15" label="Username" tabIndex={1} changeCallback={this.handleChange} errors={usernameErrors} />
@@ -154,7 +154,7 @@ export default class LoginPage extends React.Component {
                         <div id="postError" className="help-block error">{this.state.error}</div>
 
                     </form>
-                    <div className="black-link"><Link to="/signup">Don't have an account? Sign up!</Link></div>
+                    <div className="box-link"><Link to="/signup">Don't have an account? Sign up!</Link></div>
                     {/* <div className="black-link">Forgot Username or Password</div> */}
                 </div>
             </div>
