@@ -33,7 +33,7 @@ export default class MainPage extends React.Component {
         return (
             <div>
                 <Nav username={this.state.username}/>
-                {/* <div className="bluebox">
+                {/* <div className="welcomebox">
                     <div>Welcome, {this.state.username}!</div>
                     <br />
                     
@@ -43,8 +43,7 @@ export default class MainPage extends React.Component {
                     <div id="profileAndAwards" className="profile-and-awards">
                         <div className="profile-picture"></div>
                         <div className="profile-name">
-                            <div>Hi, {this.state.username}!</div><br/>
-                            <div>Awards</div>
+                            <div>My Awards</div>
                         </div>
                     </div>
                     <div id="yourProjects" className="your-projects">

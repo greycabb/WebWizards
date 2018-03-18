@@ -18,11 +18,11 @@ export default class Nav extends React.Component {
             <nav className="navbar navbar-default header">
                 <div className="container-fluid">
                     <div className="navbar-header">
-                        <h1 className="navbar-title">Web Wizards</h1>
+                        <h1 className="title navbar-title">Web Wizards</h1>
                     </div>
-                    <div className="form-group pull-right">
-                        <button className="btn orange-button">{this.props.username}</button>
-                        <button className="btn green-button"><Link to="/login">Logout</Link></button>
+                    <div className="form-group pull-right navbar-welcome">
+                        Welcome, {this.props.username}!
+                        <Link to="/login"><button className="btn yellow-button">Logout</button></Link>
                     </div>
                 </div>
             </nav>
