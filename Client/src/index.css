@@ -1,0 +1,49 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+.bluebox {
+  background-color: rgb(75,194,244);
+  border-radius: 5%;
+  padding: 20px;
+  color: white;
+  width: 300px;
+  margin: auto;
+  margin-top: 20px;
+}
+
+h1 {
+  font-size: 32pt;
+}
+
+.black-link {
+  color: black;
+  text-decoration: underline;
+  font-size: 10pt;
+}
+.green-button {
+  background-color: rgb(109,227,98);
+  border-radius: 15%;
+  margin: 5px;
+  padding: 10px 20px 10px 20px;
+}
+input {
+  color: black;
+}
+
+.error {
+  font-size: 16pt;
+  color: red;
+}
+
+body > div > .signin-page {
+  background-image: url('img/signup.png');
+  background-size: cover;
+  
+}
+body > div > .login-page {
+  background-image: url('img/login.png');
+  background-size: cover;
+}
