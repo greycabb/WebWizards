@@ -17,5 +17,6 @@ input.color-input:focus {
 
 .color-picker-input {
     position: relative;
+    display: inline;
     z-index: 3;
 }

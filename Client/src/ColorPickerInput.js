@@ -8,7 +8,7 @@ export default class ColorPickerInput extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            background: '#ffffff',
+            background: this.props.default,
             hidden: true
           };
         this.clicked = this.clicked.bind(this);
@@ -31,7 +31,7 @@ export default class ColorPickerInput extends React.Component {
     render() {
 
         return (
-            <div>
+            <div className="color-picker-input">
                 <input type="text" name="color" className="color-input" spellcheck="false" value={this.state.background} onClick={this.clicked}/>
                 {!this.state.hidden &&
                     <OutsideAlerter handler={this.closed}>
