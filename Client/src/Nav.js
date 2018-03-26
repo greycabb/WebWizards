@@ -22,7 +22,7 @@ export default class Nav extends React.Component {
                     </div>
                     <div className="form-group pull-right navbar-welcome">
                         Welcome, {this.props.username}!
-                        <Link to="/login"><button className="btn yellow-button">Logout</button></Link>
+                        <Link to="/login"><button className="btn orange-button">Logout</button></Link>
                     </div>
                 </div>
             </nav>
