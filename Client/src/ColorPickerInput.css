@@ -1,17 +1,21 @@
 div.sketch-picker {
     margin: 0px !important;
+    position: absolute;
 }
 
 .outside-alerter {
     width: min-content;
-    float:left;
 }
 
 .color-input {
     width: 55px;
-    float:left;
 }
 
 input.color-input:focus {
     outline-width: 0;
+}
+
+.color-picker-input {
+    position: relative;
+    z-index: 3;
 }

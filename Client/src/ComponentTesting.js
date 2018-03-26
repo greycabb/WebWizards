@@ -18,6 +18,7 @@ export default class ComponentTesting extends React.Component {
             <div id="testing-div">
                 <h1>Color Picker</h1>
                 <ColorPickerInput handle={this.colorHandler}/>
+                <h1>Image Library</h1>
             </div>
         );
     }
