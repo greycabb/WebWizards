@@ -9,7 +9,7 @@ export default class ComponentTesting extends React.Component {
     }
 
     colorHandler(color) {
-
+        console.log("picked " + color);
     }
 
     render() {

@@ -24,6 +24,7 @@ export default class ColorPickerInput extends React.Component {
     }
 
     handleChangeComplete = (color) => {
+        this.props.handle(color.hex);
         this.setState({ background: color.hex });
       };    
 
