@@ -36,7 +36,8 @@ export default class ColorPickerInput extends React.Component {
                 {!this.state.hidden &&
                     <OutsideAlerter handler={this.closed}>
                         <SketchPicker color={ this.state.background }
-                            onChangeComplete={ this.handleChangeComplete }/>
+                            onChangeComplete={ this.handleChangeComplete }
+                            disableAlpha={true}/>
                     </OutsideAlerter>
                 }
             </div>
