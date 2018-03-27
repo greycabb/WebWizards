@@ -206,6 +206,7 @@ export default class EditPage extends React.Component {
                 <Nav username={this.state.username} />
                 <div className="half-width">
                     <div>
+                        {/* These should be generated from the database. Should have stuff like descriptions generated from the API call */}
                         <div className="brick magenta-brick" id="head">head</div>
                         <div className="brick magenta-brick" id="title">title</div>
                         <div className="brick magenta-brick" id="body">body</div>
