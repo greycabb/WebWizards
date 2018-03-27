@@ -76,7 +76,7 @@ export default class CreateBanner extends React.Component {
                             <label>Share with others</label>
                         </div>
                         <center>
-                            <button className="btn orange-button" onClick={(e) => this.props.toggle(e)}>Cancel</button>
+                            <button className="btn yellow-button" onClick={(e) => this.props.toggle(e)}>Cancel</button>
                             <button className="btn green-button" onClick={this.create}>Create</button>
                         </center>
                     </div>

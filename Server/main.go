@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
 	"net/http/httputil"
@@ -20,12 +19,12 @@ import (
 )
 
 //NewServiceProxy creates a new service proxy
-func NewServiceProxy(addrs []string, ctx *handlers.HandlerContext) *httputil.ReverseProxy {
+func NewServiceProxy(addrs []string) *httputil.ReverseProxy {
 	nextIndex := 0
 	mx := sync.Mutex{}
 	return &httputil.ReverseProxy{
 		Director: func(r *http.Request) {
-			if ctx != nil {
+			/*if ctx != nil {
 				r.Header.Del("X-User")
 				state := &handlers.SessionState{} //Initialize an empty state to populate
 				_, err := sessions.GetState(r, ctx.SigningKey, ctx.SessionStore, state)
@@ -39,7 +38,7 @@ func NewServiceProxy(addrs []string, ctx *handlers.HandlerContext) *httputil.Rev
 						r.Header.Add("X-User", string(userJSON))
 					}
 				}
-			}
+			} */
 			mx.Lock()
 			r.URL.Host = addrs[nextIndex%len(addrs)]
 			nextIndex++
@@ -104,10 +103,10 @@ func main() {
 	mux.HandleFunc("/v1/blocks", ctx.BlocksHandler)
 	mux.HandleFunc("/v1/projects", ctx.ProjectHandler)
 	mux.HandleFunc("/v1/user/projects", ctx.UserProjectHandler)
-	mux.Handle("/v1/htmlblocks", NewServiceProxy(splitHTMLSvcAddrs, ctx))
-	mux.Handle("/v1/cssgroups", NewServiceProxy(splitHTMLSvcAddrs, ctx))
-	mux.Handle("/v1/cssattributes", NewServiceProxy(splitHTMLSvcAddrs, ctx))
-	mux.Handle("/v1/images", NewServiceProxy(splitImagesSvcAddrs, ctx))
+	mux.Handle("/v1/htmlblocks", NewServiceProxy(splitHTMLSvcAddrs))
+	mux.Handle("/v1/cssgroups", NewServiceProxy(splitHTMLSvcAddrs))
+	mux.Handle("/v1/cssattributes", NewServiceProxy(splitHTMLSvcAddrs))
+	mux.Handle("/v1/images", NewServiceProxy(splitImagesSvcAddrs))
 	//Wrap mux with CORS middleware handler
 	corsHandler := handlers.NewCORSHandler(mux)
 	log.Printf("server is listening at %s...", addr)
