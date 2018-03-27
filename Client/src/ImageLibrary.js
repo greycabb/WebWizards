@@ -59,8 +59,6 @@ export default class ImageLibrary extends React.Component {
             }
         }
         if (this.state.viewingCategory) {
-            console.log('reached');
-            console.log(this.state.object[this.state.currentCategory]);
             var imagesObj = this.state.object[this.state.currentCategory].images;
             for (var i = 0; i < imagesObj.length; i ++) {
                 let url = imagesObj[i];
