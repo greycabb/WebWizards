@@ -1,5 +1,58 @@
 #image-library-container {
+    padding: 10px 0px 10px 10px;
     background-color: #F3F3F3;
     width: 500px;
     height: 400px;
+}
+
+.library-button {
+    font-size: 20px !important;
+    width: 235px;
+    height: 60px;
+    margin: 10px 10px 0px 0px;
+    padding: 0px;
+    color: white;
+    background-color: #30B04C;
+}
+
+.library-button:hover {
+    color: white !important;
+    background-color: #438000;
+}
+
+button.library-button:focus, button.library-button:active {
+    color: white !important;
+    border: 0;
+    outline: 0 !important;
+}
+
+img.library-preview {
+    height: 100px;
+    margin: 5px;
+}
+
+.library-images-container {
+    position: relative;
+    text-align: center;
+    height: 330px;
+    overflow: scroll;
+}
+
+.library-category-header {
+    text-align: center;
+    display: inline-block;
+    width: 420px;
+}
+
+.library-top-bar {
+    display: inline;
+}
+
+#library-back-button {
+    cursor: pointer;
+    padding-left: 20px;
+    text-align: center;
+    width: min-content;
+    font-size: 30px !important;
+    display: inline-block !important;
 }
