@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, hashHistory } from 'react-router';
+import { hashHistory } from 'react-router';
 import img from './img/create-banner.png';
 import img2 from './img/tutorial-teaser.png';
 import CreateModal from './CreateModal';

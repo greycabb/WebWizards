@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link, hashHistory } from 'react-router';
 import { SketchPicker } from 'react-color';
 import './ColorPickerInput.css';
 import OutsideAlerter from './OutsideAlerter';
@@ -32,7 +31,7 @@ export default class ColorPickerInput extends React.Component {
 
         return (
             <div className="color-picker-input">
-                <input type="text" name="color" className="color-input" spellcheck="false" value={this.state.background} onClick={this.clicked}/>
+                <input type="text" name="color" className="color-input" readOnly spellCheck="false" value={this.state.background} onClick={this.clicked}/>
                 {!this.state.hidden &&
                     <OutsideAlerter handler={this.closed}>
                         <SketchPicker color={ this.state.background }

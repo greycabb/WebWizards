@@ -1,27 +1,26 @@
 import React from 'react';
-import { Link, hashHistory } from 'react-router';
 import './ImageLibrary.css';
 
 export default class ImageLibrary extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            categories: ["Animals"]
+            object: {},
+            categories: []
         }
+        this.componentWillMount = this.componentWillMount.bind(this);
     }
 
     componentWillMount() {
-        fetch('https://api.webwizards.me/v1/images')
-            .then(function (response) {
-                if (response.ok) {
-                    console.log(response.json());
-                } else {
-                    response.text().then(text => {
-                        console.log(text);
-                    });
-
-                }
+        fetch('https://api.webwizards.me/v1/images').then((response) => {
+            if(response.ok) {
+                return response.json();
+            } 
+        }).then((object) => {
+            this.setState({
+                object: object
             })
+        })
             .catch(err => {
                 console.log('caught it!', err);
             })
@@ -30,8 +29,10 @@ export default class ImageLibrary extends React.Component {
     render() {
 
         var buttons = [];
-        for (var i = 0; i < this.state.categories.length; i++) {
-            buttons.push(<ImageLibraryButton />);
+        var categories = Object.keys(this.state.object);
+        for (var i = 0; i < categories.length; i++) {
+            var current = categories[i];
+            buttons.push(<ImageLibraryButton key={current} category={current} images={this.state.object[current]}/>);
         }
 
         return (
@@ -50,9 +51,9 @@ class ImageLibraryButton extends React.Component {
     render() {
 
         return (
-            <div>
-                Test
-            </div>
+            <button className="btn yellow-button">
+                {this.props.category}
+            </button>
         );
     }
 }

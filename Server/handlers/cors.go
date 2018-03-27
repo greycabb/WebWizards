@@ -9,7 +9,7 @@ type CORSHandler struct {
 
 //ServeHTTP sets various CORS response headers
 func (ch *CORSHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Access-Control-Allow-Methods", "GET, PUT, POST, PATCH, DELETE")
 	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Authorization")
 	w.Header().Add("Access-Control-Expose-Headers", "Authorization")

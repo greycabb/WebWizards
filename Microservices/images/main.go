@@ -26,7 +26,6 @@ func main() {
 //a JSON-encoded image struct.
 //Without the `id` query, all image information will be returned
 func Handler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
 	query := r.URL.Query().Get("cat")
 	if len(query) == 0 {
 		//Case where all image data should be returned
