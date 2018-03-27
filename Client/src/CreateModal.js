@@ -34,6 +34,7 @@ export default class CreateBanner extends React.Component {
         fetch('https://api.webwizards.me/v1/projects', {
             method: 'POST',
             headers: {
+                'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 'Authorization': localStorage.getItem('Authorization')
             },
@@ -45,9 +46,12 @@ export default class CreateBanner extends React.Component {
             .then(function (response) {
 
                 if (response.ok) {
-                    console.log(response.json());
+                    response.json().then(function (result) {
+                        console.log(result);
+                        hashHistory.push('/edit?project=' + result.id); //redirect to whatever new path it is with query parameter
+                    });
 
-                    //hashHistory.push('/main'); //redirect to whatever new path it is
+                    
                 } else {
                     response.text().then(text => {
                         console.log(text);
