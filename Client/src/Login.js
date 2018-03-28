@@ -4,6 +4,7 @@ import Nav from './Nav';
 import Signup from './Signup';
 import OutsideAlerter from './OutsideAlerter';
 import WelcomeBanner from './WelcomeBanner';
+import FeaturedProjects from './FeaturedProjects';
 
 export default class LoginPage extends React.Component {
     constructor(props) {
@@ -195,6 +196,7 @@ export default class LoginPage extends React.Component {
                     </div>
                 }
                 <WelcomeBanner />
+                <FeaturedProjects />
             </div>
         );
     }
