@@ -17,7 +17,7 @@ export default class WelcomeBanner extends React.Component {
         return (
             <div id="welcome-banner-div">
                 <div className="welcome-card disable-select">
-                    <h2 className="welcome-h2">Create fun and magical websites for you and other wizards</h2>
+                    <h2 className="welcome-h2">Create fun and magical websites for you and your friends</h2>
                     <img src={img2} width="470px"/>  <br/>
                     <h3>A fun and enchanted way to learn web development</h3>
                 </div>

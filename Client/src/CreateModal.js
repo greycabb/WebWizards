@@ -73,9 +73,9 @@ export default class CreateBanner extends React.Component {
                                 <label htmlFor="title">Project Title </label>
                                 <input id="proj-title" type="name" maxLength="15" name="proj-title" onChange={(e) =>this.handleName(e)}/>
                             </div>
-                            <div>
-                                <input type="checkbox" id="share-box" name="share-proj" value="share" onClick={this.handleCheck}/>
-                                <label>Share with others</label>
+                            <div className="share-box">
+                                <input type="checkbox" id="share-checkbox" className="css-checkbox" name="share-proj" value="share" onClick={this.handleCheck}/>
+                                <label for="share-checkbox" className="css-label">Share with others</label>
                             </div>
                             <center>
                                 <button className="btn yellow-button" onClick={(e) => this.props.toggle(e)}>Cancel</button>
