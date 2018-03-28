@@ -47,7 +47,6 @@ func main() {
 //a JSON-encoded HTML block struct.
 //Without the `id` query, all HTML block information will be returned
 func HTMLHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
 	query := r.URL.Query().Get("id")
 	jsonFile, err := ioutil.ReadFile("./htmldata.json")
 	if err != nil {
@@ -72,7 +71,6 @@ func HTMLHandler(w http.ResponseWriter, r *http.Request) {
 //CSSGroupsHandler handles requests for css groups
 //Returns all available groups
 func CSSGroupsHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
 	jsonFile, err := ioutil.ReadFile("./cssgroupdata.json")
 	if err != nil {
 		fmt.Println(err)
@@ -85,7 +83,6 @@ func CSSGroupsHandler(w http.ResponseWriter, r *http.Request) {
 //CSSHandler handles requests for css attributes
 //requires css name as query
 func CSSHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
 	query := r.URL.Query().Get("attr")
 	jsonFile, err := os.Open("./cssattributes.json")
 	if err != nil {

@@ -1,5 +1,9 @@
 import React from 'react';
 import { Link, hashHistory } from 'react-router';
+import Nav from './Nav';
+import Signup from './Signup';
+import OutsideAlerter from './OutsideAlerter';
+import WelcomeBanner from './WelcomeBanner';
 
 export default class LoginPage extends React.Component {
     constructor(props) {
@@ -11,8 +15,16 @@ export default class LoginPage extends React.Component {
             'error': undefined
         };
 
+        let auth = localStorage.getItem('Authorization');
+
+        if (auth) {
+            hashHistory.push('/main');
+        }
+
         //function binding
         this.handleChange = this.handleChange.bind(this);
+        this.handleLogin = this.handleLogin.bind(this);
+        this.handleSignup = this.handleSignup.bind(this);
 
         localStorage.clear();
     }
@@ -29,6 +41,18 @@ export default class LoginPage extends React.Component {
         var changes = {}; //object to hold changes
         changes[field] = value; //change this field
         this.setState(changes); //update state
+    }
+
+    handleLogin() {
+        this.setState({
+            loginClicked: !this.state.loginClicked
+        });
+    }
+
+    handleSignup() {
+        this.setState({
+            signupClicked: !this.state.signupClicked
+        });
     }
 
     //handle signIn button
@@ -138,25 +162,39 @@ export default class LoginPage extends React.Component {
 
         return (
             <div className="login-page">
-                <div className="welcomebox">
-                    <h1 className="title">Web Wizards</h1>
-                    <form>
-                        <div>
-                            <ValidatedInput field="username" type="username" maxLength="15" label="Username" tabIndex={1} changeCallback={this.handleChange} errors={usernameErrors} />
-                        </div>
-                        <div>
-                            <ValidatedInput field="password" type="password" maxLength="30" label="Password" tabIndex={2} changeCallback={this.handleChange} errors={passwordErrors} />
-                        </div>
+                <Nav login={true} handleLogin={this.handleLogin} handleSignup={this.handleSignup}/>
+                {this.state.loginClicked &&
+                    <OutsideAlerter handler={this.handleLogin}>
+                    <div className="arrow_box welcomebox">
+                        <form>
+                            <div>
+                                <ValidatedInput field="username" type="username" maxLength="15" label="Username" tabIndex={1} changeCallback={this.handleChange} errors={usernameErrors} />
+                            </div>
+                            <div>
+                                <ValidatedInput field="password" type="password" maxLength="30" label="Password" tabIndex={2} changeCallback={this.handleChange} errors={passwordErrors} />
+                            </div>
+                            <div className="form-group">
+                                <br />
+                                <button className="btn yellow-button" disabled={!signInEnabled} onClick={(e) => this.signIn(e)}>Login</button>
+                            </div>
+                            <div id="postError" className="help-block error">{this.state.error}</div>
 
-                        <div className="form-group">
-                            <button className="btn green-button" disabled={!signInEnabled} onClick={(e) => this.signIn(e)}>Login</button>
+                        </form>
+                        {/*<div className="box-link"><Link to="/signup">Don't have an account? Sign up!</Link></div>
+                        <div className="black-link">Forgot Username or Password</div> */}
+                    </div>
+                    </ OutsideAlerter>
+                }
+                {this.state.signupClicked &&
+                    <div className="modal-container">
+                        <div className="modal-background">
+                            <OutsideAlerter handler={this.handleSignup}>
+                                <Signup />
+                            </ OutsideAlerter>
                         </div>
-                        <div id="postError" className="help-block error">{this.state.error}</div>
-
-                    </form>
-                    <div className="box-link"><Link to="/signup">Don't have an account? Sign up!</Link></div>
-                    {/* <div className="black-link">Forgot Username or Password</div> */}
-                </div>
+                    </div>
+                }
+                <WelcomeBanner />
             </div>
         );
     }

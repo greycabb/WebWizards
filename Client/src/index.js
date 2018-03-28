@@ -14,6 +14,7 @@ import { Router, Route, hashHistory, IndexRoute } from 'react-router';
 import LoginPage from './Login';
 import SignupPage from './Signup';
 import MainPage from './Main';
+import ComponentTesting from './ComponentTesting';
 
 //can load other CSS files (e.g,. Bootstrap) here
 import 'bootstrap/dist/css/bootstrap.css';
@@ -29,6 +30,7 @@ ReactDOM.render(
       <Route path="login" component={LoginPage} />
       <Route path="signup" component={SignupPage} />
       <Route path="main" component={MainPage} />
+      <Route path="testing" component={ComponentTesting} />
     </Route>
   </Router>,
   document.getElementById('root')
