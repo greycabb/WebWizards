@@ -9,10 +9,20 @@ export default class ComponentTesting extends React.Component {
     constructor(props) {
         super(props);
         localStorage.setItem("Authorization", "Bearer H9hA29YuZHfF1tUtPhYIWo_2ApUyC1_P6lB-U1cpRbV2a3xBYRrXUHF_m1KHR0uH2g3kJsTXRoFNQbkT9uasFw==");
+        this.state = {
+            edited: "2018-03-31T18:18:09.427Z"
+        }
+        this.updateTime = this.updateTime.bind(this);
     }
 
     colorHandler(color) {
         console.log("picked " + color);
+    }
+
+    updateTime() {
+        this.setState({
+            edited: Date.now()
+        });
     }
 
     render() {
@@ -34,9 +44,10 @@ export default class ComponentTesting extends React.Component {
                             "5aab3eb478dd4f000140e2a5"
                         ],
                         "created": "2018-03-31T18:18:09.427Z",
-                        "edited": "2018-03-31T18:18:25.353Z",
+                        "edited": this.state.edited,
                         "private": "n"
                     }} />
+                <button onClick={this.updateTime}>Update Time</button>
             </div>
         );
     }

@@ -6,11 +6,10 @@ export default class PreviewProject extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            testObject: <div style={{backgroundColor: 'red'}}>Hello</div>
+            testObject: <div style={{backgroundColor: 'pink'}}>Hello</div>
             
         }
         this.uploadScreenshot = this.uploadScreenshot.bind(this);
-        this.componentDidMount = this.componentDidMount.bind(this);
         this.componentDidUpdate = this.componentDidUpdate.bind(this);
     }
 
@@ -38,7 +37,6 @@ export default class PreviewProject extends React.Component {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                'name': "new name",
                 'img': src
             })
         })
@@ -59,9 +57,11 @@ export default class PreviewProject extends React.Component {
     render() {
 
         return (
-            <div id="preview-container" ref="container">
-                {this.state.testObject}
-             <img src="" ref="screenshot" />
+            <div>
+                <div id="preview-container" ref="container">
+                    {this.state.testObject}
+                </div>
+                <img src="" ref="screenshot" />
             </div>
         );
     }
