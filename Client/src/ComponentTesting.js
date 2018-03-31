@@ -3,6 +3,7 @@ import { Link, hashHistory } from 'react-router';
 import './ComponentTesting.css';
 import ColorPickerInput from './ColorPickerInput';
 import ImageLibrary from './ImageLibrary';
+import PreviewProject from './PreviewProject/PreviewProject';
 
 export default class ComponentTesting extends React.Component {
     constructor(props) {
@@ -23,6 +24,8 @@ export default class ComponentTesting extends React.Component {
                 <ColorPickerInput handle={this.colorHandler} default={'#bd10e0'}/>
                 <h1>Image Library</h1>
                 <ImageLibrary />
+                <h1>Screenshots</h1>
+                <PreviewProject />
             </div>
         );
     }
