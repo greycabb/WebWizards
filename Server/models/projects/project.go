@@ -52,10 +52,8 @@ func (np *NewProject) ToProject() *Project {
 //ApplyProjectUpdates applies the updates to the project
 func (p *Project) ApplyProjectUpdates(updates *ProjectUpdates) (*Project, error) {
 	//Need to add error handling
-	if len(p.Name) > 2 {
+	if len(updates.Name) > 2 {
 		p.Name = updates.Name
-	} else {
-		return nil, ErrNameLength
 	}
 	if len(updates.Content) > 0 {
 		p.Content = updates.Content
