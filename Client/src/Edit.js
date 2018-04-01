@@ -13,18 +13,24 @@ export default class EditPage extends React.Component {
             'username': undefined,
             'selectedBrick': undefined, // Which block on the left is selected (ID)
 
-            'projectData': undefined
+            'projectData': undefined,
+
+            'projectId': undefined,
+
+            'bricks': undefined // All posible HTML blocks, will be called bricks throughout
         };
 
 
         this.getProjectData = this.getProjectData.bind(this);
         this.translateProjectData = this.translateProjectData.bind(this);
         this.updateContent = this.updateContent.bind(this);
-        this.do = this.do.bind(this);
-        this.undo = this.undo.bind(this);
+        //this.do = this.do.bind(this);
+        //this.undo = this.undo.bind(this);
         this.componentDidMount2 = this.componentDidMount2.bind(this);
         this.componentDidMount3 = this.componentDidMount3.bind(this);
-        this.getAuthData = this.getAuthData.bind(this);
+        //this.getAuthData = this.getAuthData.bind(this);
+        this.getAllPossibleHtmlBlocks = this.getAllPossibleHtmlBlocks.bind(this);
+        this.dropBlock = this.dropBlock.bind(this);
 
     }
 
@@ -41,6 +47,11 @@ export default class EditPage extends React.Component {
 
 
     componentDidMount() {
+
+        this.setState({
+            'projectId': this.props.location.project
+        })
+
         document.title = 'Web Wizards';
 
         // 1. Get auth token
@@ -77,13 +88,15 @@ export default class EditPage extends React.Component {
             }
         }, 500);
 
-        this.getAuthData();
+        //this.getAuthData();
     }
 
     // Since API call is delayed, here's part 2 of CDM once projectdata is retrieved properly
     componentDidMount2() {
         var that = this;
-        
+
+        this.getAllPossibleHtmlBlocks();
+
         // 2. Project creator user ID compared to auth token's user ID
         fetch('https://api.webwizards.me/v1/users/me', {
             method: 'GET',
@@ -94,7 +107,7 @@ export default class EditPage extends React.Component {
             }
         })
             .then(function (response) {
-                
+
                 if (response.ok) {
                     response.json().then(function (result) {
                         //console.log(result);
@@ -121,13 +134,59 @@ export default class EditPage extends React.Component {
     }
 
     componentDidMount3() {
-        // Load project contents on the right
+        // Check if Head, Body are there
+        if (this.state.projectData.content === null) {
+            console.log('Missing head, body');
 
-        // Unhide the left content bricks
+
+        } else {
+            this.getProjectData();
+            console.log('CDM3');
+
+            // Load project contents on the right
+
+            // Unhide the left content bricks
+        }
+
     }
 
     //______________________
     // Functions
+
+    // Get all possible HTML blocks, putting them as bricks on left
+    getAllPossibleHtmlBlocks() {
+        let that = this;
+        // 2. Project creator user ID compared to auth token's user ID
+        fetch('https://api.webwizards.me/v1/htmlblocks', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(function (response) {
+
+                if (response.ok) {
+                    response.json().then(function (result) {
+                        console.log('GAPHB');
+                        console.log(result);
+                        that.setState({
+                            'bricks': result
+                        });
+                    });
+
+                } else {
+                    response.text().then(text => {
+                        console.log(text);
+                    });
+
+                }
+            })
+            .catch(err => {
+                console.log('caught it!', err);
+            });
+
+    }
 
     // API call for getting project content JSON
     getProjectData() {
@@ -135,7 +194,7 @@ export default class EditPage extends React.Component {
         let that = this;
 
         // Query parameter: project: project ID
-        let pid = this.props.location.project;
+        let pid = this.state.projectId;
 
         // Call
         fetch('https://api.webwizards.me/v1/projects', {
@@ -158,6 +217,9 @@ export default class EditPage extends React.Component {
                         that.setState({
                             projectData: result
                         });
+                        if (result.content === null) {
+                            that.buildHeadBody();
+                        }
                         return true;
                     });
 
@@ -171,13 +233,96 @@ export default class EditPage extends React.Component {
             })
             .catch(err => {
                 console.log('caught it!', err);
+            });
+    }
+
+    // Create head and body if content of project is empty
+    buildHeadBody() {
+        if (this.state.projectData !== undefined && this.state.projectData.content === null) {
+            let that = this;
+
+            let timer = setInterval(function () {
+                if (that.state.bricks !== undefined) {
+                    let headId = 1;
+                    let titleId = 2;
+                    let bodyId = 3;
+
+                    // get ids of head, title, body
+                    for (var i = 0; i < that.state.bricks.length; i++) {
+                        switch (that.state.bricks[i].name) {
+                            case 'head':
+                                headId = i;
+                                break;
+                            case 'title':
+                                titleId = i;
+                                break;
+                            case 'body':
+                                bodyId = i;
+                                break;
+                        }
+                    }
+                    dropBlock(headId, null);
+                    dropBlock(bodyId, null);
+                }
+            }, 1000);
+        }
+    }
+
+    // Drop a block to specified location
+    /*
+        1 brickId: id of base HTML brick, such as for head, body, title, etc.
+        2 parentId: id of HTML block in project that a new brick is being placed in
+    */
+    dropBlock(brickId, parentId, index) {
+        if (this.state.projectData === null) {
+            return;
+        }
+        // Create block
+        fetch('https://api.webwizards.me/v1/blocks', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('Authorization')
+            },
+            body: JSON.stringify({
+                'userid': this.state.projectData.userid,
+                'blocktype': brickId,
+                'parentid': parentId,
+                'index': 0
             })
+        })
+            .then(function (response) {
+
+                if (response.ok) {
+                    response.json().then(function (result) {
+                        console.log(result);
+
+                        that.setState({
+                            projectData: result
+                        });
+                        if (result.content === null) {
+                            that.buildHeadBody();
+                        }
+                        return true;
+                    });
+
+
+                } else {
+                    response.text().then(text => {
+                        console.log(text);
+                    });
+
+                }
+            })
+            .catch(err => {
+                console.log('caught it!', err);
+            });
+
+        // Update block by setting parentID
     }
 
-    // Get data for authorization
-    getAuthData() {
 
-    }
     // Convert project JSON -> HTML, for the preview
     translateProjectData() {
 
@@ -188,15 +333,27 @@ export default class EditPage extends React.Component {
 
     }
 
-    // Make a change, update project
-    do() {
 
-    }
 
-    // Undo a change, update project
-    undo() {
 
-    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -206,7 +363,6 @@ export default class EditPage extends React.Component {
                 <Nav username={this.state.username} />
                 <div className="half-width">
                     <div>
-                        {/* These should be generated from the database. Should have stuff like descriptions generated from the API call */}
                         <div className="brick magenta-brick" id="head">head</div>
                         <div className="brick magenta-brick" id="title">title</div>
                         <div className="brick magenta-brick" id="body">body</div>

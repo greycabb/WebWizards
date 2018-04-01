@@ -48,10 +48,17 @@ export default class CreateBanner extends React.Component {
                 if (response.ok) {
                     response.json().then(function (result) {
                         console.log(result);
+
+                        //____________________
+                        // Create head, body
+
+
+
+                        //
                         hashHistory.push('/edit?project=' + result.id); //redirect to whatever new path it is with query parameter
                     });
 
-                    
+
                 } else {
                     response.text().then(text => {
                         console.log(text);
@@ -73,10 +80,10 @@ export default class CreateBanner extends React.Component {
                         <h2>Create Project</h2>
                         <div>
                             <label htmlFor="title">Project Title </label>
-                            <input id="proj-title" type="name" maxLength="15" name="proj-title" onChange={(e) =>this.handleName(e)}/>
+                            <input id="proj-title" type="name" maxLength="15" name="proj-title" onChange={(e) => this.handleName(e)} />
                         </div>
                         <div>
-                            <input type="checkbox" id="share-box" name="share-proj" value="share" onClick={this.handleCheck}/>
+                            <input type="checkbox" id="share-box" name="share-proj" value="share" onClick={this.handleCheck} />
                             <label>Share with others</label>
                         </div>
                         <center>
@@ -85,7 +92,7 @@ export default class CreateBanner extends React.Component {
                         </center>
                     </div>
                 </div>
-                
+
             </div>
         );
     }
