@@ -69,6 +69,7 @@ export default class PreviewProject extends React.Component {
                                                     for (var i = 0; i < css.length; i ++) {
                                                         cssString += (css[i].attribute + ": " + css[i].value + "; ");
                                                     }
+                                                    cssString += '"';
                                                 }
                                                 var string = '<' + blockJson.name + cssString + '>';
                                                 if (children != null && children.length > 0) {
@@ -86,6 +87,9 @@ export default class PreviewProject extends React.Component {
                                                     resolve(string);
                                                     //return string;
                                                 }
+                                            }
+                                            else if (blockJson.type == "content") {
+                                                resolve(children[0]);
                                             }
                                             else {
                                                 // Will not require recursive call
