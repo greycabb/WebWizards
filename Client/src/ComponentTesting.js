@@ -3,7 +3,7 @@ import { Link, hashHistory } from 'react-router';
 import './ComponentTesting.css';
 import ColorPickerInput from './ColorPickerInput';
 import ImageLibrary from './ImageLibrary';
-import PreviewProject from './PreviewProject/PreviewProject';
+import PreviewProject from './PreviewProject';
 
 export default class ComponentTesting extends React.Component {
     constructor(props) {
