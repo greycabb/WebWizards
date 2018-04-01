@@ -8,7 +8,7 @@ import PreviewProject from './PreviewProject/PreviewProject';
 export default class ComponentTesting extends React.Component {
     constructor(props) {
         super(props);
-        localStorage.setItem("Authorization", "Bearer hXBTg-zu7mir6dERYYDyl8VaxB5dSu5N6s-XTLdderqhX00-1yU_trmBvwuzHqs2rdvnL36Eg432GM3ID0rsog==");
+        localStorage.setItem("Authorization", "Bearer u0k-Rx7SmnxjGVpekCPLY8Gm4tEOrGGevrDGl8ZuAQHhah3jWQ8W5DK-s7VeN5Pfo8ta3xIsSvcwVxplEf4P-w==");
         this.state = {
             edited: "2018-03-31T18:18:09.427Z"
         }
@@ -34,7 +34,7 @@ export default class ComponentTesting extends React.Component {
                 <br />
                 <ColorPickerInput handle={this.colorHandler} default={'#bd10e0'}/>
                 <h1>Image Library</h1>
-                <ImageLibrary />
+                <ImageLibrary currentImg="Click to add image" />
                 <h1>Screenshots</h1>
                 <PreviewProject projectObject={ {
                             "id": "5abfd0e147de0400014cf661",
