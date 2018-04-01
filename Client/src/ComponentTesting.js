@@ -8,7 +8,7 @@ import PreviewProject from './PreviewProject/PreviewProject';
 export default class ComponentTesting extends React.Component {
     constructor(props) {
         super(props);
-        localStorage.setItem("Authorization", "Bearer H9hA29YuZHfF1tUtPhYIWo_2ApUyC1_P6lB-U1cpRbV2a3xBYRrXUHF_m1KHR0uH2g3kJsTXRoFNQbkT9uasFw==");
+        localStorage.setItem("Authorization", "Bearer 9Wxg-nt7_YBGssegRZkuUS3mx1udDC-AJs2XzncSuUjajVEurg7arAl1IDxkdQGTYaJotjz7OsAaXKohaP6hwQ==");
         this.state = {
             edited: "2018-03-31T18:18:09.427Z"
         }
@@ -37,7 +37,7 @@ export default class ComponentTesting extends React.Component {
                 <ImageLibrary />
                 <h1>Screenshots</h1>
                 <PreviewProject projectObject={ {
-                        "id": "5abfd0e147de0400014cf661",
+                        "id": "5aab3e5478dd4f000140e2a4",
                         "userid": "5a9472765865db00019d0a70",
                         "name": "A new project name",
                         "content":[

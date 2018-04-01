@@ -6,11 +6,15 @@ export default class PreviewProject extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            testObject: <div style={{backgroundColor: 'pink'}}>Hello</div>
-            
+            object: ''
         }
         this.uploadScreenshot = this.uploadScreenshot.bind(this);
         this.componentDidUpdate = this.componentDidUpdate.bind(this);
+        this.componentDidMount = this.componentDidMount.bind(this);
+        this.blockToHtml = this.blockToHtml.bind(this);
+        this.blockToHtml('5aab3eb478dd4f000140e2a5').then((string) => {
+            console.log(string);
+        });
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -19,8 +23,101 @@ export default class PreviewProject extends React.Component {
         }
     }
 
-    blockToHtml() {
+    componentDidMount() {
+        this.blockToHtml('5aab3eb478dd4f000140e2a5').then((string) => {
+            this.setState({object: string});
+        });
+    }
 
+    blockToHtml(id) {
+        return new Promise((resolve, reject) => {
+            var auth = localStorage.getItem('Authorization');
+            fetch('https://api.webwizards.me/v1/blocks?id=' + id, {
+                method: 'GET',
+                headers: {
+                    'Authorization': auth,
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then((response) => {
+
+                    if (response.ok) {
+                        var json = response.json().then((json) => {
+                            var type = json.blocktype;
+                            var css = json.css;
+                            var children = json.children;
+
+                            // now get block type information
+
+                            fetch('https://api.webwizards.me/v1/htmlblocks?id=' + type, {
+                                method: 'GET',
+                                headers: {
+                                    'Authorization': auth,
+                                    'Content-Type': 'application/json'
+                                }
+                            })
+                                .then((response) => {
+
+                                    if (response.ok) {
+                                        var json = response.json().then((blockJson) => {
+                                            // what to do with block type information
+                                            if (blockJson.type == "wrapper" || blockJson.type == "textwrapper") {
+                                                // Will require recursive call for potential children elements
+                                                var cssString = "";
+                                                if (css != null && css.length > 0) {
+                                                    cssString = ' style="';
+                                                    for (var i = 0; i < css.length; i ++) {
+                                                        cssString += (css[i].attribute + ": " + css[i].value + "; ");
+                                                    }
+                                                }
+                                                var string = '<' + blockJson.name + cssString + '>';
+                                                if (children != null && children.length > 0) {
+                                                    for (var i = 0; i < children.length; i ++) {
+                                                        this.blockToHtml(children[i]).then((result) => {
+                                                            string += result;
+                                                            string += '</' + blockJson.name + '>';
+                                                            resolve(string);
+                                                            //return string;
+                                                        });
+                                                    }
+                                                }
+                                                else {
+                                                    string += '</' + blockJson.name + '>';
+                                                    resolve(string);
+                                                    //return string;
+                                                }
+                                            }
+                                            else {
+                                                // Will not require recursive call
+                                                var cssString = "";
+                                                if (css != null && css.length > 0) {
+                                                    cssString = ' style="';
+                                                    for (var i = 0; i < css.length; i ++) {
+                                                        cssString += (css[i].attribute + ": " + css[i].value + "; ");
+                                                    }
+                                                }
+                                                var string = '<' + blockJson.name + cssString + '/>';
+                                                resolve(string);
+                                            }
+                                        });
+                                    } else {
+                                        reject(response.text());
+                                    }
+                                })
+                                .catch(err => {
+                                    reject(err);
+                                });
+
+                                
+                        });
+                    } else {
+                        console.log(response.text());
+                    }
+                })
+                .catch(err => {
+                    console.log('caught it!', err);
+                });
+        });
     }
 
     uploadScreenshot() {
@@ -40,7 +137,7 @@ export default class PreviewProject extends React.Component {
                 'img': src
             })
         })
-            .then(function (response) {
+            .then((response) => {
 
                 if (response.ok) {
                    console.log("screenshot saved");
@@ -58,8 +155,7 @@ export default class PreviewProject extends React.Component {
 
         return (
             <div>
-                <div id="preview-container" ref="container">
-                    {this.state.testObject}
+                <div id="preview-container" ref="container" dangerouslySetInnerHTML={{ __html: this.state.object }}>
                 </div>
                 <img src="" ref="screenshot" />
             </div>
