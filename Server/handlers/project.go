@@ -255,7 +255,11 @@ func (ctx *HandlerContext) BlocksHandler(w http.ResponseWriter, r *http.Request)
 				}
 			} else {
 				newParentHex = parentHex
-				newParentBlock = parentBlock
+				newParentBlock, err = ctx.blockStore.GetByBlockID(newParentHex)
+				if err != nil {
+					http.Error(w, fmt.Sprintf("error finding newparent block"), http.StatusBadRequest)
+					return
+				}
 			}
 			newParentChildren := newParentBlock.Children
 			//Need to remove existing value in array from array first if in same parentid
@@ -317,6 +321,14 @@ func (ctx *HandlerContext) BlocksHandler(w http.ResponseWriter, r *http.Request)
 				}
 				parentChildren := parentBlock.Children
 				parentChildren = append(parentChildren[:block.Index], parentChildren[block.Index+1:]...)
+				for i, v := range parentChildren {
+					if len(v) > 0 && bson.IsObjectIdHex(v) {
+						currUpdates := &blocks.BlockUpdates{}
+						currUpdates.Index = i
+						currHexed := bson.ObjectIdHex(v)
+						ctx.blockStore.UpdateBlock(currHexed, currUpdates)
+					}
+				}
 				parentUpdates := &blocks.BlockUpdates{}
 				parentUpdates.Children = parentChildren
 				ctx.blockStore.UpdateBlock(parentHex, parentUpdates)
