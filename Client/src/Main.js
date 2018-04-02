@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, hashHistory } from 'react-router';
+import { hashHistory } from 'react-router';
 import Nav from './Nav';
 import CreateBanner from './CreateBanner';
 
@@ -18,9 +18,10 @@ export default class MainPage extends React.Component {
         this.state = {
             'error': undefined,
             'userdata': ud,
-            'projects': undefined
+            'projects': undefined // List of projects
         };
 
+        // Get project data
         this.getAllUserProjects();
     }
 
@@ -45,7 +46,7 @@ export default class MainPage extends React.Component {
                     response.json().then(function (result) {
                         console.log(result);
                         that.setState({
-                            'projects': result
+                            'projects': result.reverse() // Reversed array so that newer projects appear first
                         });
                     });
 
@@ -67,7 +68,7 @@ export default class MainPage extends React.Component {
 
     render() {
 
-        // Scrolling thing with projects in it
+        // Scrolling list with projects in it
         const ProjectsInList = ({ projects }) => (
             <div>
                 {projects.map(project => (

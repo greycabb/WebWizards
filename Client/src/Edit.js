@@ -1,106 +1,65 @@
 import React from 'react';
-import { Link, hashHistory } from 'react-router';
+import { hashHistory } from 'react-router';
 import Nav from './Nav';
-import CreateBanner from './CreateBanner';
+//import CreateBanner from './CreateBanner';
 
 export default class EditPage extends React.Component {
     constructor(props) {
         super(props);
 
+        // 1. Get auth token
+        let ud = JSON.parse(localStorage.getItem('USERDATA'));
+        let auth = localStorage.getItem('Authorization');
+
+        if (!ud || !auth || !this.props.location.query || !this.props.location.query.project) {
+            hashHistory.push('/login');
+        }
+
+        let pid = this.props.location.query.project;
+
         this.state = {
             'error': undefined,
+            'userdata': ud,
 
-            'username': undefined,
+            'username': ud.username,
             'selectedBrick': undefined, // Which block on the left is selected (ID)
 
             'projectData': undefined,
 
-            'projectId': undefined,
+            'projectId': pid,
 
             'bricks': undefined // All posible HTML blocks, will be called bricks throughout
         };
 
 
+
         this.getProjectData = this.getProjectData.bind(this);
         this.translateProjectData = this.translateProjectData.bind(this);
         this.updateContent = this.updateContent.bind(this);
+        this.updateProject = this.updateProject.bind(this);
         //this.do = this.do.bind(this);
         //this.undo = this.undo.bind(this);
-        this.componentDidMount2 = this.componentDidMount2.bind(this);
+        //this.componentDidMount2 = this.componentDidMount2.bind(this);
         this.componentDidMount3 = this.componentDidMount3.bind(this);
         //this.getAuthData = this.getAuthData.bind(this);
         this.getAllPossibleHtmlBlocks = this.getAllPossibleHtmlBlocks.bind(this);
         this.dropBlock = this.dropBlock.bind(this);
+        this.compareProjectUserIdToAuthTokenUserId = this.compareProjectUserIdToAuthTokenUserId.bind(this);
 
+        console.log('______________________');
+
+        this.getProjectData();
+        this.getAllPossibleHtmlBlocks();
     }
 
-
-    /*
-
-
-        Should have a spinner while the authorization stuff is loading
-
-
-    */
-
-
-
-
     componentDidMount() {
-
-        this.setState({
-            'projectId': this.props.location.project
-        })
-
         document.title = 'Web Wizards';
+    }
 
-        // 1. Get auth token
-        let auth = localStorage.getItem('Authorization');
-
-        // If no auth token, kick to login page
-        if (!auth) {
-            hashHistory.push('/login');
-        }
-        let ud = JSON.parse(localStorage.getItem('USERDATA'));
-        if (ud) {
-            if (ud.username !== undefined) {
-                this.state.username = ud.username;
-            }
-        }
+    compareProjectUserIdToAuthTokenUserId() {
 
         let that = this;
 
-        let attempts = 0;
-
-        // getting around unmounted state thing
-        setTimeout(function () {
-            that.getProjectData();
-        }, 0);
-
-        let timerAttempts = setInterval(function () {
-
-            if (that.state.projectData !== undefined) {
-                clearInterval(timerAttempts);
-                that.componentDidMount2();
-                return;
-            }
-
-            attempts++;
-            if (attempts > 30) {
-                hashHistory.push('/main');
-            }
-        }, 500);
-
-        //this.getAuthData();
-    }
-
-    // Since API call is delayed, here's part 2 of CDM once projectdata is retrieved properly
-    componentDidMount2() {
-        var that = this;
-
-        this.getAllPossibleHtmlBlocks();
-
-        // 2. Project creator user ID compared to auth token's user ID
         fetch('https://api.webwizards.me/v1/users/me', {
             method: 'GET',
             headers: {
@@ -116,7 +75,7 @@ export default class EditPage extends React.Component {
                         //console.log(result);
 
                         // Check if project creator's user ID is the same as the ID of the authorized user
-                        if (that.state.projectData.userid == result.id) {
+                        if (that.state.projectData.userid === result.id) {
                             that.componentDidMount3();
                         } else {
                             // Kick to main page
@@ -127,12 +86,13 @@ export default class EditPage extends React.Component {
                 } else {
                     response.text().then(text => {
                         console.log(text);
+                        return false;
                     });
-
                 }
             })
             .catch(err => {
                 console.log('caught it!', err);
+                return false;
             });
     }
 
@@ -140,10 +100,7 @@ export default class EditPage extends React.Component {
         // Check if Head, Body are there
         if (this.state.projectData.content === null) {
             console.log('Missing head, body');
-
-
         } else {
-            this.getProjectData();
             console.log('CDM3');
 
             // Load project contents on the right
@@ -171,8 +128,7 @@ export default class EditPage extends React.Component {
 
                 if (response.ok) {
                     response.json().then(function (result) {
-                        console.log('GAPHB');
-                        console.log(result);
+                        //console.log(result);
 
                         let brickContainer = {};
 
@@ -185,7 +141,7 @@ export default class EditPage extends React.Component {
                                 'type': current.type
                             }
                         }
-                        console.log(brickContainer);
+                        //console.log(brickContainer);
                         that.setState({
                             'bricks': brickContainer
                         });
@@ -230,8 +186,13 @@ export default class EditPage extends React.Component {
                         that.setState({
                             projectData: result
                         });
-                        if (result.content === null) {
+                        if (result.content.length === 0) {
+                            console.log('A');
+                            that.compareProjectUserIdToAuthTokenUserId();
                             that.buildHeadBody();
+                        } else {
+                            console.log('B');
+                            that.compareProjectUserIdToAuthTokenUserId();
                         }
                         return true;
                     });
@@ -251,144 +212,175 @@ export default class EditPage extends React.Component {
 
     // Create head and body if content of project is empty
     buildHeadBody() {
-        if (this.state.projectData !== undefined && this.state.projectData.content === null) {
-            let that = this;
-
-            let timer = setInterval(function () {
-                if (that.state.projectData !== undefined && that.state.bricks !== undefined) {
-                    clearInterval(timer);
-                    that.dropBlock(that.state.bricks['head'].id, "", 0);
-                    //that.dropBlock(that.state.bricks['body'].id, null);
-                }
-            }, 1000);
-        }
-    }
-
-    // Drop a block to specified location
-    /*
-        1 brickId: id of base HTML brick, such as for head, body, title, etc.
-        2 parentId: id of HTML block in project that a new brick is being placed in
-    */
-    dropBlock(brickId, parentId, index) {
+        console.log('Build head and body!');
 
         let that = this;
-        if (this.state.projectData === null) {
-            return;
-        }
-        // Create block
-        console.log('userid: ' + this.state.projectData.userid);
-        console.log('blocktype: ' + brickId);
-        console.log('parentid: ' + parentId);
-        console.log('index: ' + index);
 
-        fetch('https://api.webwizards.me/v1/blocks', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': localStorage.getItem('Authorization')
-            },
-            body: JSON.stringify({
-                'userid': that.state.projectData.userid,
-                'blocktype': brickId,
-                'parentid': parentId,
-                'index': index
-            })
+        let timer = setInterval(function () {
+            console.log('try');
+            if (that.state.projectData !== undefined && that.state.projectData.content.length === 0 && that.state.bricks !== undefined) {
+                console.log('Drop blocks!');
+                that.dropBlock(that.state.bricks['head'].id, '', 0);
+                clearInterval(timer);
+                //that.dropBlock(that.state.bricks['body'].id, null);
+            }
+        }, 1000);
+    }
+
+// Drop a block to specified location
+/*
+    1 brickId: id of base HTML brick, such as for head, body, title, etc.
+    2 parentId: id of HTML block in project that a new brick is being placed in
+*/
+dropBlock(brickId, parentId, index) {
+
+    console.log('Drop!');
+
+    let that = this;
+    if (this.state.projectData === null) {
+        return;
+    }
+    // Create block
+    console.log('userid: ' + this.state.projectData.userid);
+    console.log('blocktype: ' + brickId);
+    console.log('parentid: ' + parentId);
+    console.log('index: ' + index);
+
+    fetch('https://api.webwizards.me/v1/blocks', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': localStorage.getItem('Authorization')
+        },
+        body: JSON.stringify({
+            'userid': that.state.projectData.userid,
+            'blocktype': brickId,
+            'parentid': parentId,
+            'index': index
         })
-            .then(function (response) {
+    })
+        .then(function (response) {
 
-                if (response.ok) {
-                    response.json().then(function (result) {
-                        console.log(result);
-                    });
+            if (response.ok) {
+                response.json().then(function (result) {
+                    console.log(result);
+                    // Save
+                    that.updateProject({ 'block': null })
+                });
 
 
-                } else {
-                    response.text().then(text => {
-                        console.log(text);
-                    });
+            } else {
+                response.text().then(text => {
+                    console.log(text);
+                });
 
-                }
-            })
-            .catch(err => {
-                console.log('caught it!', err);
-            });
+            }
+        })
+        .catch(err => {
+            console.log('caught it!', err);
+        });
 
-        // Update block by setting parentID
+    // Update block by setting parentID
+}
+
+// Update project (co = an object with keys)
+updateProject(co) {
+    console.log('Update Project!' + co.block + '>');
+    let name = null;
+    let block = null;
+
+    if (co.name !== undefined) {
+        name = co.name;
     }
-
-
-
-    // Convert project JSON -> HTML, for the preview
-    translateProjectData() {
-
+    if (co.block !== undefined) {
+        block = co.block;
     }
-
-    // Translate project JSON -> the stuff on the right
-    updateContent() {
-
-    }
-
-
-
-
-
-
-
-
-
+    fetch('https://api.webwizards.me/v1/projects?id=' + this.state.projectId, {
+        method: 'PATCH',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': localStorage.getItem('Authorization')
+        },
+        body: JSON.stringify({
+            'content': block
+        })
+    });
+}
 
 
 
+// Convert project JSON -> HTML, for the preview
+translateProjectData() {
 
+}
 
+// Translate project JSON -> the stuff on the right
+updateContent() {
 
-
-
-
-
-
-
+}
 
 
 
 
-    render() {
-        return (
-            <div>
-                <Nav username={this.state.username} />
-                <div className="half-width">
-                    <div>
-                        <div className="brick magenta-brick" id="head">head</div>
-                        <div className="brick magenta-brick" id="title">title</div>
-                        <div className="brick magenta-brick" id="body">body</div>
-                        <div className="brick magenta-brick" id="div">div</div>
-                        <div className="brick magenta-brick" id="span">span</div>
-                    </div>
-                    <div>
-                        <div className="brick blue-brick" id="img">img</div>
-                        <div className="brick blue-brick" id="audio">audio</div>
-                        <div className="brick blue-brick" id="textContent">text content</div>
-                    </div>
-                    <div>
-                        <div className="brick green-brick" id="h1">h1</div>
-                        <div className="brick green-brick" id="h2">h2</div>
-                        <div className="brick green-brick" id="h3">h3</div>
-                        <div className="brick green-brick" id="h4">h4</div>
-                        <div className="brick green-brick" id="h5">h5</div>
-                        <div className="brick green-brick" id="h6">h6</div>
-                    </div>
-                    <div>
-                        <div className="brick orange-brick" id="unknown">&lt;&gt;</div>
-                    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+render() {
+    return (
+        <div>
+            <Nav username={this.state.username} />
+            <div className="half-width">
+                <div>
+                    <div className="brick magenta-brick" id="head">head</div>
+                    <div className="brick magenta-brick" id="title">title</div>
+                    <div className="brick magenta-brick" id="body">body</div>
+                    <div className="brick magenta-brick" id="div">div</div>
+                    <div className="brick magenta-brick" id="span">span</div>
                 </div>
-                <div className="half-width">
-                    <div>
-                    </div>
+                <div>
+                    <div className="brick blue-brick" id="img">img</div>
+                    <div className="brick blue-brick" id="audio">audio</div>
+                    <div className="brick blue-brick" id="textContent">text content</div>
                 </div>
-
+                <div>
+                    <div className="brick green-brick" id="h1">h1</div>
+                    <div className="brick green-brick" id="h2">h2</div>
+                    <div className="brick green-brick" id="h3">h3</div>
+                    <div className="brick green-brick" id="h4">h4</div>
+                    <div className="brick green-brick" id="h5">h5</div>
+                    <div className="brick green-brick" id="h6">h6</div>
+                </div>
+                <div>
+                    <div className="brick orange-brick" id="unknown">&lt;&gt;</div>
+                </div>
+            </div>
+            <div className="half-width">
+                <div>
+                </div>
             </div>
 
-        );
-    }
+        </div>
+
+    );
+}
 }

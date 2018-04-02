@@ -1,8 +1,8 @@
 import React from 'react';
-import { Link, hashHistory } from 'react-router';
+import { hashHistory } from 'react-router';
 import './CreateModal.css';
 
-export default class CreateBanner extends React.Component {
+export default class CreateModal extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -33,7 +33,7 @@ export default class CreateBanner extends React.Component {
             privacy = 'n';
         }
 
-        if (this.state.name.trim() == '') {
+        if (this.state.name.trim() === '') {
             this.setState({
                 error: 'Please enter a name for your project'
             });
