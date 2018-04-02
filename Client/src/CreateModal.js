@@ -7,7 +7,8 @@ export default class CreateBanner extends React.Component {
         super(props);
         this.state = {
             shared: false,
-            name: ''
+            name: '',
+            error: false
         }
         this.handleName = this.handleName.bind(this);
         this.handleCheck = this.handleCheck.bind(this);
@@ -27,10 +28,22 @@ export default class CreateBanner extends React.Component {
     }
 
     create() {
-        var privacy = 'y';
+        let privacy = 'y';
         if (this.state.shared) {
             privacy = 'n';
         }
+
+        if (this.state.name.trim() == '') {
+            this.setState({
+                error: 'Please enter a name for your project'
+            });
+            return;
+        } else {
+            this.setState({
+                error: false
+            });
+        }
+
         fetch('https://api.webwizards.me/v1/projects', {
             method: 'POST',
             headers: {
@@ -48,13 +61,6 @@ export default class CreateBanner extends React.Component {
                 if (response.ok) {
                     response.json().then(function (result) {
                         console.log(result);
-
-                        //____________________
-                        // Create head, body
-
-
-
-                        //
                         hashHistory.push('/edit?project=' + result.id); //redirect to whatever new path it is with query parameter
                     });
 
@@ -81,6 +87,9 @@ export default class CreateBanner extends React.Component {
                         <div>
                             <label htmlFor="title">Project Title </label>
                             <input id="proj-title" type="name" maxLength="15" name="proj-title" onChange={(e) => this.handleName(e)} />
+                            {this.state.error !== false &&
+                                <div className="text-danger">{this.state.error}</div>
+                            }
                         </div>
                         <div>
                             <input type="checkbox" id="share-box" name="share-proj" value="share" onClick={this.handleCheck} />

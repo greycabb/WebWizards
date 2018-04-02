@@ -72,7 +72,10 @@ export default class EditPage extends React.Component {
 
         let attempts = 0;
 
-        this.getProjectData();
+        // getting around unmounted state thing
+        setTimeout(function () {
+            that.getProjectData();
+        }, 0);
 
         let timerAttempts = setInterval(function () {
 
@@ -170,8 +173,21 @@ export default class EditPage extends React.Component {
                     response.json().then(function (result) {
                         console.log('GAPHB');
                         console.log(result);
+
+                        let brickContainer = {};
+
+                        for (var i = 0; i < result.length; i++) {
+                            let current = result[i];
+                            brickContainer[current.name] = {
+                                'id': i,
+                                'translation': current.translation,
+                                'description': current.description,
+                                'type': current.type
+                            }
+                        }
+                        console.log(brickContainer);
                         that.setState({
-                            'bricks': result
+                            'bricks': brickContainer
                         });
                     });
 
@@ -197,16 +213,13 @@ export default class EditPage extends React.Component {
         let pid = this.state.projectId;
 
         // Call
-        fetch('https://api.webwizards.me/v1/projects', {
-            method: 'POST',
+        fetch('https://api.webwizards.me/v1/projects?id=' + pid, {
+            method: 'GET',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 'Authorization': localStorage.getItem('Authorization')
-            },
-            body: JSON.stringify({
-                'id': pid
-            })
+            }
         })
             .then(function (response) {
 
@@ -242,27 +255,10 @@ export default class EditPage extends React.Component {
             let that = this;
 
             let timer = setInterval(function () {
-                if (that.state.bricks !== undefined) {
-                    let headId = 1;
-                    let titleId = 2;
-                    let bodyId = 3;
-
-                    // get ids of head, title, body
-                    for (var i = 0; i < that.state.bricks.length; i++) {
-                        switch (that.state.bricks[i].name) {
-                            case 'head':
-                                headId = i;
-                                break;
-                            case 'title':
-                                titleId = i;
-                                break;
-                            case 'body':
-                                bodyId = i;
-                                break;
-                        }
-                    }
-                    dropBlock(headId, null);
-                    dropBlock(bodyId, null);
+                if (that.state.projectData !== undefined && that.state.bricks !== undefined) {
+                    clearInterval(timer);
+                    that.dropBlock(that.state.bricks['head'].id, "", 0);
+                    //that.dropBlock(that.state.bricks['body'].id, null);
                 }
             }, 1000);
         }
@@ -274,10 +270,17 @@ export default class EditPage extends React.Component {
         2 parentId: id of HTML block in project that a new brick is being placed in
     */
     dropBlock(brickId, parentId, index) {
+
+        let that = this;
         if (this.state.projectData === null) {
             return;
         }
         // Create block
+        console.log('userid: ' + this.state.projectData.userid);
+        console.log('blocktype: ' + brickId);
+        console.log('parentid: ' + parentId);
+        console.log('index: ' + index);
+
         fetch('https://api.webwizards.me/v1/blocks', {
             method: 'POST',
             headers: {
@@ -286,10 +289,10 @@ export default class EditPage extends React.Component {
                 'Authorization': localStorage.getItem('Authorization')
             },
             body: JSON.stringify({
-                'userid': this.state.projectData.userid,
+                'userid': that.state.projectData.userid,
                 'blocktype': brickId,
                 'parentid': parentId,
-                'index': 0
+                'index': index
             })
         })
             .then(function (response) {
@@ -297,14 +300,6 @@ export default class EditPage extends React.Component {
                 if (response.ok) {
                     response.json().then(function (result) {
                         console.log(result);
-
-                        that.setState({
-                            projectData: result
-                        });
-                        if (result.content === null) {
-                            that.buildHeadBody();
-                        }
-                        return true;
                     });
 
 
@@ -321,6 +316,7 @@ export default class EditPage extends React.Component {
 
         // Update block by setting parentID
     }
+
 
 
     // Convert project JSON -> HTML, for the preview

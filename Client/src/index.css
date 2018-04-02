@@ -133,12 +133,15 @@ body > div > .login-page {
 
 .projects-list {
   background-color: rgb(241, 240, 240);
-  height: 170px;
+  height: 200px;
   border-radius: 10px;
   border: 1px solid rgb(182, 182, 182);
   padding-top: 10px;
   padding-left: 30px;
   padding-right: 30px;
+
+  overflow: auto;
+    white-space: nowrap;
 }
 
 .project-in-list {
@@ -147,6 +150,10 @@ body > div > .login-page {
   
   display: inline-block;
   margin-right: 40px;
+  cursor: pointer;
+}
+.project-in-list:hover {
+  text-decoration: underline;
 }
 
 .project-square {
@@ -206,4 +213,9 @@ html, body{
 
 .orange-brick {
   background-color: rgb(241, 131, 48);
+}
+
+/* bootstrap's dark red looks bad on our blue theme, hard to read */
+.text-danger {
+  color: red;
 }
