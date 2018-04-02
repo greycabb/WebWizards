@@ -8,7 +8,7 @@ import PreviewProject from './PreviewProject';
 export default class ComponentTesting extends React.Component {
     constructor(props) {
         super(props);
-        localStorage.setItem("Authorization", "Bearer u0k-Rx7SmnxjGVpekCPLY8Gm4tEOrGGevrDGl8ZuAQHhah3jWQ8W5DK-s7VeN5Pfo8ta3xIsSvcwVxplEf4P-w==");
+        localStorage.setItem("Authorization", "Bearer tfdZvnsMW83XKd16BS6CvDhB7j91DyF13yHATvhiBWacSgJSGmnlzae7GMpIiJ5Pxo7rjsU73TvYgBpqVzs0vw==");
         this.state = {
             edited: "2018-03-31T18:18:09.427Z"
         }

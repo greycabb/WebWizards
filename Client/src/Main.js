@@ -14,9 +14,28 @@ export default class MainPage extends React.Component {
 
         let auth = localStorage.getItem('Authorization');
 
-        if (!auth) {
-            hashHistory.push('/login');
-        }
+        fetch('https://api.webwizards.me/v1/users/me', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': auth
+            }
+        })
+            .then(function (response) {
+
+                if (response.ok) {
+                    console.log("logged in");
+                } else {
+                    response.text().then(text => {
+                        hashHistory.push('/login');
+                    });
+
+                }
+            })
+            .catch(err => {
+                console.log('caught it!', err);
+            })
+
         let ud = JSON.parse(localStorage.getItem('USERDATA'));
         if (ud) {
             if (ud.username !== undefined) {
