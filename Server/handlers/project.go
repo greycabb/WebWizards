@@ -172,22 +172,37 @@ func (ctx *HandlerContext) BlocksHandler(w http.ResponseWriter, r *http.Request)
 			return
 		}
 		//Add to new parent block
-		newParentHex := bson.ObjectIdHex(newBlock.ParentID)
-		newParentBlock, err := ctx.blockStore.GetByBlockID(newParentHex)
-		if err != nil {
-			http.Error(w, fmt.Sprintf("error finding newparent block"), http.StatusBadRequest)
-			return
+		if newBlock.ParentID != "" {
+			newParentHex := bson.ObjectIdHex(newBlock.ParentID)
+			newParentBlock, err := ctx.blockStore.GetByBlockID(newParentHex)
+			if err != nil {
+				http.Error(w, fmt.Sprintf("error finding newparent block"), http.StatusBadRequest)
+				return
+			}
+			newParentChildren := newParentBlock.Children
+			var finalParentChildren []string
+			if len(newParentChildren) > 0 {
+				finalParentChildren = append(finalParentChildren, newParentChildren[:newBlock.Index]...)
+				finalParentChildren = append(finalParentChildren, block.ID.Hex())
+				finalParentChildren = append(finalParentChildren, newParentChildren[newBlock.Index:]...)
+				for i, v := range finalParentChildren {
+					if len(v) > 0 && bson.IsObjectIdHex(v) {
+						currUpdates := &blocks.BlockUpdates{}
+						currUpdates.Index = i
+						currHexed := bson.ObjectIdHex(v)
+						ctx.blockStore.UpdateBlock(currHexed, currUpdates)
+					}
+				}
+			} else {
+				finalParentChildren = append(newParentChildren, block.ID.Hex())
+			}
+			newParentUpdates := &blocks.BlockUpdates{}
+			newParentUpdates.Children = finalParentChildren
+			_, err = ctx.blockStore.UpdateBlock(newParentHex, newParentUpdates)
+			if err != nil {
+				http.Error(w, fmt.Sprintf("error updating parent: %v", err), http.StatusBadRequest)
+			}
 		}
-		newParentChildren := newParentBlock.Children
-		if len(newParentChildren) > 0 {
-			newParentChildren = append(newParentChildren[:newBlock.Index], block.ID.Hex())
-			newParentChildren = append(newParentChildren, newParentChildren[newBlock.Index:]...)
-		} else {
-			newParentChildren = append(newParentChildren, block.ID.Hex())
-		}
-		newParentUpdates := &blocks.BlockUpdates{}
-		newParentUpdates.Children = newParentChildren
-		ctx.blockStore.UpdateBlock(newParentHex, newParentUpdates)
 		respond(w, block)
 
 	//Case for updating content of a block
@@ -208,8 +223,9 @@ func (ctx *HandlerContext) BlocksHandler(w http.ResponseWriter, r *http.Request)
 			http.Error(w, fmt.Sprintf("error decoding JSON: %v", err), http.StatusBadRequest)
 			return
 		}
-		//Check to see if parentID has changed aka location
-		if updates.ParentID != block.ParentID {
+		//Check to see if parentID or index has changed aka location
+		if (updates.ParentID != block.ParentID && len(updates.ParentID) > 0) ||
+			(updates.Index != block.Index && updates.Index > -1) {
 			//Remove from parent block here
 			block, err := ctx.blockStore.GetByBlockID(hexed)
 			if err != nil {
@@ -223,27 +239,53 @@ func (ctx *HandlerContext) BlocksHandler(w http.ResponseWriter, r *http.Request)
 				return
 			}
 			parentChildren := parentBlock.Children
-			parentChildren = append(parentChildren[:block.Index], parentChildren[block.Index:]...)
+			parentChildren = append(parentChildren[:block.Index], parentChildren[block.Index+1:]...)
 			parentUpdates := &blocks.BlockUpdates{}
 			parentUpdates.Children = parentChildren
 			ctx.blockStore.UpdateBlock(parentHex, parentUpdates)
 			//Add to new parent block
-			newParentHex := bson.ObjectIdHex(updates.ParentID)
-			newParentBlock, err := ctx.blockStore.GetByBlockID(newParentHex)
-			if err != nil {
-				http.Error(w, fmt.Sprintf("error finding newparent block"), http.StatusBadRequest)
-				return
+			var newParentBlock *blocks.Block
+			var newParentHex bson.ObjectId
+			if len(updates.ParentID) > 0 {
+				newParentHex = bson.ObjectIdHex(updates.ParentID)
+				newParentBlock, err = ctx.blockStore.GetByBlockID(newParentHex)
+				if err != nil {
+					http.Error(w, fmt.Sprintf("error finding newparent block"), http.StatusBadRequest)
+					return
+				}
+			} else {
+				newParentHex = parentHex
+				newParentBlock = parentBlock
 			}
 			newParentChildren := newParentBlock.Children
+			//Need to remove existing value in array from array first if in same parentid
+			/*if (updates.ParentID == block.ParentID) {
+				currIndex := block.Index
+				newParentChildren = append(newParentChildren[:currIndex], newParentChildren[currIndex+1:]...)
+			}*/
+			//Now add in value to array
+			var finalParentChildren []string
 			if len(newParentChildren) > 0 {
-				newParentChildren = append(newParentChildren[:updates.Index], block.ID.Hex())
-				newParentChildren = append(newParentChildren, newParentChildren[updates.Index:]...)
+				finalParentChildren = append(finalParentChildren, newParentChildren[:updates.Index]...)
+				finalParentChildren = append(finalParentChildren, block.ID.Hex())
+				finalParentChildren = append(finalParentChildren, newParentChildren[updates.Index:]...)
+				for i, v := range finalParentChildren {
+					if len(v) > 0 && bson.IsObjectIdHex(v) {
+						currUpdates := &blocks.BlockUpdates{}
+						currUpdates.Index = i
+						currHexed := bson.ObjectIdHex(v)
+						ctx.blockStore.UpdateBlock(currHexed, currUpdates)
+					}
+				}
 			} else {
-				newParentChildren = append(newParentChildren, block.ID.Hex())
+				finalParentChildren = append(newParentChildren, block.ID.Hex())
 			}
 			newParentUpdates := &blocks.BlockUpdates{}
-			newParentUpdates.Children = newParentChildren
-			ctx.blockStore.UpdateBlock(newParentHex, newParentUpdates)
+			newParentUpdates.Children = finalParentChildren
+			_, err = ctx.blockStore.UpdateBlock(newParentHex, newParentUpdates)
+			if err != nil {
+				http.Error(w, fmt.Sprintf("error updating parent: %v", err), http.StatusBadRequest)
+			}
 		}
 		updated, err := ctx.blockStore.UpdateBlock(hexed, updates)
 		if err != nil {
@@ -258,31 +300,33 @@ func (ctx *HandlerContext) BlocksHandler(w http.ResponseWriter, r *http.Request)
 			http.Error(w, "Please provide a correct block id", http.StatusBadRequest)
 			return
 		}
-		hexed := bson.ObjectIdHex(id)
-		block, err := ctx.blockStore.GetByBlockID(hexed)
-		if block.UserID != userID {
-			http.Error(w, fmt.Sprintf("you can only delete your own blocks"), http.StatusBadRequest)
-			return
-		}
-		//Remove from parent block here
-		if len(block.ParentID) > 0 {
-			parentHex := bson.ObjectIdHex(block.ParentID)
-			parentBlock, err := ctx.blockStore.GetByBlockID(parentHex)
-			if err != nil {
-				http.Error(w, fmt.Sprintf("error finding parent block"), http.StatusBadRequest)
+		if bson.IsObjectIdHex(id) {
+			hexed := bson.ObjectIdHex(id)
+			block, err := ctx.blockStore.GetByBlockID(hexed)
+			if block.UserID != userID {
+				http.Error(w, fmt.Sprintf("you can only delete your own blocks"), http.StatusBadRequest)
 				return
 			}
-			parentChildren := parentBlock.Children
-			parentChildren = append(parentChildren[:block.Index], parentChildren[block.Index:]...)
-			parentUpdates := &blocks.BlockUpdates{}
-			parentUpdates.Children = parentChildren
-			ctx.blockStore.UpdateBlock(parentHex, parentUpdates)
-		}
-		//Now delete original block
-		err = ctx.blockStore.DeleteBlock(hexed)
-		if err != nil {
-			http.Error(w, fmt.Sprintf("error deleting block"), http.StatusBadRequest)
-			return
+			//Remove from parent block here
+			if len(block.ParentID) > 0 && bson.IsObjectIdHex(block.ParentID) {
+				parentHex := bson.ObjectIdHex(block.ParentID)
+				parentBlock, err := ctx.blockStore.GetByBlockID(parentHex)
+				if err != nil {
+					http.Error(w, fmt.Sprintf("error finding parent block"), http.StatusBadRequest)
+					return
+				}
+				parentChildren := parentBlock.Children
+				parentChildren = append(parentChildren[:block.Index], parentChildren[block.Index+1:]...)
+				parentUpdates := &blocks.BlockUpdates{}
+				parentUpdates.Children = parentChildren
+				ctx.blockStore.UpdateBlock(parentHex, parentUpdates)
+			}
+			//Now delete original block
+			err = ctx.blockStore.DeleteBlock(hexed)
+			if err != nil {
+				http.Error(w, fmt.Sprintf("error deleting block"), http.StatusBadRequest)
+				return
+			}
 		}
 	}
 }
