@@ -7,32 +7,30 @@ export default class MainPage extends React.Component {
     constructor(props) {
         super(props);
 
+        // Userdata and authentication token
+        let ud = JSON.parse(localStorage.getItem('USERDATA'));
+        let auth = localStorage.getItem('Authorization');
+
+        if (!ud || !auth) {
+            hashHistory.push('/login');
+        }
+
         this.state = {
             'error': undefined,
-            'userdata': undefined,
+            'userdata': ud,
             'projects': undefined
         };
 
-        let auth = localStorage.getItem('Authorization');
-
-        if (!auth) {
-            hashHistory.push('/login');
-        }
-        let ud = JSON.parse(localStorage.getItem('USERDATA'));
-        if (ud) {
-            if (ud.username !== undefined) {
-                this.state.userdata = ud;
-            }
-        }
         this.getAllUserProjects();
-    }
-    componentDidMount() {
-
     }
 
     // Get all projects for user
     getAllUserProjects() {
         let that = this;
+        if (this.state.userdata === undefined) {
+            hashHistory.push('/login');
+            return;
+        }
         fetch('https://api.webwizards.me/v1/user/projects?id=' + this.state.userdata.id, {
             method: 'GET',
             headers: {
@@ -72,12 +70,12 @@ export default class MainPage extends React.Component {
         // Scrolling thing with projects in it
         const ProjectsInList = ({ projects }) => (
             <div>
-            {projects.map(project => (
-                <div className="project-in-list" key={project.id} onClick={function() { hashHistory.push('/edit?project=' + project.id); } } >
-                    <div className="project-square"></div>
-                    <div className="project-title">{project.name}</div>
-                </div>
-            ))}
+                {projects.map(project => (
+                    <div className="project-in-list" key={project.id} onClick={function () { hashHistory.push('/edit?project=' + project.id); }} >
+                        <div className="project-square"></div>
+                        <div className="project-title">{project.name}</div>
+                    </div>
+                ))}
             </div>
         );
 
@@ -103,18 +101,6 @@ export default class MainPage extends React.Component {
                             {this.state.projects !== undefined &&
                                 <ProjectsInList projects={this.state.projects} />
                             }
-                            {/* <div className="project-in-list">
-                                <div className="project-square"></div>
-                                <div className="project-title">Img Tags</div>
-                            </div>
-                            <div className="project-in-list">
-                                <div className="project-square"></div>
-                                <div className="project-title">Basic HTML</div>
-                            </div>
-                            <div className="project-in-list">
-                                <div className="project-square"></div>
-                                <div className="project-title">CSS</div>
-                            </div> */}
                         </div>
                     </div>
                 </div>
