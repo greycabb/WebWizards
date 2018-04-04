@@ -22,15 +22,15 @@ export default class EditPage extends React.Component {
             'error': undefined,
             'userdata': ud, // first name, last name, etc., gotten from local storage
 
-            'username': ud.username, // Prevents error when ud is missing for rendering
-
             'selectedBrick': undefined, // Which block on the left is selected (ID)
 
             'projectData': undefined,
 
             'projectId': pid,
 
-            'bricks': undefined // All posible HTML blocks, will be called bricks throughout
+            'bricks': undefined, // All posible HTML blocks, will be called bricks throughout
+
+            'htmlBlockId': undefined
         };
 
         // Setup functions
@@ -41,7 +41,10 @@ export default class EditPage extends React.Component {
         // Project bodybuild
         this.setup_buildHtmlRoot = this.setup_buildHtmlRoot.bind(this); // dependent on getProjectData's content
         this.setup_buildHead = this.setup_buildHead.bind(this); // Root -> head -> body (in order, very important)
-        this.setup_buildBody = this.setup_buildBody.bind(this); 
+        this.setup_buildBody = this.setup_buildBody.bind(this);
+        this.setup_createBaseBlock = this.setup_createBaseBlock.bind(this);
+
+        this.createBlock = this.createBlock.bind(this);
 
         this.updateProject = this.updateProject.bind(this);
         this.dropBlock = this.dropBlock.bind(this);
@@ -49,7 +52,6 @@ export default class EditPage extends React.Component {
         console.log('______________________');
 
         this.setup_getProjectData(); // state.projectdata
-        this.setup_getAllPossibleHtmlBlocks(); // state.bricks
     }
 
     componentDidMount() {
@@ -94,11 +96,13 @@ export default class EditPage extends React.Component {
                         // If <html> and <head> and <body> are missing
                         if (result.content.length === 0) {
                             console.log('Setup 1 -> A: Missing html, head, body');
-
-                            that.setup_buildHtmlRoot();
+                            that.setState({
+                                'needsHtmlRoot': true
+                            });
                         } else {
                             console.log('Setup 1 -> B: There is html, head, body already');
                         }
+                        that.setup_getAllPossibleHtmlBlocks();
                         return true;
                     });
 
@@ -159,32 +163,6 @@ export default class EditPage extends React.Component {
     }
 
     //_____________
-    // Called during setup_getProjectData() after the API call if content of project is empty
-    setup_buildHtmlRoot() {
-        console.log('1. Build HTML root!');
-
-        // Create new <html> element
-    }
-    setup_buildHead() {
-        console.log('2. Build head!');
-    }
-    setup_buildBody() {
-        console.log('3. Build body!');
-
-        let that = this;
-
-        let timer = setInterval(function () {
-            console.log('try');
-            if (that.state.projectData !== undefined && that.state.projectData.content.length === 0 && that.state.bricks !== undefined) {
-                console.log('Drop blocks!');
-                that.dropBlock(that.state.bricks['head'].id, '', 0);
-                clearInterval(timer);
-                //that.dropBlock(that.state.bricks['body'].id, null);
-            }
-        }, 1000);
-    }
-
-    //_____________
     // Get all possible HTML blocks, putting them as bricks on left
     setup_getAllPossibleHtmlBlocks() {
         let that = this;
@@ -217,6 +195,14 @@ export default class EditPage extends React.Component {
                         that.setState({
                             'bricks': brickContainer
                         });
+
+                        // If body not built yet, build it
+                        if (that.state.needsHtmlRoot === true) {
+                            that.setState({
+                                'needsHtmlRoot': false
+                            });
+                            that.setup_buildHtmlRoot();
+                        }
                     });
 
                 } else {
@@ -232,10 +218,142 @@ export default class EditPage extends React.Component {
 
     }
 
+    //_____________
+    // Called during setup_getAllPossibleHtmlBlocks after the API call if content of project is empty
+    setup_buildHtmlRoot() {
+        console.log('1. Build HTML root!');
+        
+        // Create new <html> element
+        this.setup_createBaseBlock('html', null, 0);
+
+        let that = this;
+        this.setState({
+            'buildTimer': setInterval(function() {
+                if (that.state.htmlBlockId !== undefined) {
+
+                    clearInterval(that.state.buildTimer);
+                    that.setState({
+                        'buildTimer': null
+                    });
+                    
+                    // Set html block ID as the content of the project
+                    that.updateProject(that.state.htmlBlockId);
+
+                    // Build head
+                    that.setup_buildHead();
+                    
+                }
+            }, 200)
+        });
+    }
+    setup_buildHead() {
+        console.log('2. Build head!');
+        
+        // Create new <head> element
+        this.setup_createBaseBlock('head', this.state.htmlBlockId, 0);
+
+        let that = this;
+        this.setState({
+            'buildTimer': setInterval(function() {
+                if (that.state.headBlockId !== undefined) {
+
+                    clearInterval(that.state.buildTimer);
+                    that.setState({
+                        'buildTimer': null
+                    });
+
+                    that.setup_buildBody();
+                }
+            }, 200)
+        });
+    }
+    setup_buildBody() {
+        console.log('3. Build body!');
+        let slot = 'body';
+
+        // Create new <head> element
+        this.setup_createBaseBlock('body', this.state.htmlBlockId, 1);
+
+        let that = this;
+        this.setState({
+            'buildTimer': setInterval(function() {
+                if (that.state.bodyBlockId !== undefined) {
+                    clearInterval(that.state.buildTimer);
+                    that.setState({
+                        'buildTimer': null
+                    });
+
+                    that.setup_getProjectData();
+                }
+            }, 200)
+        });
+    }
+
+    // 
+    setup_createBaseBlock(slot, parentId, index) {
+        let brickId = this.state.bricks[slot].id;
+        let that = this;
+        fetch('https://api.webwizards.me/v1/blocks', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('Authorization')
+            },
+            body: JSON.stringify({
+                'userid': that.state.projectData.userid,
+                'blocktype': brickId,
+                'parentid': parentId,
+                'projectId': that.state.projectId,
+                'index': index
+            })
+        })
+            .then(function (response) {
+
+                if (response.ok) {
+                    response.json().then(function (result) {
+                        console.log(result);
+                        switch (slot) {
+                            case 'html':
+                                that.setState({
+                                    'htmlBlockId': result.id
+                                });
+                                break;
+                            case 'head':
+                                that.setState({
+                                    'headBlockId': result.id
+                                });
+                                break;
+                            case 'body':
+                                that.setState({
+                                    'bodyBlockId': result.id
+                                });
+                                break;
+                        }
+                        // Save
+                        //that.updateProject({ 'block': parentId })
+                    });
+
+
+                } else {
+                    response.text().then(text => {
+                        console.log(text);
+                    });
+
+                }
+            })
+            .catch(err => {
+                console.log('ERROR: ', err);
+            });
+    }
+
     //______________________
     // Functions
 
+    // Create block then return ID of block
+    createBlock() {
 
+    }
 
 
 
@@ -300,17 +418,9 @@ export default class EditPage extends React.Component {
     }
 
     // Update project (co = an object with keys)
-    updateProject(co) {
-        console.log('Update Project!' + co.block + '>');
-        let name = null;
-        let block = null;
+    updateProject(block) {
+        console.log('Update Project!' + block + '>');
 
-        if (co.name !== undefined) {
-            name = co.name;
-        }
-        if (co.block !== undefined) {
-            block = co.block;
-        }
         fetch('https://api.webwizards.me/v1/projects?id=' + this.state.projectId, {
             method: 'PATCH',
             headers: {
@@ -319,7 +429,7 @@ export default class EditPage extends React.Component {
                 'Authorization': localStorage.getItem('Authorization')
             },
             body: JSON.stringify({
-                'content': block
+                'content': [block]
             })
         });
     }
@@ -350,7 +460,7 @@ export default class EditPage extends React.Component {
     render() {
         return (
             <div>
-                <Nav username={this.state.username} />
+                <Nav username={this.state.userdata.username} />
                 <div className="half-width">
                     <div>
                         <div className="brick magenta-brick" id="head">head</div>
