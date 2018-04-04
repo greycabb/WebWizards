@@ -20,9 +20,10 @@ export default class EditPage extends React.Component {
 
         this.state = {
             'error': undefined,
-            'userdata': ud,
+            'userdata': ud, // first name, last name, etc., gotten from local storage
 
-            'username': ud.username,
+            'username': ud.username, // Prevents error when ud is missing for rendering
+
             'selectedBrick': undefined, // Which block on the left is selected (ID)
 
             'projectData': undefined,
@@ -36,10 +37,13 @@ export default class EditPage extends React.Component {
         this.setup_getProjectData = this.setup_getProjectData.bind(this);
         this.setup_getAllPossibleHtmlBlocks = this.setup_getAllPossibleHtmlBlocks.bind(this);
         this.setup_compareProjectUserIdToAuthTokenUserId = this.setup_compareProjectUserIdToAuthTokenUserId.bind(this); // dependent on getProjectData's user ID
-        this.setup_buildHeadBody = this.setup_buildHeadBody.bind(this); // dependent on getProjectData's content
+
+        // Project bodybuild
+        this.setup_buildHtmlRoot = this.setup_buildHtmlRoot.bind(this); // dependent on getProjectData's content
+        this.setup_buildHead = this.setup_buildHead.bind(this); // Root -> head -> body (in order, very important)
+        this.setup_buildBody = this.setup_buildBody.bind(this); 
 
         this.updateProject = this.updateProject.bind(this);
-
         this.dropBlock = this.dropBlock.bind(this);
 
         console.log('______________________');
@@ -91,7 +95,7 @@ export default class EditPage extends React.Component {
                         if (result.content.length === 0) {
                             console.log('Setup 1 -> A: Missing html, head, body');
 
-                            that.buildHeadBody();
+                            that.setup_buildHtmlRoot();
                         } else {
                             console.log('Setup 1 -> B: There is html, head, body already');
                         }
@@ -155,6 +159,32 @@ export default class EditPage extends React.Component {
     }
 
     //_____________
+    // Called during setup_getProjectData() after the API call if content of project is empty
+    setup_buildHtmlRoot() {
+        console.log('1. Build HTML root!');
+
+        // Create new <html> element
+    }
+    setup_buildHead() {
+        console.log('2. Build head!');
+    }
+    setup_buildBody() {
+        console.log('3. Build body!');
+
+        let that = this;
+
+        let timer = setInterval(function () {
+            console.log('try');
+            if (that.state.projectData !== undefined && that.state.projectData.content.length === 0 && that.state.bricks !== undefined) {
+                console.log('Drop blocks!');
+                that.dropBlock(that.state.bricks['head'].id, '', 0);
+                clearInterval(timer);
+                //that.dropBlock(that.state.bricks['body'].id, null);
+            }
+        }, 1000);
+    }
+
+    //_____________
     // Get all possible HTML blocks, putting them as bricks on left
     setup_getAllPossibleHtmlBlocks() {
         let that = this;
@@ -209,22 +239,7 @@ export default class EditPage extends React.Component {
 
 
 
-    // Create head and body if content of project is empty
-    buildHeadBody() {
-        console.log('Build head and body!');
 
-        let that = this;
-
-        let timer = setInterval(function () {
-            console.log('try');
-            if (that.state.projectData !== undefined && that.state.projectData.content.length === 0 && that.state.bricks !== undefined) {
-                console.log('Drop blocks!');
-                that.dropBlock(that.state.bricks['head'].id, '', 0);
-                clearInterval(timer);
-                //that.dropBlock(that.state.bricks['body'].id, null);
-            }
-        }, 1000);
-    }
 
     // Drop a block to specified location
     /*
