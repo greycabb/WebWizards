@@ -48,6 +48,7 @@ export default class EditPage extends React.Component {
 
         this.updateProject = this.updateProject.bind(this);
         this.dropBlock = this.dropBlock.bind(this);
+        this.getBlock = this.getBlock.bind(this);
 
         console.log('______________________');
 
@@ -101,6 +102,10 @@ export default class EditPage extends React.Component {
                             });
                         } else {
                             console.log('Setup 1 -> B: There is html, head, body already');
+                            that.setState({
+                                'htmlBlockId': result.content[0]
+                            });
+                            that.getBlock(that.state.htmlBlockId);
                         }
                         that.setup_getAllPossibleHtmlBlocks();
                         return true;
@@ -222,39 +227,39 @@ export default class EditPage extends React.Component {
     // Called during setup_getAllPossibleHtmlBlocks after the API call if content of project is empty
     setup_buildHtmlRoot() {
         console.log('1. Build HTML root!');
-        
+
         // Create new <html> element
         this.setup_createBaseBlock('html', null, 0);
 
         let that = this;
         this.setState({
-            'buildTimer': setInterval(function() {
+            'buildTimer': setInterval(function () {
                 if (that.state.htmlBlockId !== undefined) {
 
                     clearInterval(that.state.buildTimer);
                     that.setState({
                         'buildTimer': null
                     });
-                    
+
                     // Set html block ID as the content of the project
                     that.updateProject(that.state.htmlBlockId);
 
                     // Build head
                     that.setup_buildHead();
-                    
+
                 }
             }, 200)
         });
     }
     setup_buildHead() {
         console.log('2. Build head!');
-        
+
         // Create new <head> element
         this.setup_createBaseBlock('head', this.state.htmlBlockId, 0);
 
         let that = this;
         this.setState({
-            'buildTimer': setInterval(function() {
+            'buildTimer': setInterval(function () {
                 if (that.state.headBlockId !== undefined) {
 
                     clearInterval(that.state.buildTimer);
@@ -276,17 +281,45 @@ export default class EditPage extends React.Component {
 
         let that = this;
         this.setState({
-            'buildTimer': setInterval(function() {
+            'buildTimer': setInterval(function () {
                 if (that.state.bodyBlockId !== undefined) {
                     clearInterval(that.state.buildTimer);
                     that.setState({
                         'buildTimer': null
                     });
 
-                    that.setup_getProjectData();
+                    that.updateProject(that.state.htmlBlockId);
                 }
             }, 200)
         });
+    }
+
+    getBlock(id) {
+        console.log('GetBlock');
+        fetch('https://api.webwizards.me/v1/blocks?id=' + id, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('Authorization')
+            }
+        })
+            .then(function (response) {
+
+                if (response.ok) {
+                    response.json().then(function (result) {
+                        console.log(result);
+                    });
+                } else {
+                    response.text().then(text => {
+                        console.log(text);
+                    });
+
+                }
+            })
+            .catch(err => {
+                console.log('ERROR: ', err);
+            });
     }
 
     // 
@@ -330,8 +363,6 @@ export default class EditPage extends React.Component {
                                 });
                                 break;
                         }
-                        // Save
-                        //that.updateProject({ 'block': parentId })
                     });
 
 
@@ -420,6 +451,7 @@ export default class EditPage extends React.Component {
     // Update project (co = an object with keys)
     updateProject(block) {
         console.log('Update Project!' + block + '>');
+        let that = this;
 
         fetch('https://api.webwizards.me/v1/projects?id=' + this.state.projectId, {
             method: 'PATCH',
@@ -431,8 +463,17 @@ export default class EditPage extends React.Component {
             body: JSON.stringify({
                 'content': [block]
             })
-        });
+        })
+            .then(function (response) {
+
+                that.setup_getProjectData();
+                that.getBlock(that.state.htmlBlockId);
+            })
+            .catch(err => {
+                console.log('ERROR: ', err);
+            });
     }
+
 
 
 

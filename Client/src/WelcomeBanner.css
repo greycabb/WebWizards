@@ -1,0 +1,28 @@
+
+#welcome-banner-div {
+    margin: 70px 0px 50px 0px;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+.welcome-card {
+    padding: 0px;
+    padding-right: 30px;
+    margin: 0px 5px 0px 5px;
+    width: 500px;
+    height: 316px;
+}
+
+.welcome-img-card {
+    padding: 0px;
+}
+
+.welcome-h2 {
+    color: #196AB5;
+    margin: 0px;
+}

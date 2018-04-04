@@ -177,7 +177,7 @@ export default class SignupPage extends React.Component {
 
         return (
             <div className="signup-page">
-                <div className="welcomebox">
+                <div className="welcomebox signupbox">
                     <h1>Sign Up</h1>
                     <form>
                         <ValidatedInput field="username" maxLength="15" type="username" label="Username" changeCallback={this.handleChange} errors={usernameErrors} />
@@ -188,11 +188,10 @@ export default class SignupPage extends React.Component {
 
 
                         <div className="form-group">
-                            <button className="btn green-button" disabled={!signUpEnabled} onClick={(e) => this.signUp(e)}>Sign-up</button>
+                            <button className="btn green-button" disabled={!signUpEnabled} onClick={(e) => this.signUp(e)}>Sign Up</button>
                         </div>
                         <div id="postError" className="help-block error">{this.state.error}</div>
                     </form>
-                    <div className="box-link"><Link to="/login">Already have an account? Log in!</Link></div>
                 </div>
             </div>
         );

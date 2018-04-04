@@ -13,6 +13,7 @@
     "react": "^16.2.0",
     "react-bootstrap": "^0.30.6",
     "react-chartjs-2": "^1.5.5",
+    "react-color": "^2.14.0",
     "react-dom": "^16.2.0",
     "react-fade": "^1.1.1",
     "react-loader": "^2.4.0",

@@ -13,7 +13,7 @@
             "https://webwizards.me/img/Dogs/puppy1.jpeg",
             "https://webwizards.me/img/Dogs/puppy2.jpeg",
             "https://webwizards.me/img/Dogs/puppy3.jpeg",
-            "https://webwizards.me/img/Frogs/frog1.jpeg",
+            "https://webwizards.me/img/Frogs/frog1.jpg",
             "https://webwizards.me/img/Frogs/frog2.jpeg",
             "https://webwizards.me/img/Frogs/frog3.jpeg"
         ]
@@ -28,16 +28,37 @@
            "https://webwizards.me/img/Landscapes/landscape2.jpeg",
            "https://webwizards.me/img/Landscapes/landscape3.jpeg",
            "https://webwizards.me/img/Park/park1.jpeg",
-           "https://webwizards.me/img/Park/park2.jpeg",
-           "https://webwizards.me/img/Park/park3.jpeg"
+           "https://webwizards.me/img/Park/park2.jpg",
+           "https://webwizards.me/img/Park/park3.jpeg",
+           "https://webwizards.me/img/School/school1.jpeg",
+           "https://webwizards.me/img/School/school2.jpeg",
+           "https://webwizards.me/img/School/school3.jpeg",
+           "https://webwizards.me/img/Space/space1.jpg",
+           "https://webwizards.me/img/Space/space2.jpeg",
+           "https://webwizards.me/img/Space/space3.jpg",
+           "https://webwizards.me/img/Earth/earth1.jpg",
+           "https://webwizards.me/img/Earth/earth2.jpg",
+           "https://webwizards.me/img/Earth/earth3.jpeg",
+           "https://webwizards.me/img/Ocean/ocean1.jpg",
+           "https://webwizards.me/img/Ocean/ocean2.jpeg",
+           "https://webwizards.me/img/Ocean/ocean3.jpeg"
         ]
     },
 
     "Things": {
         "images": [
-           "https://webwizards.me/img/Food/pizza1.jpeg",
-           "https://webwizards.me/img/Food/pizza2.jpeg",
-           "https://webwizards.me/img/Food/pizza3.jpeg"
+           "https://webwizards.me/img/Pizza/pizza1.jpeg",
+           "https://webwizards.me/img/Pizza/pizza2.jpeg",
+           "https://webwizards.me/img/Pizza/pizza3.jpeg",
+           "https://webwizards.me/img/Flowers/flowers1.jpg",
+           "https://webwizards.me/img/Flowers/flowers2.jpeg",
+           "https://webwizards.me/img/Flowers/flowers3.jpeg",
+           "https://webwizards.me/img/Weather/weather1.jpeg",
+           "https://webwizards.me/img/Weather/weather2.jpeg",
+           "https://webwizards.me/img/Weather/weather3.jpeg",
+           "https://webwizards.me/img/Fruit/fruit1.jpeg",
+           "https://webwizards.me/img/Fruit/fruit2.jpeg",
+           "https://webwizards.me/img/Fruit/fruit3.jpeg"
         ]
     }
 }
