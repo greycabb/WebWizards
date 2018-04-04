@@ -28,38 +28,40 @@ export default class MainPage extends React.Component {
     // Get all projects for user
     getAllUserProjects() {
         let that = this;
+        console.log(this.state.userdata);
         if (this.state.userdata === undefined) {
             hashHistory.push('/login');
             return;
-        }
-        fetch('https://api.webwizards.me/v1/user/projects?id=' + this.state.userdata.id, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': localStorage.getItem('Authorization')
-            }
-        })
-            .then(function (response) {
-
-                if (response.ok) {
-                    response.json().then(function (result) {
-                        console.log(result);
-                        that.setState({
-                            'projects': result.reverse() // Reversed array so that newer projects appear first
-                        });
-                    });
-
-                } else {
-                    response.text().then(text => {
-                        console.log(text);
-                    });
-
+        } else {
+            fetch('https://api.webwizards.me/v1/user/projects?id=' + this.state.userdata.id, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': localStorage.getItem('Authorization')
                 }
             })
-            .catch(err => {
-                console.log('caught it!', err);
-            });
+                .then(function (response) {
+
+                    if (response.ok) {
+                        response.json().then(function (result) {
+                            console.log(result);
+                            that.setState({
+                                'projects': result.reverse() // Reversed array so that newer projects appear first
+                            });
+                        });
+
+                    } else {
+                        response.text().then(text => {
+                            console.log(text);
+                        });
+
+                    }
+                })
+                .catch(err => {
+                    console.log('caught it!', err);
+                });
+        }
     }
 
     componentDidMount() {
