@@ -76,7 +76,12 @@ export default class MainPage extends React.Component {
                 {projects.map(project => (
                     <div className="project-in-list" key={project.id} onClick={function () { hashHistory.push('/edit?project=' + project.id); }} >
                         <div className="project-square"></div>
-                        <div className="project-title">{project.name}</div>
+                        {project.name !== '' && 
+                            <div className="project-title">{project.name}</div>
+                        }
+                        {project.name === '' &&
+                            <div className="project-title"><i>untitled</i></div>
+                        }
                     </div>
                 ))}
             </div>
@@ -85,11 +90,6 @@ export default class MainPage extends React.Component {
         return (
             <div>
                 <Nav username={this.state.userdata.username} />
-                {/* <div className="welcomebox">
-                    <div>Welcome, {this.state.username}!</div>
-                    <br />
-                    
-                </div> */}
                 <div className="main-content">
                     <CreateBanner />
                     <div id="profileAndAwards" className="profile-and-awards">

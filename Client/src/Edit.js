@@ -30,7 +30,51 @@ export default class EditPage extends React.Component {
 
             'bricks': undefined, // All posible HTML blocks, will be called bricks throughout
 
-            'htmlBlockId': undefined
+            'htmlBlockId': undefined,
+
+            // For building the layout...
+            'layout': {},
+            /* Example layout:
+                {
+                    0: {
+                        type: 'html',
+                        id: '34545',
+                        attributes: '',
+                        locked: true,
+                        position: [0]
+
+                        children: {
+                            0: {
+                                type: 'head',
+                                id: '34545',
+                                attributes: '',
+                                locked: true,
+                                position: [0, 0]
+
+                                children: {
+                                    0: {
+
+                                    }
+                                }
+                            },
+                            1: {
+                                type: 'body',
+                                id: '34545',
+                                attributes: '',
+                                locked: true,
+                                position: [0, 1]
+
+                                children: {
+
+                                }
+                            }
+                        }
+                    }
+                }
+            */
+            'stack': [],
+            'indexMapOfCurrent': [] // e.g. [0, 2, 3, 2, 1] for placing at layout[2][3][2][1]
+
         };
 
         // Setup functions
@@ -45,6 +89,7 @@ export default class EditPage extends React.Component {
         this.setup_createBaseBlock = this.setup_createBaseBlock.bind(this);
 
         this.createBlock = this.createBlock.bind(this);
+        this.makeLayout = this.makeLayout.bind(this);
 
         this.updateProject = this.updateProject.bind(this);
         this.dropBlock = this.dropBlock.bind(this);
@@ -106,6 +151,7 @@ export default class EditPage extends React.Component {
                                 'htmlBlockId': result.content[0]
                             });
                             that.getBlock(that.state.htmlBlockId);
+                            that.makeLayout();
                         }
                         that.setup_getAllPossibleHtmlBlocks();
                         return true;
@@ -207,6 +253,8 @@ export default class EditPage extends React.Component {
                                 'needsHtmlRoot': false
                             });
                             that.setup_buildHtmlRoot();
+                        } else {
+                            that.makeLayout();
                         }
                     });
 
@@ -294,8 +342,11 @@ export default class EditPage extends React.Component {
         });
     }
 
-    getBlock(id) {
-        console.log('GetBlock');
+    // id: id of block to add to layout
+    // 
+    getBlock(id, forSetup, locationInLayout) {
+        //console.log('GetBlock');
+        let that = this;
         fetch('https://api.webwizards.me/v1/blocks?id=' + id, {
             method: 'GET',
             headers: {
@@ -308,11 +359,102 @@ export default class EditPage extends React.Component {
 
                 if (response.ok) {
                     response.json().then(function (result) {
-                        console.log(result);
+                        //console.log(result);
+
+                        if (forSetup === true && locationInLayout !== undefined && locationInLayout.length > 0) {
+
+                            // Remove the id of the current block from the stack
+                            let newStack = that.state.stack.splice(0, 1);
+
+                            // Send children of the current block into the stack
+                            let newChildren = [];
+
+                            
+
+                            for (var i = 0; i < result.children.length; i++) {
+                                let locked = locationInLayout.length <= 1; //
+                                let lil = locationInLayout.slice();
+                                let newChild = {
+                                    'id': result.children[i],
+                                    'location': lil.push(i), // If parent was [0], then this is [0, i]
+                                    'locked': locked
+                                }
+                                newChildren[i] = newChild;
+                            }
+                            if (newChildren.length > 0) {
+                                // Put children of block into the front of the stack
+                                //newStack.unshift(newChildren);
+                                newStack = newChildren.concat(newStack);
+                            }
+                            that.setState({
+                                stack: newStack
+                            });
+
+                            // Place the current block into the layout
+                            let newLayout = that.state.newLayout;
+
+                            let location = newLayout[0];
+
+                            for (var i = 1; i <= locationInLayout.length; i++) {
+                                if (location.children[i] === undefined) {
+                                    location.children[i] = {
+                                        children: {
+
+                                        }
+                                    };
+                                }
+                                location = location.children[i];
+                                console.log("LL[");
+                                    console.log(location);
+                                    console.log("]");
+                            }
+                            // Once at location, assign variables there
+                            location.id = result.id;
+                            location.blocktype = result.blocktype;
+                            location.css = result.css;
+                            location.parentid = result.parentid;
+                            location.children = { }; // Filled out later from stack
+
+                            that.setState({
+                                newLayout: newLayout
+                            });
+                            console.log('LAYOUT');
+                            console.log(that.state.newLayout);
+
+
+                            // Recursion
+                            if (that.state.stack.length > 0) {
+                                console.log('STACK');
+                                console.log(that.state.stack);
+                                that.getBlock(that.state.stack[0].id, true, that.state.stack[0].location);
+                            } else {
+                                console.log('Done!');
+                            }
+
+
+
+
+                            // let newChildren = {
+                            //     // 0, 1, 2, etc. (indices)
+                            // };
+                            // for (var i = 0; i < result.children.length; i++) {
+                            //     let newChild = {
+                            //         id: result.children[i],
+                            //         parent: result.id
+                            //     }
+                            //     newChildren[i] = newChild;
+                            // }
+
+                            // newStack = newStack.concat(result.children);
+                            // that.setState({
+                            //     stack: newStack
+                            // });
+                        }
                     });
                 } else {
                     response.text().then(text => {
                         console.log(text);
+                        that.state.stack = [];
                     });
 
                 }
@@ -380,6 +522,35 @@ export default class EditPage extends React.Component {
 
     //______________________
     // Functions
+
+
+
+    // Get root block
+    makeLayout() {
+
+        // Clear stack
+        this.setState({
+            stack: []
+        });
+
+        this.setState({
+            newLayout: {
+                0: {
+                    children: {
+
+                    }
+                }
+            }
+        });
+
+        // Recursively build the layout
+        this.getBlock(this.state.htmlBlockId, true, [0]);
+
+    }
+
+
+
+
 
     // Create block then return ID of block
     createBlock() {
