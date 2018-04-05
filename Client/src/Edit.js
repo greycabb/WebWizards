@@ -88,7 +88,7 @@ export default class EditPage extends React.Component {
         this.setup_buildBody = this.setup_buildBody.bind(this);
         this.setup_createBaseBlock = this.setup_createBaseBlock.bind(this);
 
-        this.createBlock = this.createBlock.bind(this);
+        //this.createBlock = this.createBlock.bind(this);
         this.makeLayout = this.makeLayout.bind(this);
 
         this.updateProject = this.updateProject.bind(this);
@@ -233,6 +233,7 @@ export default class EditPage extends React.Component {
 
                         let brickContainer = {};
 
+                        // rotate the result so that it's a dictionary with names as keys
                         for (var i = 0; i < result.length; i++) {
                             let current = result[i];
                             brickContainer[current.name] = {
@@ -249,8 +250,10 @@ export default class EditPage extends React.Component {
 
                         // If body not built yet, build it
                         if (that.state.needsHtmlRoot === true) {
+
+                            // build <html> with <head> and <body> inside
                             that.setState({
-                                'needsHtmlRoot': false
+                                'needsHtmlRoot': false // if <html> has been built
                             });
                             that.setup_buildHtmlRoot();
                         } else {
@@ -282,7 +285,7 @@ export default class EditPage extends React.Component {
         let that = this;
         this.setState({
             'buildTimer': setInterval(function () {
-                if (that.state.htmlBlockId !== undefined) {
+                if (that.state.htmlBlockId !== undefined) { // when setup_createBaseBlock(html) completes
 
                     clearInterval(that.state.buildTimer);
                     that.setState({
@@ -308,7 +311,7 @@ export default class EditPage extends React.Component {
         let that = this;
         this.setState({
             'buildTimer': setInterval(function () {
-                if (that.state.headBlockId !== undefined) {
+                if (that.state.headBlockId !== undefined) { // when setup_createBaseBlock(head) completes
 
                     clearInterval(that.state.buildTimer);
                     that.setState({
@@ -330,7 +333,7 @@ export default class EditPage extends React.Component {
         let that = this;
         this.setState({
             'buildTimer': setInterval(function () {
-                if (that.state.bodyBlockId !== undefined) {
+                if (that.state.bodyBlockId !== undefined) { // when setup_createBaseBlock(body) completes
                     clearInterval(that.state.buildTimer);
                     that.setState({
                         'buildTimer': null
@@ -342,8 +345,70 @@ export default class EditPage extends React.Component {
         });
     }
 
+    // Create <html>, <head>, <body> tags when they previously don't exist
+    setup_createBaseBlock(slot, parentId, index) {
+        let brickId = this.state.bricks[slot].id;
+        let that = this;
+        fetch('https://api.webwizards.me/v1/blocks', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('Authorization')
+            },
+            body: JSON.stringify({
+                'userid': that.state.projectData.userid,
+                'blocktype': brickId,
+                'parentid': parentId,
+                'projectId': that.state.projectId,
+                'index': index
+            })
+        })
+            .then(function (response) {
+
+                if (response.ok) {
+                    response.json().then(function (result) {
+                        console.log('New block - ' + slot);
+                        console.log(result);
+
+                        // Used to verify when the <html>, <head> and <body> blocks have been created
+                        switch (slot) {
+                            case 'html':
+                                that.setState({
+                                    'htmlBlockId': result.id
+                                });
+                                break;
+                            case 'head':
+                                that.setState({
+                                    'headBlockId': result.id
+                                });
+                                break;
+                            case 'body':
+                                that.setState({
+                                    'bodyBlockId': result.id
+                                });
+                                break;
+                        }
+                    });
+
+
+                } else {
+                    response.text().then(text => {
+                        console.log(text);
+                    });
+
+                }
+            })
+            .catch(err => {
+                console.log('ERROR: ', err);
+            });
+    }
+
+
+    // Used to get information about blocks, needed for building the display on the right
     // id: id of block to add to layout
-    // 
+    // forSetup: if the getBlock() call is
+    // locationInLayout: e.g. if it's [0, 2, 4] then you can get to the block in state.layout at 0: children: { 2: children { 4 }}
     getBlock(id, forSetup, locationInLayout) {
         //console.log('GetBlock');
         let that = this;
@@ -360,6 +425,7 @@ export default class EditPage extends React.Component {
                 if (response.ok) {
                     response.json().then(function (result) {
                         //console.log(result);
+                        console.log('___________________________');
 
                         if (forSetup === true && locationInLayout !== undefined && locationInLayout.length > 0) {
 
@@ -395,7 +461,7 @@ export default class EditPage extends React.Component {
 
                             let location = newLayout[0];
 
-                            for (var i = 1; i <= locationInLayout.length; i++) {
+                            for (var i = 0; i < locationInLayout.length; i++) {
                                 if (location.children[i] === undefined) {
                                     location.children[i] = {
                                         children: {
@@ -464,68 +530,13 @@ export default class EditPage extends React.Component {
             });
     }
 
-    // 
-    setup_createBaseBlock(slot, parentId, index) {
-        let brickId = this.state.bricks[slot].id;
-        let that = this;
-        fetch('https://api.webwizards.me/v1/blocks', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': localStorage.getItem('Authorization')
-            },
-            body: JSON.stringify({
-                'userid': that.state.projectData.userid,
-                'blocktype': brickId,
-                'parentid': parentId,
-                'projectId': that.state.projectId,
-                'index': index
-            })
-        })
-            .then(function (response) {
-
-                if (response.ok) {
-                    response.json().then(function (result) {
-                        console.log(result);
-                        switch (slot) {
-                            case 'html':
-                                that.setState({
-                                    'htmlBlockId': result.id
-                                });
-                                break;
-                            case 'head':
-                                that.setState({
-                                    'headBlockId': result.id
-                                });
-                                break;
-                            case 'body':
-                                that.setState({
-                                    'bodyBlockId': result.id
-                                });
-                                break;
-                        }
-                    });
-
-
-                } else {
-                    response.text().then(text => {
-                        console.log(text);
-                    });
-
-                }
-            })
-            .catch(err => {
-                console.log('ERROR: ', err);
-            });
-    }
-
+    
     //______________________
     // Functions
 
 
 
-    // Get root block
+    // Get root block and all of it's children and their children to make the layout on the right
     makeLayout() {
 
         // Clear stack
@@ -536,6 +547,9 @@ export default class EditPage extends React.Component {
         this.setState({
             newLayout: {
                 0: {
+                    id: this.state.htmlBlockId,
+                    blockType: 0,
+
                     children: {
 
                     }
@@ -547,16 +561,6 @@ export default class EditPage extends React.Component {
         this.getBlock(this.state.htmlBlockId, true, [0]);
 
     }
-
-
-
-
-
-    // Create block then return ID of block
-    createBlock() {
-
-    }
-
 
 
 
