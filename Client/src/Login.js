@@ -18,9 +18,27 @@ export default class LoginPage extends React.Component {
 
         let auth = localStorage.getItem('Authorization');
 
-        if (auth) {
-            hashHistory.push('/main');
-        }
+        fetch('https://api.webwizards.me/v1/users/me', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': auth
+            }
+        })
+            .then(function (response) {
+
+                if (response.ok) {
+                    hashHistory.push('/main');
+                } else {
+                    response.text().then(text => {
+                       console.log("signed out: " + text)
+                    });
+
+                }
+            })
+            .catch(err => {
+                console.log('caught it!', err);
+            })
 
         //function binding
         this.handleChange = this.handleChange.bind(this);

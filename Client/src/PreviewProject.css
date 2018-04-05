@@ -1,0 +1,11 @@
+#preview-container-container {
+    width: max-width;
+    height: 260px;
+    border: 0.5px solid gray;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+#preview-container {
+    zoom: 46%;
+}

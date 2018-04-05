@@ -23,8 +23,34 @@ export default class MainPage extends React.Component {
 
         // Get project data
         this.getAllUserProjects();
-    }
+        fetch('https://api.webwizards.me/v1/users/me', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': auth
+            }
+        })
+            .then(function (response) {
 
+                if (response.ok) {
+                    console.log("logged in");
+                } else {
+                    response.text().then(text => {
+                        hashHistory.push('/login');
+                    });
+
+                }
+            })
+            .catch(err => {
+                console.log('caught it!', err);
+            });
+
+        if (ud) {
+            if (ud.username !== undefined) {
+                this.state.username = ud.username;
+            }
+        }
+    }
     // Get all projects for user
     getAllUserProjects() {
         let that = this;
@@ -75,7 +101,7 @@ export default class MainPage extends React.Component {
             <div>
                 {projects.map(project => (
                     <div className="project-in-list" key={project.id} onClick={function () { hashHistory.push('/edit?project=' + project.id); }} >
-                        <div className="project-square"></div>
+                        <div className="project-square"><img src={project.img} width="180px"/></div>
                         {project.name !== '' && 
                             <div className="project-title">{project.name}</div>
                         }

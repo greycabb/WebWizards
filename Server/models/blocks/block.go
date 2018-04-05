@@ -12,6 +12,7 @@ type NewBlock struct {
 	BlockType int           `json:"blocktype"`
 	ParentID  string        `json:"parentid"`
 	Index     int           `json:"index"`
+	ProjectID string        `json:"projectid"`
 }
 
 //Block represents one html block in the database
@@ -23,6 +24,7 @@ type Block struct {
 	ParentID  string        `json:"parentid"`
 	Index     int           `json:"index"`
 	Children  []string      `json:"children"`
+	ProjectID string        `json:"projectid"`
 }
 
 //CSS represents one css configuration
@@ -49,6 +51,7 @@ func (np *NewBlock) ToBlock() *Block {
 	block.ParentID = np.ParentID
 	block.Index = np.Index
 	block.Children = []string{}
+	block.ProjectID = np.ProjectID
 	return block
 }
 

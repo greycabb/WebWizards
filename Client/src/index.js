@@ -16,6 +16,7 @@ import SignupPage from './Signup';
 import MainPage from './Main';
 import EditPage from './Edit';
 import ComponentTesting from './ComponentTesting';
+import ProjectPage from './ProjectPage';
 
 //can load other CSS files (e.g,. Bootstrap) here
 import 'bootstrap/dist/css/bootstrap.css';
@@ -32,6 +33,7 @@ ReactDOM.render(
       <Route path="signup" component={SignupPage} />
       <Route path="main" component={MainPage} />
       <Route path="edit" component={EditPage} />
+      <Route path="project/:id" component={ProjectPage} />
       <Route path="testing" component={ComponentTesting} />
     </Route>
   </Router>,
