@@ -680,34 +680,31 @@ export default class EditPage extends React.Component {
                     <div className="edit-bar">
                         <Link to="/main"><button className="btn yellow-button">Back</button></Link>
                         {this.state.projectId != undefined &&
-                            <a href={urlstring} target="_blank"><button className="btn green-button">View Page</button></a>
+                            <a href={urlstring} target="_blank"><button className="btn yellow-button">View Page</button></a>
                         }
                     </div>
                     {this.state.projectData != undefined &&
                         <PreviewProject projectObject={this.state.projectData}/>
                     }
                     <div>
-                        <div className="brick magenta-brick" id="head">head</div>
-                        <div className="brick magenta-brick" id="title">title</div>
-                        <div className="brick magenta-brick" id="body">body</div>
-                        <div className="brick magenta-brick" id="div">div</div>
-                        <div className="brick magenta-brick" id="span">span</div>
+                        <div className="brick primary-brick disable-select" id="head">head</div>
+                        <div className="brick primary-brick disable-select" id="title">title</div>
+                        <div className="brick primary-brick disable-select" id="body">body</div>
+                        <div className="brick primary-brick disable-select" id="div">div</div>
+                        <div className="brick primary-brick disable-select" id="span">span</div>
                     </div>
                     <div>
-                        <div className="brick blue-brick" id="img">img</div>
-                        <div className="brick blue-brick" id="audio">audio</div>
-                        <div className="brick blue-brick" id="textContent">text content</div>
+                        <div className="brick secondary-brick disable-select" id="img">img</div>
+                        <div className="brick secondary-brick disable-select" id="audio">audio</div>
+                        <div className="brick secondary-brick disable-select" id="textContent">text content</div>
                     </div>
                     <div>
-                        <div className="brick green-brick" id="h1">h1</div>
-                        <div className="brick green-brick" id="h2">h2</div>
-                        <div className="brick green-brick" id="h3">h3</div>
-                        <div className="brick green-brick" id="h4">h4</div>
-                        <div className="brick green-brick" id="h5">h5</div>
-                        <div className="brick green-brick" id="h6">h6</div>
-                    </div>
-                    <div>
-                        <div className="brick orange-brick" id="unknown">&lt;&gt;</div>
+                        <div className="brick third-brick disable-select" id="h1">h1</div>
+                        <div className="brick third-brick disable-select" id="h2">h2</div>
+                        <div className="brick third-brick disable-select" id="h3">h3</div>
+                        <div className="brick third-brick disable-select" id="h4">h4</div>
+                        <div className="brick third-brick disable-select" id="h5">h5</div>
+                        <div className="brick third-brick disable-select" id="h6">h6</div>
                     </div>
                 </div>
                 <div className="half-width draggable-space">

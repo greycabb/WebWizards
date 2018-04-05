@@ -24,7 +24,7 @@ export default class Nav extends React.Component {
                         {!this.props.login &&
                             <div>
                                 Welcome, {this.props.username}!
-                                <Link to="/login"><button className="btn orange-button">Logout</button></Link>
+                                <Link to="/login"><button className="btn yellow-button">Logout</button></Link>
                             </div>
                         }
                         {this.props.login &&

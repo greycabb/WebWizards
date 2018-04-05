@@ -92,7 +92,7 @@ h1 {
   font-size: 20px;
   background-color: #F07E2B;
   border-radius: 15%;
-  margin: 0px 20px 0px 20px;
+  margin: 5px;
   padding: 10px 20px 10px 20px;
   color: white;
   border: 0;
@@ -101,6 +101,16 @@ h1 {
 .yellow-button {
   font-size: 20px;
   background-color: #E0A738;
+  border-radius: 15%;
+  margin: 5px 10px;
+  padding: 10px 20px 10px 20px;
+  color: white;
+  border: 0;
+  outline: 0 !important;
+}
+.red-button {
+  font-size: 20px;
+  background-color: #ED3B3B;
   border-radius: 15%;
   margin: 5px 10px;
   padding: 10px 20px 10px 20px;
@@ -245,32 +255,29 @@ html, body{
   border: 1px solid rgba(0,0,0,0.2);
   color: white;
   font-size: 16pt;
-  font-weight: bold;
   background-color: grey;
   display: inline-block;
   margin: 8px;
   cursor: pointer;
+  border-radius: 15px;
 }
 
 .brick:hover {
-  color: gold;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-.magenta-brick {
-  background-color: rgb(255, 88, 144);
+.primary-brick {
+  background-color: #196AB5;
 }
 
-.blue-brick {
-  background-color: rgb(75, 194, 244);
+.secondary-brick {
+  background-color: #30B04C;
 }
 
-.green-brick {
-  background-color: rgb(109, 227, 98);
+.third-brick {
+  background-color: #B44CD9;
 }
 
-.orange-brick {
-  background-color: rgb(241, 131, 48);
-}
 
 /* bootstrap's dark red looks bad on our blue theme, hard to read */
 .text-danger {
