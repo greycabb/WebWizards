@@ -189,12 +189,15 @@ body > div > .login-page {
 
 .projects-list {
   background-color: rgb(241, 240, 240);
-  height: 170px;
+  height: 200px;
   border-radius: 10px;
   border: 1px solid rgb(182, 182, 182);
   padding-top: 10px;
   padding-left: 30px;
   padding-right: 30px;
+
+  overflow: auto;
+    white-space: nowrap;
 }
 
 .project-in-list {
@@ -203,6 +206,10 @@ body > div > .login-page {
   
   display: inline-block;
   margin-right: 40px;
+  cursor: pointer;
+}
+.project-in-list:hover {
+  text-decoration: underline;
 }
 
 .project-square {
@@ -214,4 +221,58 @@ body > div > .login-page {
 .project-title {
   color:#F07E2B;
   text-align: center;
+}
+
+.half-width {
+  width: 46%;
+  height: 80vh;
+  margin-left: 2%;
+  margin-right: 2%;
+  float: left;
+}
+
+.draggable-space {
+  background-color: #F4f4f4; 
+}
+
+html, body{
+  height:100%;
+}
+
+/* The boxes on left side, span, div, etc. */
+.brick {
+  padding: 0px 12px 0px 12px;
+  border: 1px solid rgba(0,0,0,0.2);
+  color: white;
+  font-size: 16pt;
+  font-weight: bold;
+  background-color: grey;
+  display: inline-block;
+  margin: 8px;
+  cursor: pointer;
+}
+
+.brick:hover {
+  color: gold;
+}
+
+.magenta-brick {
+  background-color: rgb(255, 88, 144);
+}
+
+.blue-brick {
+  background-color: rgb(75, 194, 244);
+}
+
+.green-brick {
+  background-color: rgb(109, 227, 98);
+}
+
+.orange-brick {
+  background-color: rgb(241, 131, 48);
+}
+
+/* bootstrap's dark red looks bad on our blue theme, hard to read */
+.text-danger {
+  color: red;
 }

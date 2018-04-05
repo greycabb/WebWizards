@@ -1,34 +1,61 @@
 import React from 'react';
-import html2canvas from 'html2canvas';
-import './PreviewProject.css';
 
-export default class PreviewProject extends React.Component {
+export default class ProjectPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            projectObject: this.props.projectObject,
             object: ''
         }
-        this.uploadScreenshot = this.uploadScreenshot.bind(this);
-        this.componentDidUpdate = this.componentDidUpdate.bind(this);
-        this.componentDidMount = this.componentDidMount.bind(this);
+        this.componentWillMount = this.componentWillMount.bind(this);
+        //this.componentDidMount = this.componentDidMount.bind(this);
         this.blockToHtml = this.blockToHtml.bind(this);
-        this.blockToHtml(this.props.projectObject.content[0]).then((string) => {
-            console.log(string);
-        });
+
+        //Get project object of id this.props.params.id
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        if (prevProps.projectObject != this.props.projectObject) {
-            this.uploadScreenshot();
-        }
+    componentWillMount() {
+        var that = this;
+
+        // Get the project's data
+        fetch('https://api.webwizards.me/v1/projects?id=' + this.props.params.id, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('Authorization')
+            }
+        })
+            .then(function (response) {
+
+                if (response.ok) {
+                    response.json().then(function (result) {
+
+                        console.log(result);
+
+                        that.blockToHtml(result.content[0]).then((string) => {
+                            that.setState({object: string});
+                        });
+            
+                    });
+
+
+                } else {
+                    response.text().then(text => {
+                        console.log(text);
+                    });
+
+                }
+            })
+            .catch(err => {
+                console.log('ERROR: ', err);
+            });
     }
 
-    componentDidMount() {
-        this.blockToHtml(this.props.projectObject.content[0]).then((string) => {
+    /*componentDidMount() {
+        this.blockToHtml(this.state.projectData).then((string) => {
             this.setState({object: string});
         });
-    }
+    } */
 
     blockToHtml(id) {
         return new Promise((resolve, reject) => {
@@ -125,42 +152,10 @@ export default class PreviewProject extends React.Component {
         });
     }
 
-    uploadScreenshot() {
-        var that = this;
-        html2canvas(this.refs.container, {width: 540, height: 360}).then((canvas) => {
-            var data = canvas.toDataURL('image/jpeg', 0.9);
-            var src = encodeURI(data);
-            var auth = localStorage.getItem('Authorization');
-            fetch('https://api.webwizards.me/v1/projects?id=' + this.props.projectObject.id, {
-            method: 'PATCH',
-            headers: {
-                'Authorization': auth,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                'img': src
-            })
-        })
-            .then((response) => {
-
-                if (response.ok) {
-                   console.log("screenshot saved");
-                } else {
-                    console.log(response.text());
-                }
-            })
-            .catch(err => {
-                console.log('caught it!', err);
-            });
-        });
-    }
-
     render() {
 
         return (
-            <div id="preview-container-container">
-                <div id="preview-container" ref="container" dangerouslySetInnerHTML={{ __html: this.state.object }}>
-                </div>
+            <div ref="container" dangerouslySetInnerHTML={{ __html: this.state.object }}>
             </div>
         );
     }

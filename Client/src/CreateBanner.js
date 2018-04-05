@@ -1,4 +1,5 @@
 import React from 'react';
+//import { Link, hashHistory } from 'react-router';
 import { hashHistory } from 'react-router';
 import img from './img/create-banner.png';
 import img2 from './img/tutorial-teaser.png';
@@ -25,13 +26,13 @@ export default class CreateBanner extends React.Component {
         return (
             <div id="create-banner-div">
                 <div className="img-card disable-select">
-                    <img src={img} height="250px"  className="banner-img" useMap="#createmap"/>
+                    <img src={img} alt="Click to create a project!" height="250px"  className="banner-img" useMap="#createmap"/>
                     <map name="createmap">
                         <area shape="rect" coords="25,75,263,167"  onClick={this.toggle} alt="Sun" />
                     </map>
                 </div>
                 <div className="img-card disable-select">
-                    <img src={img2} height="250px" className="banner-img"/>  
+                    <img src={img2} alt="Wizard lizard" height="250px" className="banner-img"/>  
                 </div>
                 {this.state.toggle &&
                     <CreateModal toggle={this.toggle}/>

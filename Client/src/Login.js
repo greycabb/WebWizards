@@ -100,16 +100,29 @@ export default class LoginPage extends React.Component {
 
                 if (response.ok) {
                     console.log('Success');
-                    let auth = response.headers.get('Authorization');
-                    let userdata = JSON.stringify({
-                        'username': that.state.username
+
+                    response.json().then(function (result) {
+                        console.log(result);
+
+                        let userdata = JSON.stringify({
+                            'username': result.userName,
+                            'firstName': result.firstName,
+                            'lastName': result.lastName,
+                            'id': result.id,
+                            'email': result.email
+                        });
+
+                        let auth = response.headers.get('Authorization');
+                    
+
+                        // Local storage Data setting
+                        localStorage.setItem('Authorization', auth);
+                        localStorage.setItem('USERDATA', userdata);
+                        //
+                        hashHistory.push('/main');
                     });
 
-                    // Local storage Data setting
-                    localStorage.setItem('Authorization', auth);
-                    localStorage.setItem('USERDATA', userdata);
-                    //
-                    hashHistory.push('/main');
+                   
                 } else {
                     response.text().then(text => {
                         that.setState({
