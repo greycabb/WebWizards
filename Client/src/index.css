@@ -283,3 +283,11 @@ html, body{
 .text-danger {
   color: red;
 }
+
+li {
+  background-color: #196AB5;
+  color: white;
+  border: 1px solid white;
+  padding: 3px;
+  border-radius: 5px;
+}

@@ -28,11 +28,13 @@ export default class EditPage extends React.Component {
 
             'projectId': pid,
 
-            'bricks': undefined, // All posible HTML blocks, will be called bricks throughout
+            'bricksByName': undefined,
+            'bricksById': undefined, // All posible HTML blocks, will be called bricks throughout
 
             'htmlBlockId': undefined,
 
             // For building the layout...
+            'newLayout': {},
             'layout': {},
             /* Example layout:
                 {
@@ -90,6 +92,7 @@ export default class EditPage extends React.Component {
 
         //this.createBlock = this.createBlock.bind(this);
         this.makeLayout = this.makeLayout.bind(this);
+        this.displayLayout = this.displayLayout.bind(this);
 
         this.updateProject = this.updateProject.bind(this);
         this.dropBlock = this.dropBlock.bind(this);
@@ -161,12 +164,14 @@ export default class EditPage extends React.Component {
                 } else {
                     response.text().then(text => {
                         console.log(text);
+                        hashHistory.push('/login');
                     });
 
                 }
             })
             .catch(err => {
                 console.log('ERROR: ', err);
+                hashHistory.push('/login');
             });
     }
 
@@ -245,7 +250,8 @@ export default class EditPage extends React.Component {
                         }
                         //console.log(brickContainer);
                         that.setState({
-                            'bricks': brickContainer
+                            'bricksById': result,
+                            'bricksByName': brickContainer
                         });
 
                         // If body not built yet, build it
@@ -347,7 +353,7 @@ export default class EditPage extends React.Component {
 
     // Create <html>, <head>, <body> tags when they previously don't exist
     setup_createBaseBlock(slot, parentId, index) {
-        let brickId = this.state.bricks[slot].id;
+        let brickId = this.state.bricksByName[slot].id;
         let that = this;
         fetch('https://api.webwizards.me/v1/blocks', {
             method: 'POST',
@@ -404,6 +410,14 @@ export default class EditPage extends React.Component {
             });
     }
 
+    // Display the layout UI on the right
+    displayLayout() {
+        if (this.state.newLayout !== undefined) {
+
+        }
+    }
+
+
 
     // Used to get information about blocks, needed for building the display on the right
     // id: id of block to add to layout
@@ -439,7 +453,9 @@ export default class EditPage extends React.Component {
 
                             for (var i = 0; i < result.children.length; i++) {
                                 let locked = locationInLayout.length <= 1; //
-                                let lil = locationInLayout.slice();
+                                let lil = locationInLayout.slice(0);
+                                console.log('LIL');
+                                console.log(lil);
                                 let newChild = {
                                     'id': result.children[i],
                                     'location': lil.push(i), // If parent was [0], then this is [0, i]
@@ -476,7 +492,7 @@ export default class EditPage extends React.Component {
                             }
                             // Once at location, assign variables there
                             location.id = result.id;
-                            location.blocktype = result.blocktype;
+                            location.blocktype = that.state.bricksByName[result.blocktype];
                             location.css = result.css;
                             location.parentid = result.parentid;
                             location.children = { }; // Filled out later from stack
@@ -492,6 +508,8 @@ export default class EditPage extends React.Component {
                             if (that.state.stack.length > 0) {
                                 console.log('STACK');
                                 console.log(that.state.stack);
+                                console.log('XX');
+                                console.log(that.state.stack[0]);
                                 that.getBlock(that.state.stack[0].id, true, that.state.stack[0].location);
                             } else {
                                 console.log('Done!');
@@ -548,7 +566,9 @@ export default class EditPage extends React.Component {
             newLayout: {
                 0: {
                     id: this.state.htmlBlockId,
-                    blockType: 0,
+                    blockType: 'html',
+                    css: '',
+                    parentid: null,
 
                     children: {
 
@@ -558,7 +578,7 @@ export default class EditPage extends React.Component {
         });
 
         // Recursively build the layout
-        this.getBlock(this.state.htmlBlockId, true, [0]);
+        this.getBlock(this.state.htmlBlockId, true, []);
 
     }
 
@@ -671,9 +691,52 @@ export default class EditPage extends React.Component {
 
 
 
+/*
+            return (
+                <ul>
+                    <li>&lt;html&gt;
+                        If there are children, put a <ul> inside with more children
+                        <ul>
+                            <li>&lt;head&gt;
 
+                            </li>
+                            <li>&lt;body&gt;
+
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            );
+            */
 
     render() {
+
+        // Recursively build layout...
+
+        function recursiveLayout(current, first) {
+            console.log('[[[[[RL]]]]]');
+
+            console.log(current);
+
+            let b = (<span></span>);
+
+            for (var i = 0; i < current.children.length; i++) {
+                let child = current.children[i];
+
+                b += recursiveLayout(child);
+
+                if (i === current.children.length) {
+                    b = (<ul>{b}</ul>);
+                }
+            }
+
+            b = (<li>&lt;{current.blockType}&gt;{b}</li>);
+            if (first === true) {
+                b = (<ul>{b}</ul>);
+            }
+            return b;
+            
+        }
 
         var urlstring = "#/project/" + this.state.projectId;
 
@@ -712,8 +775,11 @@ export default class EditPage extends React.Component {
                     </div>
                 </div>
                 <div className="half-width draggable-space">
-                    <div>
-                    </div>
+                    {/* <div>
+                        {this.state.newLayout[0] !== undefined &&
+                            recursiveLayout(this.state.newLayout[0], true)
+                        }
+                    </div> */}
                 </div>
 
             </div>
