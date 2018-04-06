@@ -155,7 +155,6 @@ export default class EditPage extends React.Component {
                                 'htmlBlockId': result.content[0]
                             });
                             that.getBlock(that.state.htmlBlockId);
-                            that.makeLayout();
                         }
                         that.setup_getAllPossibleHtmlBlocks();
                         return true;
@@ -347,6 +346,7 @@ export default class EditPage extends React.Component {
                     });
 
                     that.updateProject(that.state.htmlBlockId);
+                    that.makeLayout();
                 }
             }, 200)
         });
@@ -443,8 +443,8 @@ export default class EditPage extends React.Component {
                         if (forSetup === true && locationInLayout !== undefined && locationInLayout.length > 0) {
 
                             
-                            console.log('___________________________');
-                            console.log(locationInLayout);
+                            //console.log('___________________________');
+                            //console.log(locationInLayout);
                             let sv = that.state.stackVisited;
 
 
@@ -468,8 +468,8 @@ export default class EditPage extends React.Component {
                             let locked = locationInLayout.length <= 1; // Can't move or delete blocks with depth <= 2 (html, head, body)
 
 
-                            console.log('CHILDREN of : ' + id);
-                            console.log(result.children);
+                            //console.log('CHILDREN of : ' + id);
+                            //console.log(result.children);
 
                             for (var i = 0; i < result.children.length; i++) {
                                 let lil = locationInLayout.slice(0);
@@ -482,7 +482,7 @@ export default class EditPage extends React.Component {
                                 newChildren.push(newChild);
                             }
                             if (newChildren.length > 0) {
-                                console.log("NCL" + newChildren.length);
+                                //console.log("NCL" + newChildren.length);
                                 newStack = newChildren.concat(newStack);
                             }
 
@@ -505,9 +505,9 @@ export default class EditPage extends React.Component {
                                     };
                                 }
                                 location = location.children[locationInLayout[i]];
-                                console.log("LL[");
-                                console.log(locationInLayout);
-                                console.log("]");
+                                //console.log("LL[");
+                                //console.log(locationInLayout);
+                                //console.log("]");
                             }
                             // Once at location, assign variables there
                             location.id = result.id;
@@ -519,45 +519,29 @@ export default class EditPage extends React.Component {
                             that.setState({
                                 newLayout: newLayout
                             });
-                            console.log('LAYOUT');
-                            console.log(that.state.newLayout);
+                            //console.log('LAYOUT');
+                            //console.log(that.state.newLayout);
 
 
                             // Recursion
                             if (newStack.length > 0) {
-                                console.log('STACK');
-                                console.log(newStack);
-                                console.log('XX');
-                                console.log(newStack[0]);
+                                //console.log('STACK');
+                                //console.log(newStack);
+                                //console.log('XX');
+                                //console.log(newStack[0]);
                                 that.getBlock(newStack[0].id, true, newStack[0].location);
                             } else {
-                                console.log('Done!');
+                                //console.log('Done!');
                             }
-
-
-
-
-                            // let newChildren = {
-                            //     // 0, 1, 2, etc. (indices)
-                            // };
-                            // for (var i = 0; i < result.children.length; i++) {
-                            //     let newChild = {
-                            //         id: result.children[i],
-                            //         parent: result.id
-                            //     }
-                            //     newChildren[i] = newChild;
-                            // }
-
-                            // newStack = newStack.concat(result.children);
-                            // that.setState({
-                            //     stack: newStack
-                            // });
                         }
                     });
                 } else {
                     response.text().then(text => {
                         console.log(text);
-                        that.state.stack = [];
+                        that.setState({
+                            stack: [],
+                            stackVisited: {}
+                        });
                     });
 
                 }
@@ -746,7 +730,7 @@ export default class EditPage extends React.Component {
                 }
             }
 
-            console.log(current);
+            console.log(current.blocktype);
 
             let b = (<span></span>);
 
@@ -760,7 +744,7 @@ export default class EditPage extends React.Component {
                 }
             }
 
-            b = (<li>&lt;{current.blockType}&gt;{b}</li>);
+            b = (<li>&lt;{current.blocktype}&gt;{b}</li>);
             if (first === true) {
                 b = (<ul>{b}</ul>);
             }

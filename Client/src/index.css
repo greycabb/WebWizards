@@ -284,6 +284,11 @@ html, body{
   color: red;
 }
 
+ul {
+  list-style-type: none;
+  margin-left: -20px;
+}
+
 li {
   background-color: #196AB5;
   color: white;
