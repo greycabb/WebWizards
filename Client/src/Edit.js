@@ -884,6 +884,7 @@ export default class EditPage extends React.Component {
                         <div className="brick primary-brick disable-select" id="body">body</div>
                         <div className="brick primary-brick disable-select" id="div">div</div>
                         <div className="brick primary-brick disable-select" id="span">span</div>
+                        <div className="brick primary-brick disable-select" id="span">p</div>
                     </div>
                     <div>
                         <div className="brick secondary-brick disable-select" id="img">img</div>
