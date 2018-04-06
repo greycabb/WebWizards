@@ -91,12 +91,12 @@ export default class EditPage extends React.Component {
         this.setup_buildBody = this.setup_buildBody.bind(this);
         this.setup_createBaseBlock = this.setup_createBaseBlock.bind(this);
 
-        //this.createBlock = this.createBlock.bind(this);
+        this.createBlock = this.createBlock.bind(this);
         this.makeLayout = this.makeLayout.bind(this);
-        this.displayLayout = this.displayLayout.bind(this);
+        //this.displayLayout = this.displayLayout.bind(this);
 
         this.updateProject = this.updateProject.bind(this);
-        this.dropBlock = this.dropBlock.bind(this);
+        //this.dropBlock = this.dropBlock.bind(this);
         this.getBlock = this.getBlock.bind(this);
 
         console.log('______________________');
@@ -323,6 +323,7 @@ export default class EditPage extends React.Component {
                     that.setState({
                         'buildTimer': null
                     });
+                    that.createBlock('title', that.state.headBlockId, 0); // Title
 
                     that.setup_buildBody();
                 }
@@ -411,12 +412,49 @@ export default class EditPage extends React.Component {
             });
     }
 
-    // Display the layout UI on the right
-    displayLayout() {
-        if (this.state.newLayout !== undefined) {
+    // slot like "title" or whatever
+    // parentid is the parent of the block
+    // index is the # index child the block is, of the parent
+    createBlock(slot, parentId, index) {
+        let brickId = this.state.bricksByName[slot].id;
+        let that = this;
 
-        }
+        fetch('https://api.webwizards.me/v1/blocks', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('Authorization')
+            },
+            body: JSON.stringify({
+                'userid': that.state.projectData.userid,
+                'blocktype': brickId,
+                'parentid': parentId,
+                'projectId': that.state.projectId,
+                'index': index
+            })
+        })
+            .then(function (response) {
+
+                if (response.ok) {
+                    response.json().then(function (result) {
+                        console.log('New block: ' + slot);
+                        console.log(result);
+                        that.updateProject(that.state.htmlBlockId);
+                    });
+                } else {
+                    response.text().then(text => {
+                        console.log(text);
+                    });
+
+                }
+            })
+            .catch(err => {
+                console.log('ERROR: ', err);
+            });
     }
+
+
 
 
 
@@ -442,7 +480,7 @@ export default class EditPage extends React.Component {
 
                         if (forSetup === true && locationInLayout !== undefined && locationInLayout.length > 0) {
 
-                            
+
                             //console.log('___________________________');
                             //console.log(locationInLayout);
                             let sv = that.state.stackVisited;
@@ -464,7 +502,7 @@ export default class EditPage extends React.Component {
                             // Send children of the current block into the stack:
                             let newChildren = [];
 
-                            
+
                             let locked = locationInLayout.length <= 1; // Can't move or delete blocks with depth <= 2 (html, head, body)
 
 
@@ -597,58 +635,58 @@ export default class EditPage extends React.Component {
         1 brickId: id of base HTML brick, such as for head, body, title, etc.
         2 parentId: id of HTML block in project that a new brick is being placed in
     */
-    dropBlock(brickId, parentId, index) {
+    // dropBlock(brickId, parentId, index) {
 
-        console.log('Drop!');
+    //     console.log('Drop!');
 
-        let that = this;
-        if (this.state.projectData === null) {
-            return;
-        }
-        // Create block
-        console.log('userid: ' + this.state.projectData.userid);
-        console.log('blocktype: ' + brickId);
-        console.log('parentid: ' + parentId);
-        console.log('index: ' + index);
+    //     let that = this;
+    //     if (this.state.projectData === null) {
+    //         return;
+    //     }
+    //     // Create block
+    //     console.log('userid: ' + this.state.projectData.userid);
+    //     console.log('blocktype: ' + brickId);
+    //     console.log('parentid: ' + parentId);
+    //     console.log('index: ' + index);
 
-        fetch('https://api.webwizards.me/v1/blocks', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': localStorage.getItem('Authorization')
-            },
-            body: JSON.stringify({
-                'userid': that.state.projectData.userid,
-                'blocktype': brickId,
-                'parentid': parentId,
-                'projectId': that.state.projectId,
-                'index': index
-            })
-        })
-            .then(function (response) {
+    //     fetch('https://api.webwizards.me/v1/blocks', {
+    //         method: 'POST',
+    //         headers: {
+    //             'Accept': 'application/json',
+    //             'Content-Type': 'application/json',
+    //             'Authorization': localStorage.getItem('Authorization')
+    //         },
+    //         body: JSON.stringify({
+    //             'userid': that.state.projectData.userid,
+    //             'blocktype': brickId,
+    //             'parentid': parentId,
+    //             'projectId': that.state.projectId,
+    //             'index': index
+    //         })
+    //     })
+    //         .then(function (response) {
 
-                if (response.ok) {
-                    response.json().then(function (result) {
-                        console.log(result);
-                        // Save
-                        that.updateProject({ 'block': parentId })
-                    });
+    //             if (response.ok) {
+    //                 response.json().then(function (result) {
+    //                     console.log(result);
+    //                     // Save
+    //                     that.updateProject({ 'block': parentId })
+    //                 });
 
 
-                } else {
-                    response.text().then(text => {
-                        console.log(text);
-                    });
+    //             } else {
+    //                 response.text().then(text => {
+    //                     console.log(text);
+    //                 });
 
-                }
-            })
-            .catch(err => {
-                console.log('ERROR: ', err);
-            });
+    //             }
+    //         })
+    //         .catch(err => {
+    //             console.log('ERROR: ', err);
+    //         });
 
-        // Update block by setting parentID
-    }
+    //     // Update block by setting parentID
+    // }
 
     // Update project (co = an object with keys)
     updateProject(block) {
@@ -667,9 +705,9 @@ export default class EditPage extends React.Component {
             })
         })
             .then(function (response) {
-
                 that.setup_getProjectData();
-                that.getBlock(that.state.htmlBlockId);
+                //that.getBlock(that.state.htmlBlockId);
+                that.makeLayout();
             })
             .catch(err => {
                 console.log('ERROR: ', err);
@@ -730,14 +768,17 @@ export default class EditPage extends React.Component {
                 }
             }
 
-            console.log(current.blocktype);
+            console.log(current);
 
             let b = (<span></span>);
 
-            for (var i = 0; i < current.children.length; i++) {
-                let child = current.children[i];
+            let kids = Object.keys(current.children);
+            console.log(kids);
 
-                b += recursiveLayout(child);
+            for (var i = 0; i < kids.length; i++) {
+                let child = current.children[kids[i]];
+
+                b = (<span>{b}{recursiveLayout(child)}</span>);
 
                 if (i === current.children.length) {
                     b = (<ul>{b}</ul>);
@@ -745,9 +786,9 @@ export default class EditPage extends React.Component {
             }
 
             b = (<li>&lt;{current.blocktype}&gt;{b}</li>);
-            if (first === true) {
+            //if (first === true) {
                 b = (<ul>{b}</ul>);
-            }
+            //}
             return b;
 
         }
