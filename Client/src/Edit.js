@@ -75,6 +75,7 @@ export default class EditPage extends React.Component {
                 }
             */
             'stack': [],
+            'stackVisited': {},
             'indexMapOfCurrent': [] // e.g. [0, 2, 3, 2, 1] for placing at layout[2][3][2][1]
 
         };
@@ -441,7 +442,20 @@ export default class EditPage extends React.Component {
 
                         if (forSetup === true && locationInLayout !== undefined && locationInLayout.length > 0) {
 
+                            
                             console.log('___________________________');
+                            console.log(locationInLayout);
+                            let sv = that.state.stackVisited;
+
+
+                            if (sv[id] === true) {
+                                return;
+                            }
+
+                            sv[id] = true;
+                            that.setState({
+                                'stackVisited': sv
+                            });
 
                             // Remove the current block from the stack
                             let newStack = that.state.stack.slice(0);
@@ -452,7 +466,11 @@ export default class EditPage extends React.Component {
 
                             
                             let locked = locationInLayout.length <= 1; // Can't move or delete blocks with depth <= 2 (html, head, body)
-                            
+
+
+                            console.log('CHILDREN of : ' + id);
+                            console.log(result.children);
+
                             for (var i = 0; i < result.children.length; i++) {
                                 let lil = locationInLayout.slice(0);
                                 lil.push(i);
@@ -460,12 +478,11 @@ export default class EditPage extends React.Component {
                                     'id': result.children[i],
                                     'location': lil, // If parent was [0], then this is [0, i]
                                     'locked': locked
-                                }
-                                console.log('LOCATION: ');
-                                console.log(newChild.id);
+                                };
                                 newChildren.push(newChild);
                             }
                             if (newChildren.length > 0) {
+                                console.log("NCL" + newChildren.length);
                                 newStack = newChildren.concat(newStack);
                             }
 
@@ -480,14 +497,14 @@ export default class EditPage extends React.Component {
                             let location = newLayout;
 
                             for (var i = 0; i < locationInLayout.length; i++) {
-                                if (location.children[i] === undefined) {
-                                    location.children[i] = {
+                                if (location.children[locationInLayout[i]] === undefined) {
+                                    location.children[locationInLayout[i]] = {
                                         children: {
 
                                         }
                                     };
                                 }
-                                location = location.children[i];
+                                location = location.children[locationInLayout[i]];
                                 console.log("LL[");
                                 console.log(locationInLayout);
                                 console.log("]");
@@ -561,7 +578,8 @@ export default class EditPage extends React.Component {
 
         // Clear stack
         this.setState({
-            stack: []
+            stack: [],
+            stackVisited: {}
         });
 
         this.setState({
@@ -719,9 +737,16 @@ export default class EditPage extends React.Component {
         // Recursively build layout...
 
         function recursiveLayout(current, first) {
-            //console.log('[[[[[RL]]]]]');
+            console.log('[[[[[RL]]]]]');
+            if (first === true) {
+                if (current.children !== undefined && current.children[0] !== undefined) {
+                    current = current.children[0];
+                } else {
+                    return;
+                }
+            }
 
-            //console.log(current);
+            console.log(current);
 
             let b = (<span></span>);
 
@@ -781,8 +806,8 @@ export default class EditPage extends React.Component {
                 </div>
                 <div className="half-width draggable-space">
                     <div>
-                        {this.state.newLayout[0] !== undefined &&
-                            recursiveLayout(this.state.newLayout[0], true)
+                        {this.state.newLayout !== undefined &&
+                            recursiveLayout(this.state.newLayout, true)
                         }
                     </div>
                 </div>
