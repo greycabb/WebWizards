@@ -584,6 +584,34 @@ export default class EditPage extends React.Component {
                 }
             })
             .catch(err => {
+                // Cannot fetch block, this is likely to just be a content child
+                // Place the current block into the layout
+                let newLayout = that.state.newLayout;
+
+                let location = newLayout;
+
+                for (var i = 0; i < locationInLayout.length; i++) {
+                    if (location.children[locationInLayout[i]] === undefined) {
+                        location.children[locationInLayout[i]] = {
+                            children: {
+
+                            }
+                        };
+                    }
+                    location = location.children[locationInLayout[i]];
+                }
+
+                // Once at location, assign variables there
+                //location.id = '';
+                location.blocktype = "text-contents";
+                location.children = {"content": id}; // Filled out later from stack
+
+                that.setState({
+                    newLayout: newLayout
+                });
+
+                //console.log(id);
+                //console.log(locationInLayout);
                 console.log('ERROR: ', err);
             });
     }
@@ -774,12 +802,12 @@ export default class EditPage extends React.Component {
 
             let b = (<span></span>);
 
-            let kids = Object.keys(current.children);
-            console.log(kids);
 
-            var type = that.state.bricksByName[current.blocktype].type;
+            var blockname = that.state.bricksByName[current.blocktype];
 
-            if (type == 'wrapper' || type == 'text-wrapper') {
+            if (blockname != undefined && 
+                (blockname.type == 'wrapper' || blockname.type == 'text-wrapper')) {
+                let kids = Object.keys(current.children);
                 for (var i = 0; i < kids.length; i++) {
                     let child = current.children[kids[i]];
 
@@ -790,28 +818,43 @@ export default class EditPage extends React.Component {
                     }
                 }
             }
-            else {
+            if (blockname != undefined && blockname.type == "content") {
                 let content = current.children;
-                console.log("current content: " + content);
+                console.log("current content: " + JSON.stringify(content));
                 b = (<span></span>);
-            }
-
-            var type = that.state.bricksByName[current.blocktype].type;
+            } 
+            if (current.children[0] != undefined && current.children[0].blocktype == "text-contents") {
+                let content = current.children[0].children.content;
+                console.log("Testing " + content);
+                b = (<input type="text" className="editor-text-content" value={content}/>);
+            } 
             
             var blockclass;
-            if (type == 'wrapper') {
-                blockclass = 'primary-brick';
+            if (blockname != undefined) {
+                if (blockname.type == 'wrapper') {
+                    blockclass = 'primary-brick';
+                }
+                if (blockname.type == 'content') {
+                    blockclass ='secondary-brick';
+                }
+                if (blockname.type == 'text-wrapper') {
+                    blockclass = 'third-brick';
+                }
             }
-            if (type == 'content') {
-                blockclass ='secondary-brick';
+            if (current.blocktype != 'text') {
+                var startTag = '<' + current.blocktype + '>';
+                var endTag = '</' + current.blocktype + '>';
+                b = (<li className={blockclass}>{startTag}{b}{endTag}</li>);
+                //if (first === true) {
+                    b = (<ul>{b}</ul>);
+                //}
             }
-            if (type == 'text-wrapper') {
-                blockclass = 'third-brick';
+            else {
+                b = (<li className={blockclass}>{b}</li>);
+                //if (first === true) {
+                    b = (<ul>{b}</ul>);
+                //}
             }
-            b = (<li className={blockclass}>&lt;{current.blocktype}&gt;{b}</li>);
-            //if (first === true) {
-                b = (<ul>{b}</ul>);
-            //}
             return b;
 
         }
@@ -827,6 +870,7 @@ export default class EditPage extends React.Component {
                         {this.state.projectId != undefined && this.state.projectData != undefined &&
                             <span>
                                 <a href={urlstring} target="_blank"><button className="btn yellow-button">View Page</button></a>
+                                <button className="btn yellow-button">Settings</button>
                                 <h2 className="editor-project-title">{this.state.projectData.name}</h2>
                             </span>
                         }

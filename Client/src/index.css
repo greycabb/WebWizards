@@ -290,13 +290,18 @@ ul {
 }
 
 li {
+  font-size: 16px;
   color: white;
   border: 1px solid white;
-  padding: 10px 0px 25px 10px;
-  border-radius: 5px;
+  padding: 10px 0px 10px 10px;
+  border-radius: 10px;
   width: 200px;
 }
 
 .editor-project-style {
   display: inline;
 }
+
+.editor-text-content {
+  border-radius: 5px;
+} 
