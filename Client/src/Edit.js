@@ -424,7 +424,6 @@ export default class EditPage extends React.Component {
     // forSetup: if the getBlock() call is
     // locationInLayout: e.g. if it's [0, 2, 4] then you can get to the block in state.layout at 0: children: { 2: children { 4 }}
     getBlock(id, forSetup, locationInLayout) {
-        //console.log('GetBlock');
         let that = this;
         fetch('https://api.webwizards.me/v1/blocks?id=' + id, {
             method: 'GET',
@@ -438,44 +437,47 @@ export default class EditPage extends React.Component {
 
                 if (response.ok) {
                     response.json().then(function (result) {
-                        //console.log(result);
-                        console.log('___________________________');
+
 
                         if (forSetup === true && locationInLayout !== undefined && locationInLayout.length > 0) {
 
-                            // Remove the id of the current block from the stack
-                            let newStack = that.state.stack.splice(0, 1);
+                            console.log('___________________________');
 
-                            // Send children of the current block into the stack
+                            // Remove the current block from the stack
+                            let newStack = that.state.stack.slice(0);
+                            newStack.shift();
+
+                            // Send children of the current block into the stack:
                             let newChildren = [];
 
                             
-
+                            let locked = locationInLayout.length <= 1; // Can't move or delete blocks with depth <= 2 (html, head, body)
+                            
                             for (var i = 0; i < result.children.length; i++) {
-                                let locked = locationInLayout.length <= 1; //
                                 let lil = locationInLayout.slice(0);
-                                console.log('LIL');
-                                console.log(lil);
+                                lil.push(i);
                                 let newChild = {
                                     'id': result.children[i],
-                                    'location': lil.push(i), // If parent was [0], then this is [0, i]
+                                    'location': lil, // If parent was [0], then this is [0, i]
                                     'locked': locked
                                 }
-                                newChildren[i] = newChild;
+                                console.log('LOCATION: ');
+                                console.log(newChild.id);
+                                newChildren.push(newChild);
                             }
                             if (newChildren.length > 0) {
-                                // Put children of block into the front of the stack
-                                //newStack.unshift(newChildren);
                                 newStack = newChildren.concat(newStack);
                             }
+
                             that.setState({
                                 stack: newStack
                             });
 
+
                             // Place the current block into the layout
                             let newLayout = that.state.newLayout;
 
-                            let location = newLayout[0];
+                            let location = newLayout;
 
                             for (var i = 0; i < locationInLayout.length; i++) {
                                 if (location.children[i] === undefined) {
@@ -487,15 +489,15 @@ export default class EditPage extends React.Component {
                                 }
                                 location = location.children[i];
                                 console.log("LL[");
-                                    console.log(location);
-                                    console.log("]");
+                                console.log(locationInLayout);
+                                console.log("]");
                             }
                             // Once at location, assign variables there
                             location.id = result.id;
-                            location.blocktype = that.state.bricksByName[result.blocktype];
+                            location.blocktype = that.state.bricksById[result.blocktype].name;
                             location.css = result.css;
                             location.parentid = result.parentid;
-                            location.children = { }; // Filled out later from stack
+                            location.children = {}; // Filled out later from stack
 
                             that.setState({
                                 newLayout: newLayout
@@ -505,12 +507,12 @@ export default class EditPage extends React.Component {
 
 
                             // Recursion
-                            if (that.state.stack.length > 0) {
+                            if (newStack.length > 0) {
                                 console.log('STACK');
-                                console.log(that.state.stack);
+                                console.log(newStack);
                                 console.log('XX');
-                                console.log(that.state.stack[0]);
-                                that.getBlock(that.state.stack[0].id, true, that.state.stack[0].location);
+                                console.log(newStack[0]);
+                                that.getBlock(newStack[0].id, true, newStack[0].location);
                             } else {
                                 console.log('Done!');
                             }
@@ -548,7 +550,7 @@ export default class EditPage extends React.Component {
             });
     }
 
-    
+
     //______________________
     // Functions
 
@@ -564,21 +566,24 @@ export default class EditPage extends React.Component {
 
         this.setState({
             newLayout: {
-                0: {
-                    id: this.state.htmlBlockId,
-                    blockType: 'html',
-                    css: '',
-                    parentid: null,
+                children: {
 
-                    children: {
-
-                    }
                 }
+                // 0: {
+                //     id: this.state.htmlBlockId,
+                //     blocktype: 'html',
+                //     css: [],
+                //     parentId: null,
+
+                //     children: {
+
+                //     }
+                // }
             }
         });
 
         // Recursively build the layout
-        this.getBlock(this.state.htmlBlockId, true, []);
+        this.getBlock(this.state.htmlBlockId, true, [0]);
 
     }
 
@@ -691,32 +696,32 @@ export default class EditPage extends React.Component {
 
 
 
-/*
-            return (
-                <ul>
-                    <li>&lt;html&gt;
-                        If there are children, put a <ul> inside with more children
-                        <ul>
-                            <li>&lt;head&gt;
-
-                            </li>
-                            <li>&lt;body&gt;
-
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            );
-            */
+    /*
+                return (
+                    <ul>
+                        <li>&lt;html&gt;
+                            If there are children, put a <ul> inside with more children
+                            <ul>
+                                <li>&lt;head&gt;
+    
+                                </li>
+                                <li>&lt;body&gt;
+    
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                );
+                */
 
     render() {
 
         // Recursively build layout...
 
         function recursiveLayout(current, first) {
-            console.log('[[[[[RL]]]]]');
+            //console.log('[[[[[RL]]]]]');
 
-            console.log(current);
+            //console.log(current);
 
             let b = (<span></span>);
 
@@ -735,7 +740,7 @@ export default class EditPage extends React.Component {
                 b = (<ul>{b}</ul>);
             }
             return b;
-            
+
         }
 
         var urlstring = "#/project/" + this.state.projectId;
@@ -751,7 +756,7 @@ export default class EditPage extends React.Component {
                         }
                     </div>
                     {this.state.projectData != undefined &&
-                        <PreviewProject projectObject={this.state.projectData}/>
+                        <PreviewProject projectObject={this.state.projectData} />
                     }
                     <div>
                         <div className="brick primary-brick disable-select" id="head">head</div>
@@ -775,11 +780,11 @@ export default class EditPage extends React.Component {
                     </div>
                 </div>
                 <div className="half-width draggable-space">
-                    {/* <div>
+                    <div>
                         {this.state.newLayout[0] !== undefined &&
                             recursiveLayout(this.state.newLayout[0], true)
                         }
-                    </div> */}
+                    </div>
                 </div>
 
             </div>
