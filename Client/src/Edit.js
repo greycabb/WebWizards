@@ -508,7 +508,6 @@ export default class EditPage extends React.Component {
 
                             //console.log('CHILDREN of : ' + id);
                             //console.log(result.children);
-
                             for (var i = 0; i < result.children.length; i++) {
                                 let lil = locationInLayout.slice(0);
                                 lil.push(i);
@@ -758,7 +757,10 @@ export default class EditPage extends React.Component {
 
         // Recursively build layout...
 
+        var that = this;
+
         function recursiveLayout(current, first) {
+
             console.log('[[[[[RL]]]]]');
             if (first === true) {
                 if (current.children !== undefined && current.children[0] !== undefined) {
@@ -775,17 +777,38 @@ export default class EditPage extends React.Component {
             let kids = Object.keys(current.children);
             console.log(kids);
 
-            for (var i = 0; i < kids.length; i++) {
-                let child = current.children[kids[i]];
+            var type = that.state.bricksByName[current.blocktype].type;
 
-                b = (<span>{b}{recursiveLayout(child)}</span>);
+            if (type == 'wrapper' || type == 'text-wrapper') {
+                for (var i = 0; i < kids.length; i++) {
+                    let child = current.children[kids[i]];
 
-                if (i === current.children.length) {
-                    b = (<ul>{b}</ul>);
+                    b = (<span>{b}{recursiveLayout(child)}</span>);
+
+                    if (i === current.children.length) {
+                        b = (<ul>{b}</ul>);
+                    }
                 }
             }
+            else {
+                let content = current.children;
+                console.log("current content: " + content);
+                b = (<span></span>);
+            }
 
-            b = (<li>&lt;{current.blocktype}&gt;{b}</li>);
+            var type = that.state.bricksByName[current.blocktype].type;
+            
+            var blockclass;
+            if (type == 'wrapper') {
+                blockclass = 'primary-brick';
+            }
+            if (type == 'content') {
+                blockclass ='secondary-brick';
+            }
+            if (type == 'text-wrapper') {
+                blockclass = 'third-brick';
+            }
+            b = (<li className={blockclass}>&lt;{current.blocktype}&gt;{b}</li>);
             //if (first === true) {
                 b = (<ul>{b}</ul>);
             //}
@@ -801,8 +824,11 @@ export default class EditPage extends React.Component {
                 <div className="half-width">
                     <div className="edit-bar">
                         <Link to="/main"><button className="btn yellow-button">Back</button></Link>
-                        {this.state.projectId != undefined &&
-                            <a href={urlstring} target="_blank"><button className="btn yellow-button">View Page</button></a>
+                        {this.state.projectId != undefined && this.state.projectData != undefined &&
+                            <span>
+                                <a href={urlstring} target="_blank"><button className="btn yellow-button">View Page</button></a>
+                                <h2 className="editor-project-title">{this.state.projectData.name}</h2>
+                            </span>
                         }
                     </div>
                     {this.state.projectData != undefined &&

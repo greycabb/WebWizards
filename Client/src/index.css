@@ -290,9 +290,13 @@ ul {
 }
 
 li {
-  background-color: #196AB5;
   color: white;
   border: 1px solid white;
-  padding: 10px;
+  padding: 10px 0px 25px 10px;
   border-radius: 5px;
+  width: 200px;
+}
+
+.editor-project-style {
+  display: inline;
 }
