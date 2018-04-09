@@ -93,11 +93,11 @@ export default class EditPage extends React.Component {
 
         this.createBlock = this.createBlock.bind(this);
         this.makeLayout = this.makeLayout.bind(this);
-        //this.displayLayout = this.displayLayout.bind(this);
 
         this.updateProject = this.updateProject.bind(this);
-        //this.dropBlock = this.dropBlock.bind(this);
         this.getBlock = this.getBlock.bind(this);
+
+        this.pickup = this.pickup.bind(this);
 
         console.log('______________________');
 
@@ -719,7 +719,22 @@ export default class EditPage extends React.Component {
 
 
 
+    // Click a brick on the left
+    pickup(brickName) {
+        if (brickName !== undefined && this.state.bricksByName !== undefined) {
+            if (this.state.bricksByName[brickName] !== undefined) {
+                console.log(brickName);
+                this.setState({
+                    'selectedBrick': brickName
+                });
+            }
+        }
+    }
 
+    // Place a block into the right, after picking up a brick on the left
+    drop() {
+
+    }
 
 
 
@@ -787,7 +802,7 @@ export default class EditPage extends React.Component {
 
             b = (<li>&lt;{current.blocktype}&gt;{b}</li>);
             //if (first === true) {
-                b = (<ul>{b}</ul>);
+            b = (<ul>{b}</ul>);
             //}
             return b;
 
@@ -809,7 +824,7 @@ export default class EditPage extends React.Component {
                         <PreviewProject projectObject={this.state.projectData} />
                     }
                     <div>
-                        <div className="brick primary-brick disable-select" id="head">head</div>
+                        <div className="brick primary-brick disable-select" id="head" onClick={this.pickup('head')} >head</div>
                         <div className="brick primary-brick disable-select" id="title">title</div>
                         <div className="brick primary-brick disable-select" id="body">body</div>
                         <div className="brick primary-brick disable-select" id="div">div</div>

@@ -31,7 +31,7 @@ export default class LoginPage extends React.Component {
                     hashHistory.push('/main');
                 } else {
                     response.text().then(text => {
-                       console.log("signed out: " + text)
+                       console.log("signed out: " + text);
                     });
 
                 }
