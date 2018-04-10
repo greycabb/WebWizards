@@ -311,3 +311,7 @@ li {
 .yel {
   color: yellow;
 }
+.pressed-brick {
+  color: yellow;
+  outline: 3px solid yellow;
+}

@@ -730,9 +730,10 @@ export default class EditPage extends React.Component {
             if (this.state.bricksByName[brickName] !== undefined) {
                 console.log(brickName);
                 this.setState({
-                    'selectedBrick': brickName
+                   'selectedBrick': brickName
                 });
             }
+            document.getElementById(brickName).classList.add('pressed-brick');
         }
     }
 
