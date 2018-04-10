@@ -43,6 +43,7 @@ export default class MainPage extends React.Component {
             })
             .catch(err => {
                 console.log('caught it!', err);
+                hashHistory.push('/login');
             });
 
         if (ud) {
@@ -55,7 +56,7 @@ export default class MainPage extends React.Component {
     getAllUserProjects() {
         let that = this;
         console.log(this.state.userdata);
-        if (this.state.userdata === undefined) {
+        if (this.state.userdata === undefined || this.state.userdata === null) {
             hashHistory.push('/login');
             return;
         } else {
@@ -115,7 +116,9 @@ export default class MainPage extends React.Component {
 
         return (
             <div>
-                <Nav username={this.state.userdata.username} />
+                {this.state.userdata && this.state.userdata.username !== undefined &&
+                    <Nav username={this.state.userdata.username} />
+                }
                 <div className="main-content">
                     <CreateBanner />
                     <div id="profileAndAwards" className="profile-and-awards">
