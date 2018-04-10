@@ -284,10 +284,14 @@ html, body{
   color: red;
 }
 
+
+
+/*Change this to some other class*/
 ul {
   list-style-type: none;
   margin-left: -20px;
   font-size: 14pt;
+  cursor: pointer;
 }
 
 li {
