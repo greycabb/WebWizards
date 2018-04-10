@@ -287,6 +287,7 @@ html, body{
 ul {
   list-style-type: none;
   margin-left: -20px;
+  font-size: 14pt;
 }
 
 li {
@@ -295,4 +296,14 @@ li {
   border: 1px solid white;
   padding: 10px;
   border-radius: 5px;
+}
+
+
+/*For testing layout builder*/
+.green {
+    background-color: green;
+    opacity: 0.4;
+}
+.yel {
+  color: yellow;
 }

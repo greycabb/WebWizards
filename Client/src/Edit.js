@@ -76,8 +76,9 @@ export default class EditPage extends React.Component {
             */
             'stack': [],
             'stackVisited': {},
-            'indexMapOfCurrent': [] // e.g. [0, 2, 3, 2, 1] for placing at layout[2][3][2][1]
+            'indexMapOfCurrent': [], // e.g. [0, 2, 3, 2, 1] for placing at layout[2][3][2][1]
 
+            'finishedBuildingHeadBody': false
         };
 
         // Setup functions
@@ -264,6 +265,9 @@ export default class EditPage extends React.Component {
                             that.setup_buildHtmlRoot();
                         } else {
                             that.makeLayout();
+                            that.setState({
+                                'finishedBuildingHeadBody': true
+                            });
                         }
                     });
 
@@ -343,7 +347,8 @@ export default class EditPage extends React.Component {
                 if (that.state.bodyBlockId !== undefined) { // when setup_createBaseBlock(body) completes
                     clearInterval(that.state.buildTimer);
                     that.setState({
-                        'buildTimer': null
+                        'buildTimer': null,
+                        'finishedBuildingHeadBody': true
                     });
 
                     that.updateProject(that.state.htmlBlockId);
@@ -773,8 +778,15 @@ export default class EditPage extends React.Component {
 
         // Recursively build layout...
 
+        // Don't put append or prepends for these 3 base block types
+        const blockTypesToIgnore = {
+            'html': true,
+            'body': true,
+            'head': true
+        };
+
         function recursiveLayout(current, first) {
-            console.log('[[[[[RL]]]]]');
+            //console.log('[[[[[RL]]]]]');
             if (first === true) {
                 if (current.children !== undefined && current.children[0] !== undefined) {
                     current = current.children[0];
@@ -788,27 +800,39 @@ export default class EditPage extends React.Component {
             let b = (<span></span>);
 
             let kids = Object.keys(current.children);
-            console.log(kids);
+            //console.log(kids);
 
             for (var i = 0; i < kids.length; i++) {
                 let child = current.children[kids[i]];
 
                 b = (<span>{b}{recursiveLayout(child)}</span>);
 
-                if (i === current.children.length) {
-                    b = (<ul>{b}</ul>);
+                if (i == kids.length - 1) {
+                    //console.log('beep');
+                    if (blockTypesToIgnore[child.blocktype] !== true) {
+                        b = (<ul>{b}<li className="green"><span className="yellow">&nbsp;&nbsp;&nbsp; parent: {current.id.substr(current.id.length - 3)}, index: {i + 1}</span></li></ul>);
+                    } else {
+                        b = (<ul>{b}</ul>)
+                    }
                 }
             }
 
-            b = (<li>&lt;{current.blocktype}&gt;{b}</li>);
+            b = (<li>&lt;{current.blocktype}&gt;<span className="yel">&nbsp;&nbsp;&nbsp;id: {current.id.substr(current.id.length - 3)}</span>{b}</li>);
             //if (first === true) {
-            b = (<ul>{b}</ul>);
+
+            if (blockTypesToIgnore[current.blocktype] !== true) {
+                b = (<ul><li className="green"><span className="yellow">&nbsp;&nbsp;&nbsp; parent: {current.parentid.substr(current.parentid.length - 3)}, index: 0</span></li>{b}</ul>);
+            } else {
+                b = (<ul>{b}</ul>);
+            }
             //}
             return b;
 
         }
 
         var urlstring = "#/project/" + this.state.projectId;
+
+        let that = this;
 
         return (
             <div>
@@ -824,7 +848,7 @@ export default class EditPage extends React.Component {
                         <PreviewProject projectObject={this.state.projectData} />
                     }
                     <div>
-                        <div className="brick primary-brick disable-select" id="head" onClick={this.pickup('head')} >head</div>
+                        <div className="brick primary-brick disable-select" id="head" onClick={function() { that.pickup('head')} } >head</div>
                         <div className="brick primary-brick disable-select" id="title">title</div>
                         <div className="brick primary-brick disable-select" id="body">body</div>
                         <div className="brick primary-brick disable-select" id="div">div</div>
@@ -846,7 +870,7 @@ export default class EditPage extends React.Component {
                 </div>
                 <div className="half-width draggable-space">
                     <div>
-                        {this.state.newLayout !== undefined &&
+                        {this.state.newLayout !== undefined && this.state.finishedBuildingHeadBody === true &&
                             recursiveLayout(this.state.newLayout, true)
                         }
                     </div>
