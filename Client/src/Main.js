@@ -2,6 +2,7 @@ import React from 'react';
 import { hashHistory } from 'react-router';
 import Nav from './Nav';
 import CreateBanner from './CreateBanner';
+import img from './img/ProfilePictures/Cow.png';
 
 export default class MainPage extends React.Component {
     constructor(props) {
@@ -15,10 +16,19 @@ export default class MainPage extends React.Component {
             hashHistory.push('/login');
         }
 
+        var mobileView = false;
+
+        if (window.innerWidth < 801) {
+            console.log(window.innerWidth);
+            mobileView = true;
+        }
+
         this.state = {
             'error': undefined,
             'userdata': ud,
-            'projects': undefined // List of projects
+            'projects': undefined, // List of projects
+            'width': window.innerWidth,
+            'mobileView': mobileView
         };
 
         fetch('https://api.webwizards.me/v1/users/me', {
@@ -51,6 +61,7 @@ export default class MainPage extends React.Component {
         }
         // Get project data
     }
+
     // Get all projects for user
     getAllUserProjects() {
         let that = this;
@@ -115,24 +126,34 @@ export default class MainPage extends React.Component {
 
         return (
             <div>
-                <Nav username={this.state.userdata.username} />
-                <div className="main-content">
-                    <CreateBanner />
-                    <div id="profileAndAwards" className="profile-and-awards">
-                        <div className="profile-picture"></div>
-                        <div className="profile-name">
-                            <div>My Awards</div>
+                {!this.state.mobileView && this.state.userdata &&
+                    <div>
+                        <Nav username={this.state.userdata.username} />
+                        <div className="main-content">
+                            <CreateBanner />
+                            <div id="profileAndAwards" className="profile-and-awards">
+                                <div className="profile-picture"></div>
+                                <div className="profile-name">
+                                    <div>My Awards</div>
+                                </div>
+                            </div>
+                            <div id="yourProjects" className="your-projects">
+                                <div>Your Projects</div>
+                                <div className="projects-list">
+                                    {this.state.projects !== undefined &&
+                                        <ProjectsInList projects={this.state.projects} />
+                                    }
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div id="yourProjects" className="your-projects">
-                        <div>Your Projects</div>
-                        <div className="projects-list">
-                            {this.state.projects !== undefined &&
-                                <ProjectsInList projects={this.state.projects} />
-                            }
-                        </div>
+                }
+                {this.state.mobileView &&
+                    <div id="mobile-view">
+                        <img src={img} width="400px"/><br />
+                        Oops! Web Wizards only works on a computer!
                     </div>
-                </div>
+                }
             </div>
 
         );

@@ -305,3 +305,13 @@ li {
 .editor-text-content {
   border-radius: 5px;
 } 
+
+#mobile-view {
+  text-align: center;
+  font-size: 33px;
+  font-family: 'Roboto Condensed', sans-serif;
+  color: #196AB5;
+  margin: 0px;
+  margin-top: 50px;
+  overflow: hidden;
+}
