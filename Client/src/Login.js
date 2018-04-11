@@ -5,15 +5,24 @@ import Signup from './Signup';
 import OutsideAlerter from './OutsideAlerter';
 import WelcomeBanner from './WelcomeBanner';
 import FeaturedProjects from './FeaturedProjects';
+import img from './img/ProfilePictures/Cow.png';
 
 export default class LoginPage extends React.Component {
     constructor(props) {
         super(props);
 
+        var mobileView = false;
+
+        if (window.innerWidth < 801) {
+            console.log(window.innerWidth);
+            mobileView = true;
+        }
+
         this.state = {
             'username': undefined,
             'password': undefined,
-            'error': undefined
+            'error': undefined,
+            'mobileView': mobileView
         };
 
         localStorage.clear();
@@ -193,41 +202,51 @@ export default class LoginPage extends React.Component {
         var signInEnabled = (usernameErrors.isValid && passwordErrors.isValid);
 
         return (
-            <div className="login-page">
-                <Nav login={true} handleLogin={this.handleLogin} handleSignup={this.handleSignup}/>
-                {this.state.loginClicked &&
-                    <OutsideAlerter handler={this.handleLogin}>
-                    <div className="arrow_box welcomebox">
-                        <form>
-                            <div>
-                                <ValidatedInput field="username" type="username" maxLength="15" label="Username" tabIndex={1} changeCallback={this.handleChange} errors={usernameErrors} />
-                            </div>
-                            <div>
-                                <ValidatedInput field="password" type="password" maxLength="30" label="Password" tabIndex={2} changeCallback={this.handleChange} errors={passwordErrors} />
-                            </div>
-                            <div className="form-group">
-                                <br />
-                                <button className="btn yellow-button" disabled={!signInEnabled} onClick={(e) => this.signIn(e)}>Login</button>
-                            </div>
-                            <div id="postError" className="help-block error">{this.state.error}</div>
+            <div>
+                {!this.state.mobileView &&
+                    <div className="login-page">
+                        <Nav login={true} handleLogin={this.handleLogin} handleSignup={this.handleSignup}/>
+                        {this.state.loginClicked &&
+                            <OutsideAlerter handler={this.handleLogin}>
+                            <div className="arrow_box welcomebox">
+                                <form>
+                                    <div>
+                                        <ValidatedInput field="username" type="username" maxLength="15" label="Username" tabIndex={1} changeCallback={this.handleChange} errors={usernameErrors} />
+                                    </div>
+                                    <div>
+                                        <ValidatedInput field="password" type="password" maxLength="30" label="Password" tabIndex={2} changeCallback={this.handleChange} errors={passwordErrors} />
+                                    </div>
+                                    <div className="form-group">
+                                        <br />
+                                        <button className="btn yellow-button" disabled={!signInEnabled} onClick={(e) => this.signIn(e)}>Login</button>
+                                    </div>
+                                    <div id="postError" className="help-block error">{this.state.error}</div>
 
-                        </form>
-                        {/*<div className="box-link"><Link to="/signup">Don't have an account? Sign up!</Link></div>
-                        <div className="black-link">Forgot Username or Password</div> */}
-                    </div>
-                    </ OutsideAlerter>
-                }
-                {this.state.signupClicked &&
-                    <div className="modal-container">
-                        <div className="modal-background">
-                            <OutsideAlerter handler={this.handleSignup}>
-                                <Signup />
-                            </ OutsideAlerter>
+                                </form>
+                                {/*<div className="box-link"><Link to="/signup">Don't have an account? Sign up!</Link></div>
+                                <div className="black-link">Forgot Username or Password</div> */}
                         </div>
+                        </ OutsideAlerter>
+                    }
+                    {this.state.signupClicked &&
+                        <div className="modal-container">
+                            <div className="modal-background">
+                                <OutsideAlerter handler={this.handleSignup}>
+                                    <Signup />
+                                </ OutsideAlerter>
+                            </div>
+                        </div>
+                    }
+                    <WelcomeBanner />
+                    <FeaturedProjects />
+                </div>
+                }
+                {this.state.mobileView &&
+                    <div id="mobile-view">
+                        <img src={img} width="400px"/><br />
+                        Oops! Web Wizards only works on a computer!
                     </div>
                 }
-                <WelcomeBanner />
-                <FeaturedProjects />
             </div>
         );
     }
