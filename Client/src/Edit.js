@@ -99,6 +99,7 @@ export default class EditPage extends React.Component {
         this.getBlock = this.getBlock.bind(this);
 
         this.pickup = this.pickup.bind(this);
+        this.drop = this.drop.bind(this);
 
         console.log('______________________');
 
@@ -765,8 +766,12 @@ export default class EditPage extends React.Component {
     }
 
     // Place a block into the right, after picking up a brick on the left
-    drop() {
+    // The type of brick placed is determined by the brick that was picked up on the left, from state
+    drop(parentId, index) {
+        console.log('drop ' + ' ' + parentId + ' ' + index)
+        if (parentId && index && this.state.selectedBrick) {
 
+        }
     }
 
 
@@ -838,14 +843,27 @@ export default class EditPage extends React.Component {
                     let child = current.children[kids[i]];
 
                     if (blockTypesToIgnore[child.blocktype] !== true) {
-                        b = (<span><li className="green"><span className="yellow">&nbsp;&nbsp;&nbsp; parent: {current.id.substr(current.id.length - 3)}, index: {i}</span></li>{b}{recursiveLayout(child)}</span>);
+                        // Place a dropspace before each child
+                        let index = i;
+                        b = (<span>
+                                <li className="green" onClick={function() { that.drop(current.id, index)} }>
+                                    <span className="yellow">&nbsp;&nbsp;&nbsp; parent: {current.id.substr(current.id.length - 3)}, index: {index}</span>
+                                </li>
+                                {b}{recursiveLayout(child)}
+                                </span>);
                     } else {
                         b = (<span>{b}{recursiveLayout(child)}</span>);
                     }
 
                     if (i === kids.length - 1) {
                         if (blockTypesToIgnore[child.blocktype] !== true) {
-                            b = (<ul>{b}<li className="green"><span className="yellow">&nbsp;&nbsp;&nbsp; parent: {current.id.substr(current.id.length - 3)}, index: {i + 1}</span></li></ul>);
+                            // Place a dropspace after the last child
+                            let index = i + 1;
+                            b = (<ul>{b}
+                                    <li className="green" onClick={function() { that.drop(current.id, index)} }>
+                                        <span className="yellow">&nbsp;&nbsp;&nbsp; parent: {current.id.substr(current.id.length - 3)}, index: {index}</span>
+                                    </li>
+                                </ul>);
                         } else {
                             b = (<ul>{b}</ul>)
                         }
@@ -911,6 +929,7 @@ export default class EditPage extends React.Component {
                 }
                 <div className="half-width">
                     <div className="edit-bar">
+                        <div>Status</div>
                         <Link to="/main"><button className="btn yellow-button">Back</button></Link>
                         {this.state.projectId != undefined && this.state.projectData != undefined &&
                             <span>
