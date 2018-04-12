@@ -164,6 +164,7 @@ export default class EditPage extends React.Component {
                             }
                         }
                         if (that.state.bricksByName === undefined) {
+                            console.log('Beep boop');
                             that.setup_getAllPossibleHtmlBlocks();
                         }
                         return true;
@@ -253,6 +254,7 @@ export default class EditPage extends React.Component {
                                 'type': current.type
                             }
                         }
+                        console.log('Bonk');
                         //console.log(brickContainer);
                         that.setState({
                             'bricksById': result,
@@ -342,23 +344,22 @@ export default class EditPage extends React.Component {
     //____________________________________________________________________________
     setup_buildBody() {
         console.log('3. Build body!');
-        let slot = 'body';
 
-        // Create new <head> element
+        // Create new <body> element
         this.setup_createBaseBlock('body', this.state.htmlBlockId, 1);
 
         let that = this;
         this.setState({
             'buildTimer': setInterval(function () {
                 if (that.state.bodyBlockId !== undefined) { // when setup_createBaseBlock(body) completes
+                    
                     clearInterval(that.state.buildTimer);
                     that.setState({
                         'buildTimer': null,
                         'finishedBuildingHeadBody': true
                     });
-
                     that.updateProject(that.state.htmlBlockId);
-                    that.makeLayout(); // Now make the layout on the right
+                    //that.makeLayout(); // Now make the layout on the right
                 }
             }, 200)
         });
@@ -428,6 +429,10 @@ export default class EditPage extends React.Component {
     //____________________________________________________________________________
     // Get root block and all of it's children and their children to make the layout on the right
     makeLayout() {
+
+        if (this.state.projectData === undefined) {
+            return;
+        }
 
         // Clear stack
         this.setState({
@@ -566,6 +571,12 @@ export default class EditPage extends React.Component {
         if (current.blocktype !== 'text') {
             let startTag = '<' + current.blocktype + '>';
             let endTag = '</' + current.blocktype + '>';
+            if (current.blocktype === undefined) {
+                setTimeout(function() {
+                    that.makeLayout();
+                }, 300);
+                return;
+            }
             b = (
                 <ul onClick={function (e) { that.drop(current.id, (Object.keys(current.children)).length, e) }}>
                     <li className={blockclass}>
@@ -772,7 +783,7 @@ export default class EditPage extends React.Component {
                                 that.getBlock(newStack[0].id, true, newStack[0].location);
                             } else {
                                 //console.log('Done!');
-                                // Make new layout
+                                // Make new layout for the right display
                                 that.setState({
                                     'recursiveLayout': that.recursiveLayout(layout, true)
                                 });
