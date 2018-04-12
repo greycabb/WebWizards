@@ -24,17 +24,14 @@ export default class EditPage extends React.Component {
             'selectedBrick': undefined, // Which block on the left is selected (ID)
 
             'projectData': undefined, // Data about the project
-
             'projectId': pid, // id of the project
-
 
             'bricksById': undefined, // All posible HTML blocks, will be called bricks throughout
             'bricksByName': undefined, // All possible bricks by name (div, span, etc) instead of ID
 
             'htmlBlockId': undefined, // ID of the root HTML block in the project data
 
-            // For building the layout...
-            'layout': {},
+            'layout': {}, // Layout of the right display
 
             /* Example layout:
                 {
@@ -74,18 +71,18 @@ export default class EditPage extends React.Component {
                     }
                 }
             */
-            'stack': [],
-            'stackVisited': {},
+            'stack': [], // For building the layout
+            'stackVisited': {}, // Also for building the layout
 
-            'finishedBuildingHeadBody': false,
-            'recursiveLayout': undefined
+            'finishedBuildingHeadBody': false, // If html, head, body tags exist in the project content
+            'recursiveLayout': undefined // JSX content of the right display, built from layout
         };
 
         // Setup functions
         this.setup_getProjectData = this.setup_getProjectData.bind(this); // state.projectdata
         this.setup_compareProjectUserIdToAuthTokenUserId = this.setup_compareProjectUserIdToAuthTokenUserId.bind(this); // dependent on getProjectData's user ID
         this.setup_getAllPossibleHtmlBlocks = this.setup_getAllPossibleHtmlBlocks.bind(this);
-        
+
         // Build the original project components - root, head, body, base. Maybe make these run when the project gets created
         this.setup_buildHtmlRoot = this.setup_buildHtmlRoot.bind(this); // dependent on getProjectData's content
         this.setup_buildHead = this.setup_buildHead.bind(this); // Root -> head -> body (in order, very important)
@@ -96,7 +93,6 @@ export default class EditPage extends React.Component {
         this.makeLayout = this.makeLayout.bind(this); // Create "layout" state
         this.recursiveLayout = this.recursiveLayout.bind(this); // Using the layout state, create the display on the right
 
-        //_____________
         // Setting data
         this.updateProject = this.updateProject.bind(this); // Update project, passing in the ID of the base HTML block
         this.createBlock = this.createBlock.bind(this); // Create a new block in the project
@@ -158,13 +154,18 @@ export default class EditPage extends React.Component {
                                 'needsHtmlRoot': true
                             });
                         } else {
-                            console.log('Setup 1 -> B: There is html, head, body already');
+                            //console.log('Setup 1 -> B: There is html, head, body already');
                             that.setState({
                                 'htmlBlockId': result.content[0]
                             });
                             that.getBlock(that.state.htmlBlockId);
+                            if (that.state.bricksByName !== undefined) {
+                                that.makeLayout();
+                            }
                         }
-                        that.setup_getAllPossibleHtmlBlocks();
+                        if (that.state.bricksByName === undefined) {
+                            that.setup_getAllPossibleHtmlBlocks();
+                        }
                         return true;
                     });
 
@@ -202,11 +203,7 @@ export default class EditPage extends React.Component {
                 if (response.ok) {
                     response.json().then(function (result) {
                         // Check if project creator's user ID is the same as the ID of the authorized user
-                        if (that.state.projectData.userid === result.id) {
-                            // Authentication succeeded
-                            console.log('Setup 1.5: Authentication succeeded');
-                        } else {
-                            // Kick to main page
+                        if (that.state.projectData.userid !== result.id) {
                             console.log('Setup 1.5: Authentication failed!')
                             hashHistory.push('/main');
                         }
@@ -271,10 +268,10 @@ export default class EditPage extends React.Component {
                             });
                             that.setup_buildHtmlRoot();
                         } else {
-                            that.makeLayout();
                             that.setState({
                                 'finishedBuildingHeadBody': true
                             });
+                            that.makeLayout();  // If HTML root already exists, make the layout on the right
                         }
                     });
 
@@ -361,7 +358,7 @@ export default class EditPage extends React.Component {
                     });
 
                     that.updateProject(that.state.htmlBlockId);
-                    that.makeLayout();
+                    that.makeLayout(); // Now make the layout on the right
                 }
             }, 200)
         });
@@ -438,28 +435,28 @@ export default class EditPage extends React.Component {
             stackVisited: {}
         });
 
-        let hd = this.state.headData;
-        if (hd) {
-            this.setState({
-                layout: {
-                    id: hd.id,
-                    blocktype: hd.blocktype,
-                    css: hd.css,
-                    parentid: hd.parentid,
-                    children: {
+        // let hd = this.state.headData;
+        // if (hd) {
+        //     this.setState({
+        //         layout: {
+        //             id: hd.id,
+        //             blocktype: hd.blocktype,
+        //             css: hd.css,
+        //             parentid: hd.parentid,
+        //             children: {
 
-                    }
-                }
-            });
-        } else {
-            this.setState({
-                layout: {
-                    children: {
+        //             }
+        //         }
+        //     });
+        // } else {
+        this.setState({
+            layout: {
+                children: {
 
-                    }
                 }
-            })
-        }
+            }
+            // })
+        });
 
         // Recursively build the layout
         this.getBlock(this.state.htmlBlockId, true, [0]);
@@ -488,7 +485,7 @@ export default class EditPage extends React.Component {
             }
         }
 
-        console.log(current);
+        //console.log(current);
 
         let b = (<span></span>);
 
@@ -611,7 +608,6 @@ export default class EditPage extends React.Component {
         })
             .then(function (response) {
                 that.setup_getProjectData();
-                that.makeLayout();
             })
             .catch(err => {
                 console.log('ERROR: ', err);
@@ -877,7 +873,7 @@ export default class EditPage extends React.Component {
         }
     }
 
-    
+
 
 
 
