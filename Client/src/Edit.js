@@ -83,9 +83,9 @@ export default class EditPage extends React.Component {
 
         // Setup functions
         this.setup_getProjectData = this.setup_getProjectData.bind(this); // state.projectdata
-        this.setup_getAllPossibleHtmlBlocks = this.setup_getAllPossibleHtmlBlocks.bind(this);
         this.setup_compareProjectUserIdToAuthTokenUserId = this.setup_compareProjectUserIdToAuthTokenUserId.bind(this); // dependent on getProjectData's user ID
-
+        this.setup_getAllPossibleHtmlBlocks = this.setup_getAllPossibleHtmlBlocks.bind(this);
+        
         // Build the original project components - root, head, body, base. Maybe make these run when the project gets created
         this.setup_buildHtmlRoot = this.setup_buildHtmlRoot.bind(this); // dependent on getProjectData's content
         this.setup_buildHead = this.setup_buildHead.bind(this); // Root -> head -> body (in order, very important)
@@ -96,11 +96,12 @@ export default class EditPage extends React.Component {
         this.makeLayout = this.makeLayout.bind(this); // Create "layout" state
         this.recursiveLayout = this.recursiveLayout.bind(this); // Using the layout state, create the display on the right
 
-        // Set data
+        //_____________
+        // Setting data
         this.updateProject = this.updateProject.bind(this); // Update project, passing in the ID of the base HTML block
         this.createBlock = this.createBlock.bind(this); // Create a new block in the project
 
-        // Get data
+        // Getting data
         this.getBlock = this.getBlock.bind(this); // Get information about a block
 
         // Editor functions
@@ -119,7 +120,7 @@ export default class EditPage extends React.Component {
     // Part 1: Setup
     //      On load, get project data and all possible HTML blocks (aka bricks)
 
-    //_____________
+    //____________________________________________________________________________
     // API call for getting project content JSON
     setup_getProjectData() {
 
@@ -182,7 +183,7 @@ export default class EditPage extends React.Component {
             });
     }
 
-    //_____________
+    //____________________________________________________________________________
     // Called during setup_getProjectData() after the API call for getting project data completes
     setup_compareProjectUserIdToAuthTokenUserId() {
 
@@ -225,7 +226,7 @@ export default class EditPage extends React.Component {
             });
     }
 
-    //_____________
+    //____________________________________________________________________________
     // Get all possible HTML blocks, putting them as bricks on left
     setup_getAllPossibleHtmlBlocks() {
         let that = this;
@@ -290,7 +291,7 @@ export default class EditPage extends React.Component {
 
     }
 
-    //_____________
+    //____________________________________________________________________________
     // Called during setup_getAllPossibleHtmlBlocks after the API call if content of project is empty
     setup_buildHtmlRoot() {
         console.log('1. Build HTML root!');
@@ -318,6 +319,7 @@ export default class EditPage extends React.Component {
             }, 200)
         });
     }
+    //____________________________________________________________________________
     setup_buildHead() {
         console.log('2. Build head!');
 
@@ -340,6 +342,7 @@ export default class EditPage extends React.Component {
             }, 200)
         });
     }
+    //____________________________________________________________________________
     setup_buildBody() {
         console.log('3. Build body!');
         let slot = 'body';
@@ -364,6 +367,7 @@ export default class EditPage extends React.Component {
         });
     }
 
+    //____________________________________________________________________________
     // Create <html>, <head>, <body> tags when they previously don't exist
     setup_createBaseBlock(slot, parentId, index) {
         let brickId = this.state.bricksByName[slot].id;
@@ -424,6 +428,197 @@ export default class EditPage extends React.Component {
             });
     }
 
+    //____________________________________________________________________________
+    // Get root block and all of it's children and their children to make the layout on the right
+    makeLayout() {
+
+        // Clear stack
+        this.setState({
+            stack: [],
+            stackVisited: {}
+        });
+
+        let hd = this.state.headData;
+        if (hd) {
+            this.setState({
+                layout: {
+                    id: hd.id,
+                    blocktype: hd.blocktype,
+                    css: hd.css,
+                    parentid: hd.parentid,
+                    children: {
+
+                    }
+                }
+            });
+        } else {
+            this.setState({
+                layout: {
+                    children: {
+
+                    }
+                }
+            })
+        }
+
+        // Recursively build the layout
+        this.getBlock(this.state.htmlBlockId, true, [0]);
+    }
+
+    //____________________________________________________________________________
+    // Recursively build the display on the right
+    recursiveLayout(current, first) {
+
+        if (!current) {
+            return;
+        }
+
+        const blockTypesToIgnore = {
+            'html': true,
+            'body': true,
+            'head': true
+        };
+
+        if (first === true) {
+            if (current.children !== undefined && current.children[0] !== undefined) {
+                current = current.children[0];
+                first = 0;
+            } else {
+                return;
+            }
+        }
+
+        console.log(current);
+
+        let b = (<span></span>);
+
+        let blockname = this.state.bricksByName[current.blocktype];
+
+        let that = this;
+
+        if (blockname != undefined &&
+            (blockname.type == 'wrapper' || blockname.type == 'text-wrapper')) {
+            let kids = Object.keys(current.children);
+            for (var i = 0; i < kids.length; i++) {
+                let child = current.children[kids[i]];
+
+                if (blockTypesToIgnore[child.blocktype] !== true) {
+                    // Place a dropspace before each child
+                    let index = i;
+                    b = (<span>
+                        {b}
+                        <div className="red" onClick={function (e) { that.drop(current.id, index, e) }}>
+                            <span className="yellow">-> parent: {current.id.substr(current.id.length - 3)}, index: {index}</span>
+                        </div>
+                        {this.recursiveLayout(child, i)}
+                    </span>);
+                } else {
+                    b = (<span>{b}{this.recursiveLayout(child, i)}</span>);
+                }
+
+                if (i === kids.length - 1) {
+                    if (blockTypesToIgnore[child.blocktype] !== true) {
+                        // Place a dropspace after the last child
+                        let index = i + 1;
+                        b = (
+                            <span>
+                                {b}
+                                <div className="purp" onClick={function (e) { that.drop(current.id, index, e) }}>
+                                    <span className="yellow">-> parent: {current.id.substr(current.id.length - 3)}, index: {index}</span>
+                                </div>
+                            </span>
+                        );
+                    }
+                }
+            }
+            if (blockTypesToIgnore[current.blocktype] !== true) {
+                b = (
+                    <span>
+                        {/* <li className="red">
+                            <span className="yellow">-> parent: {current.parentid.substr(current.parentid.length - 3)}, index: 0</span>
+                        </li> */}
+                        {b}
+                    </span>
+                );
+            }
+        }
+
+        if (blockname !== undefined && blockname.type === "content") {
+            let content = current.children;
+            console.log("current content: " + JSON.stringify(content));
+            b = (<span></span>);
+        }
+        if (current.children[0] !== undefined && current.children[0].blocktype === "text-contents") {
+            let content = current.children[0].children.content;
+            console.log("Testing " + content);
+            b = (<input type="text" className="editor-text-content" value={content} />);
+        }
+
+        var blockclass;
+        if (blockname !== undefined) {
+            if (blockname.type == 'wrapper') {
+                blockclass = 'primary-brick';
+            }
+            if (blockname.type == 'content') {
+                blockclass = 'secondary-brick';
+            }
+            if (blockname.type == 'text-wrapper') {
+                blockclass = 'third-brick';
+            }
+        }
+        if (current.blocktype !== 'text') {
+            let startTag = '<' + current.blocktype + '>';
+            let endTag = '</' + current.blocktype + '>';
+            b = (
+                <ul onClick={function (e) { that.drop(current.id, (Object.keys(current.children)).length, e) }}>
+                    <li className={blockclass}>
+                        {startTag}
+                        {current.id !== undefined &&
+                            <span className="yel">id: {current.id.substr(current.id.length - 3)}, index: {first} </span>
+                        }
+                        {b}
+                        {endTag}
+                    </li>
+                </ul>
+            );
+
+            //b = ({b});
+        }
+        else {
+            b = (<li className={blockclass}>{b}</li>);
+            b = (<ul>{b}</ul>);
+        }
+        return b;
+    }
+
+    //____________________________________________________________________________
+    // Update project
+    // blockId: the ID of the base <HTML> tag of the project's content
+    updateProject(blockId) {
+        console.log('Update Project!' + blockId + '>');
+        let that = this;
+
+        fetch('https://api.webwizards.me/v1/projects?id=' + this.state.projectId, {
+            method: 'PATCH',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('Authorization')
+            },
+            body: JSON.stringify({
+                'content': [blockId]
+            })
+        })
+            .then(function (response) {
+                that.setup_getProjectData();
+                that.makeLayout();
+            })
+            .catch(err => {
+                console.log('ERROR: ', err);
+            });
+    }
+
+    //____________________________________________________________________________
     // slot like "title" or whatever
     // parentid is the parent of the block
     // index is the # index child the block is, of the parent
@@ -469,7 +664,7 @@ export default class EditPage extends React.Component {
 
 
 
-
+    //____________________________________________________________________________
     // Used to get information about blocks, needed for building the display on the right
     // id: id of block to add to layout
     // forSetup: if the getBlockgetBlock() call is
@@ -633,78 +828,7 @@ export default class EditPage extends React.Component {
     }
 
 
-    //______________________
-    // Functions
-
-
-
-    // Get root block and all of it's children and their children to make the layout on the right
-    makeLayout() {
-
-        // Clear stack
-        this.setState({
-            stack: [],
-            stackVisited: {}
-        });
-
-        let hd = this.state.headData;
-        if (hd) {
-            this.setState({
-                layout: {
-                    id: hd.id,
-                    blocktype: hd.blocktype,
-                    css: hd.css,
-                    parentid: hd.parentid,
-                    children: {
-
-                    }
-                }
-            });
-        } else {
-            this.setState({
-                layout: {
-                    children: {
-
-                    }
-                }
-            })
-        }
-
-        // Recursively build the layout
-        this.getBlock(this.state.htmlBlockId, true, [0]);
-    }
-
-    // Update project
-    // blockId: the ID of the base <HTML> tag of the project's content
-    updateProject(blockId) {
-        console.log('Update Project!' + blockId + '>');
-        let that = this;
-
-        fetch('https://api.webwizards.me/v1/projects?id=' + this.state.projectId, {
-            method: 'PATCH',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': localStorage.getItem('Authorization')
-            },
-            body: JSON.stringify({
-                'content': [blockId]
-            })
-        })
-            .then(function (response) {
-                that.setup_getProjectData();
-                that.makeLayout();
-            })
-            .catch(err => {
-                console.log('ERROR: ', err);
-            });
-    }
-
-
-
-
-
-
+    //____________________________________________________________________________
     // Click a brick on the left
     pickup(brickName) {
 
@@ -738,6 +862,7 @@ export default class EditPage extends React.Component {
         }
     }
 
+    //____________________________________________________________________________
     // Place a block into the right, after picking up a brick on the left
     // The type of brick placed is determined by the brick that was picked up on the left, from state
     drop(parentId, index, e) {
@@ -752,134 +877,12 @@ export default class EditPage extends React.Component {
         }
     }
 
-    // Recursively build the display on the right
-    recursiveLayout(current, first) {
-
-        if (!current) {
-            return;
-        }
-
-        const blockTypesToIgnore = {
-            'html': true,
-            'body': true,
-            'head': true
-        };
-
-        if (first === true) {
-            if (current.children !== undefined && current.children[0] !== undefined) {
-                current = current.children[0];
-                first = 0;
-            } else {
-                return;
-            }
-        }
-
-        console.log(current);
-
-        let b = (<span></span>);
-
-        let blockname = this.state.bricksByName[current.blocktype];
-
-        let that = this;
-
-        if (blockname != undefined &&
-            (blockname.type == 'wrapper' || blockname.type == 'text-wrapper')) {
-            let kids = Object.keys(current.children);
-            for (var i = 0; i < kids.length; i++) {
-                let child = current.children[kids[i]];
-
-                if (blockTypesToIgnore[child.blocktype] !== true) {
-                    // Place a dropspace before each child
-                    let index = i;
-                    b = (<span>
-                        {b}
-                        <div className="red" onClick={function (e) { that.drop(current.id, index, e) }}>
-                            <span className="yellow">-> parent: {current.id.substr(current.id.length - 3)}, index: {index}</span>
-                        </div>
-                        {this.recursiveLayout(child, i)}
-                    </span>);
-                } else {
-                    b = (<span>{b}{this.recursiveLayout(child, i)}</span>);
-                }
-
-                if (i === kids.length - 1) {
-                    if (blockTypesToIgnore[child.blocktype] !== true) {
-                        // Place a dropspace after the last child
-                        let index = i + 1;
-                        b = (
-                            <span>
-                                {b}
-                                <div className="purp" onClick={function (e) { that.drop(current.id, index, e) }}>
-                                    <span className="yellow">-> parent: {current.id.substr(current.id.length - 3)}, index: {index}</span>
-                                </div>
-                            </span>
-                        );
-                    }
-                }
-            }
-            if (blockTypesToIgnore[current.blocktype] !== true) {
-                b = (
-                    <span>
-                        {/* <li className="red">
-                            <span className="yellow">-> parent: {current.parentid.substr(current.parentid.length - 3)}, index: 0</span>
-                        </li> */}
-                        {b}
-                    </span>
-                );
-            }
-        }
-
-        if (blockname !== undefined && blockname.type === "content") {
-            let content = current.children;
-            console.log("current content: " + JSON.stringify(content));
-            b = (<span></span>);
-        }
-        if (current.children[0] !== undefined && current.children[0].blocktype === "text-contents") {
-            let content = current.children[0].children.content;
-            console.log("Testing " + content);
-            b = (<input type="text" className="editor-text-content" value={content} />);
-        }
-
-        var blockclass;
-        if (blockname !== undefined) {
-            if (blockname.type == 'wrapper') {
-                blockclass = 'primary-brick';
-            }
-            if (blockname.type == 'content') {
-                blockclass = 'secondary-brick';
-            }
-            if (blockname.type == 'text-wrapper') {
-                blockclass = 'third-brick';
-            }
-        }
-        if (current.blocktype !== 'text') {
-            let startTag = '<' + current.blocktype + '>';
-            let endTag = '</' + current.blocktype + '>';
-            b = (
-                <ul onClick={function (e) { that.drop(current.id, (Object.keys(current.children)).length, e) }}>
-                    <li className={blockclass}>
-                        {startTag}
-                        {current.id !== undefined &&
-                            <span className="yel">id: {current.id.substr(current.id.length - 3)}, index: {first} </span>
-                        }
-                        {b}
-                        {endTag}
-                    </li>
-                </ul>
-            );
-
-            //b = ({b});
-        }
-        else {
-            b = (<li className={blockclass}>{b}</li>);
-            b = (<ul>{b}</ul>);
-        }
-        return b;
-    }
+    
 
 
 
 
+    //____________________________________________________________________________
     render() {
 
         // Recursively build layout...
