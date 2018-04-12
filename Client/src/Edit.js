@@ -78,7 +78,8 @@ export default class EditPage extends React.Component {
             'stackVisited': {},
             'indexMapOfCurrent': [], // e.g. [0, 2, 3, 2, 1] for placing at layout[2][3][2][1]
 
-            'finishedBuildingHeadBody': false
+            'finishedBuildingHeadBody': false,
+            'recursiveLayout': undefined
         };
 
         // Setup functions
@@ -90,7 +91,7 @@ export default class EditPage extends React.Component {
         this.setup_buildHtmlRoot = this.setup_buildHtmlRoot.bind(this); // dependent on getProjectData's content
         this.setup_buildHead = this.setup_buildHead.bind(this); // Root -> head -> body (in order, very important)
         this.setup_buildBody = this.setup_buildBody.bind(this);
-        this.setup_createBaseBlock = this.setup_createBaseBlock.bind(this);
+        this.setup_createBaseBlock = this.setup_createBaseBlock.bind(this); // used in setup_build...s
 
         this.createBlock = this.createBlock.bind(this);
         this.makeLayout = this.makeLayout.bind(this);
@@ -98,6 +99,7 @@ export default class EditPage extends React.Component {
         this.updateProject = this.updateProject.bind(this);
         this.getBlock = this.getBlock.bind(this);
 
+        this.recursiveLayout = this.recursiveLayout.bind(this);
         this.pickup = this.pickup.bind(this);
         this.drop = this.drop.bind(this);
 
@@ -575,6 +577,10 @@ export default class EditPage extends React.Component {
                                 that.getBlock(newStack[0].id, true, newStack[0].location);
                             } else {
                                 //console.log('Done!');
+                                // Make new layout
+                                that.setState({
+                                    'recursiveLayout': that.recursiveLayout(that.state.newLayout, true)
+                                });
                             }
                         }
                     });
@@ -754,27 +760,170 @@ export default class EditPage extends React.Component {
 
     // Click a brick on the left
     pickup(brickName) {
-        if (brickName !== undefined && this.state.bricksByName !== undefined) {
+
+        // Remove highlight class from previously selected bricks
+        let clicked = document.querySelectorAll('.pressed-brick');
+        for (let i = 0; i < clicked.length; i++) {
+            clicked[i].classList.remove('pressed-brick');
+        }
+
+        if (brickName === undefined || brickName === this.state.selectedBrick) {
+            this.setState({
+                'status': '',
+                'selectedBrick': undefined
+            });
+            return;
+        }
+        if (this.state.bricksByName !== undefined) {
             if (this.state.bricksByName[brickName] !== undefined) {
                 console.log(brickName);
                 this.setState({
                     'selectedBrick': brickName
                 });
             }
+
             document.getElementById(brickName).classList.add('pressed-brick');
+
+            // debug purposes
+            this.setState({
+                'status': brickName + ' -> '
+            });
         }
     }
 
     // Place a block into the right, after picking up a brick on the left
     // The type of brick placed is determined by the brick that was picked up on the left, from state
-    drop(parentId, index) {
-        console.log('drop ' + ' ' + parentId + ' ' + index)
-        if (parentId && index && this.state.selectedBrick) {
+    drop(parentId, index, e) {
+        e.stopPropagation();
 
+        let brick = this.state.selectedBrick;
+        if (parentId !== undefined && index !== undefined && brick) {
+            this.pickup(); // unselect the selected brick
+            console.log('drop <' + brick + '> in ' + parentId + ' ' + index);
+        } else {
+            console.log('FAILED to drop <' + brick + '> in ' + parentId + ' ' + index)
         }
     }
 
+    recursiveLayout(current, first) {
 
+        const blockTypesToIgnore = {
+            'html': true,
+            'body': true,
+            'head': true
+        };
+
+        //console.log('[[[[[RL]]]]]');
+        if (first === true) {
+            if (current.children !== undefined && current.children[0] !== undefined) {
+                current = current.children[0];
+            } else {
+                return;
+            }
+        }
+
+        //console.log(current);
+
+        let b = (<span></span>);
+
+        let blockname = this.state.bricksByName[current.blocktype];
+
+        let that = this;
+
+        if (blockname != undefined &&
+            (blockname.type == 'wrapper' || blockname.type == 'text-wrapper')) {
+            let kids = Object.keys(current.children);
+            for (var i = 0; i < kids.length; i++) {
+                let child = current.children[kids[i]];
+
+                if (blockTypesToIgnore[child.blocktype] !== true) {
+                    // Place a dropspace before each child
+                    let index = i;
+                    b = (<span>
+                        <li className="green" onClick={function (e) { that.drop(current.id, index, e) }}>
+                            <span className="yellow">&nbsp;&nbsp;&nbsp; parent: {current.id.substr(current.id.length - 3)}, index: {index}</span>
+                        </li>
+                        {b}{this.recursiveLayout(child)}
+                    </span>);
+                } else {
+                    b = (<span>{b}{this.recursiveLayout(child)}</span>);
+                }
+
+                if (i === kids.length - 1) {
+                    if (blockTypesToIgnore[child.blocktype] !== true) {
+                        // Place a dropspace after the last child
+                        let index = i + 1;
+                        b = (<ul>{b}
+                            <li className="green" onClick={function (e) { that.drop(current.id, index, e) }}>
+                                <span className="yellow">&nbsp;&nbsp;&nbsp; parent: {current.id.substr(current.id.length - 3)}, index: {index}</span>
+                            </li>
+                        </ul>);
+                    }
+                    // else {
+                    //     b = (<ul onClick={function (e) { that.drop(current.id, 0, e) }}>{b}</ul>)
+                    // }
+                }
+            }
+
+            // b = (<li>&lt;{current.blocktype}&gt;<span className="yel">&nbsp;&nbsp;&nbsp;id: {current.id.substr(current.id.length - 3)}</span>{b}</li>);
+            // //if (first === true) {
+
+            if (blockTypesToIgnore[current.blocktype] !== true) {
+                b = (<ul><li className="green"><span className="yellow">&nbsp;&nbsp;&nbsp; parent: {current.parentid.substr(current.parentid.length - 3)}, index: 0</span></li>{b}</ul>);
+            }
+            // //}
+            // b = (<span>{b}{recursiveLayout(child)}</span>);
+
+            // if (i === current.children.length) {
+            //     b = (<ul>{b}</ul>);
+            // }
+        }
+
+        if (blockname !== undefined && blockname.type === "content") {
+            let content = current.children;
+            console.log("current content: " + JSON.stringify(content));
+            b = (<span></span>);
+        }
+        if (current.children[0] !== undefined && current.children[0].blocktype === "text-contents") {
+            let content = current.children[0].children.content;
+            console.log("Testing " + content);
+            b = (<input type="text" className="editor-text-content" value={content} />);
+        }
+
+        var blockclass;
+        if (blockname !== undefined) {
+            if (blockname.type == 'wrapper') {
+                blockclass = 'primary-brick';
+            }
+            if (blockname.type == 'content') {
+                blockclass = 'secondary-brick';
+            }
+            if (blockname.type == 'text-wrapper') {
+                blockclass = 'third-brick';
+            }
+        }
+        if (current.blocktype !== 'text') {
+            let startTag = '<' + current.blocktype + '>';
+            let endTag = '</' + current.blocktype + '>';
+            b = (
+                <ul  onClick={function (e) { that.drop(current.id, (Object.keys(current.children)).length, e) }}>
+                    <li className={blockclass}>
+                        {startTag}
+                        <span className="yel">{current.id.substr(current.id.length - 3)}</span>
+                        {b}
+                        {endTag}
+                    </li>
+                </ul>
+            );
+
+            //b = ({b});
+        }
+        else {
+            b = (<li className={blockclass}>{b}</li>);
+            b = (<ul>{b}</ul>);
+        }
+        return b;
+    }
 
 
 
@@ -796,10 +945,10 @@ export default class EditPage extends React.Component {
                             If there are children, put a <ul> inside with more children
                             <ul>
                                 <li>&lt;head&gt;
-    
+     
                                 </li>
                                 <li>&lt;body&gt;
-    
+     
                                 </li>
                             </ul>
                         </li>
@@ -812,113 +961,11 @@ export default class EditPage extends React.Component {
         // Recursively build layout...
 
         // Don't put append or prepends for these 3 base block types
-        const blockTypesToIgnore = {
-            'html': true,
-            'body': true,
-            'head': true
-        };
+
 
         let that = this;
 
-        function recursiveLayout(current, first) {
-            //console.log('[[[[[RL]]]]]');
-            if (first === true) {
-                if (current.children !== undefined && current.children[0] !== undefined) {
-                    current = current.children[0];
-                } else {
-                    return;
-                }
-            }
 
-            console.log(current);
-
-            let b = (<span></span>);
-
-            let blockname = that.state.bricksByName[current.blocktype];
-
-            if (blockname != undefined &&
-                (blockname.type == 'wrapper' || blockname.type == 'text-wrapper')) {
-                let kids = Object.keys(current.children);
-                for (var i = 0; i < kids.length; i++) {
-                    let child = current.children[kids[i]];
-
-                    if (blockTypesToIgnore[child.blocktype] !== true) {
-                        // Place a dropspace before each child
-                        let index = i;
-                        b = (<span>
-                                <li className="green" onClick={function() { that.drop(current.id, index)} }>
-                                    <span className="yellow">&nbsp;&nbsp;&nbsp; parent: {current.id.substr(current.id.length - 3)}, index: {index}</span>
-                                </li>
-                                {b}{recursiveLayout(child)}
-                                </span>);
-                    } else {
-                        b = (<span>{b}{recursiveLayout(child)}</span>);
-                    }
-
-                    if (i === kids.length - 1) {
-                        if (blockTypesToIgnore[child.blocktype] !== true) {
-                            // Place a dropspace after the last child
-                            let index = i + 1;
-                            b = (<ul>{b}
-                                    <li className="green" onClick={function() { that.drop(current.id, index)} }>
-                                        <span className="yellow">&nbsp;&nbsp;&nbsp; parent: {current.id.substr(current.id.length - 3)}, index: {index}</span>
-                                    </li>
-                                </ul>);
-                        } else {
-                            b = (<ul>{b}</ul>)
-                        }
-                    }
-                }
-
-                // b = (<li>&lt;{current.blocktype}&gt;<span className="yel">&nbsp;&nbsp;&nbsp;id: {current.id.substr(current.id.length - 3)}</span>{b}</li>);
-                // //if (first === true) {
-
-                if (blockTypesToIgnore[current.blocktype] !== true) {
-                    b = (<ul><li className="green"><span className="yellow">&nbsp;&nbsp;&nbsp; parent: {current.parentid.substr(current.parentid.length - 3)}, index: 0</span></li>{b}</ul>);
-                }
-                // //}
-                // b = (<span>{b}{recursiveLayout(child)}</span>);
-
-                // if (i === current.children.length) {
-                //     b = (<ul>{b}</ul>);
-                // }
-            }
-
-            if (blockname !== undefined && blockname.type === "content") {
-                let content = current.children;
-                console.log("current content: " + JSON.stringify(content));
-                b = (<span></span>);
-            }
-            if (current.children[0] !== undefined && current.children[0].blocktype === "text-contents") {
-                let content = current.children[0].children.content;
-                console.log("Testing " + content);
-                b = (<input type="text" className="editor-text-content" value={content} />);
-            }
-
-            var blockclass;
-            if (blockname !== undefined) {
-                if (blockname.type == 'wrapper') {
-                    blockclass = 'primary-brick';
-                }
-                if (blockname.type == 'content') {
-                    blockclass = 'secondary-brick';
-                }
-                if (blockname.type == 'text-wrapper') {
-                    blockclass = 'third-brick';
-                }
-            }
-            if (current.blocktype !== 'text') {
-                let startTag = '<' + current.blocktype + '>';
-                let endTag = '</' + current.blocktype + '>';
-                b = (<li className={blockclass}>{startTag}   <span className="yel">{current.id.substr(current.id.length - 3)}</span>{b}{endTag}</li>);
-                b = (<ul>{b}</ul>);
-            }
-            else {
-                b = (<li className={blockclass}>{b}</li>);
-                b = (<ul>{b}</ul>);
-            }
-            return b;
-        }
 
         var urlstring = "#/project/" + this.state.projectId;
 
@@ -929,7 +976,7 @@ export default class EditPage extends React.Component {
                 }
                 <div className="half-width">
                     <div className="edit-bar">
-                        <div>Status</div>
+                        <div><h3>&nbsp;{this.state.status}</h3></div>
                         <Link to="/main"><button className="btn yellow-button">Back</button></Link>
                         {this.state.projectId != undefined && this.state.projectData != undefined &&
                             <span>
@@ -942,32 +989,37 @@ export default class EditPage extends React.Component {
                     {this.state.projectData != undefined &&
                         <PreviewProject projectObject={this.state.projectData} />
                     }
+
+                    {/* Can make each line and the function get generated from 3 arrays instead... primary, secondary, third arrays of each name */}
                     <div>
-                        <div className="brick primary-brick disable-select" id="head" onClick={function () { that.pickup('head') }} >head</div>
-                        <div className="brick primary-brick disable-select" id="title">title</div>
-                        <div className="brick primary-brick disable-select" id="body">body</div>
-                        <div className="brick primary-brick disable-select" id="div">div</div>
-                        <div className="brick primary-brick disable-select" id="span">span</div>
-                        <div className="brick primary-brick disable-select" id="span">p</div>
+                        {/* <div className="brick primary-brick disable-select" id="head" onClick={function () { that.pickup('head') }} >head</div> */}
+                        {/* <div className="brick primary-brick disable-select" id="title" onClick={function () { that.pickup('title') }} >title</div> */}
+                        {/* <div className="brick primary-brick disable-select" id="body" onClick={function () { that.pickup('body') }} >body</div> */}
+                        <div className="brick primary-brick disable-select" id="div" onClick={function () { that.pickup('div') }} >div</div>
+                        {/* <div className="brick primary-brick disable-select" id="span" onClick={function () { that.pickup('span') }} >span</div> */}
+                        <div className="brick primary-brick disable-select" id="p" onClick={function () { that.pickup('p') }} >p</div>
                     </div>
                     <div>
-                        <div className="brick secondary-brick disable-select" id="img">img</div>
-                        <div className="brick secondary-brick disable-select" id="audio">audio</div>
-                        <div className="brick secondary-brick disable-select" id="textContent">text content</div>
+                        <div className="brick secondary-brick disable-select" id="img" onClick={function () { that.pickup('img') }} >img</div>
+                        {/* <div className="brick secondary-brick disable-select" id="audio" onClick={function () { that.pickup('audio') }} >audio</div> */}
+                        {/* <div className="brick secondary-brick disable-select" id="textContent" onClick={function () { that.pickup('textContent') }} >text content</div> */}
                     </div>
                     <div>
-                        <div className="brick third-brick disable-select" id="h1">h1</div>
-                        <div className="brick third-brick disable-select" id="h2">h2</div>
-                        <div className="brick third-brick disable-select" id="h3">h3</div>
-                        <div className="brick third-brick disable-select" id="h4">h4</div>
-                        <div className="brick third-brick disable-select" id="h5">h5</div>
-                        <div className="brick third-brick disable-select" id="h6">h6</div>
+                        <div className="brick third-brick disable-select" id="h1" onClick={function () { that.pickup('h1') }} >h1</div>
+                        <div className="brick third-brick disable-select" id="h2" onClick={function () { that.pickup('h2') }} >h2</div>
+                        <div className="brick third-brick disable-select" id="h3" onClick={function () { that.pickup('h3') }} >h3</div>
+                        <div className="brick third-brick disable-select" id="h4" onClick={function () { that.pickup('h4') }} >h4</div>
+                        {/* <div className="brick third-brick disable-select" id="h5" onClick={function () { that.pickup('h5') }} >h5</div> */}
+                        {/* <div className="brick third-brick disable-select" id="h6" onClick={function () { that.pickup('h6') }} >h6</div> */}
                     </div>
                 </div>
                 <div className="half-width draggable-space">
                     <div>
-                        {(this.state.newLayout !== undefined && this.state.finishedBuildingHeadBody === true) &&
-                            recursiveLayout(this.state.newLayout, true)
+                        {this.state.recursiveLayout === undefined &&
+                            <h1>Loading...</h1>
+                        }
+                        {this.state.recursiveLayout !== undefined &&
+                            this.state.recursiveLayout
                         }
                     </div>
                 </div>

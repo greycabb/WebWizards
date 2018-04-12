@@ -321,6 +321,6 @@ li {
   color: yellow;
 }
 .pressed-brick {
-  color: yellow;
-  outline: 3px solid yellow;
+  color: orange;
+  outline: 3px solid orange;
 }
