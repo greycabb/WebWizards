@@ -289,9 +289,10 @@ html, body{
 /*Change this to some other class*/
 ul {
   list-style-type: none;
-  margin-left: -20px;
+  margin-left: -10px;
   font-size: 14pt;
   cursor: pointer;
+  
 }
 
 li {
@@ -314,8 +315,12 @@ li {
 
 /*For testing layout builder*/
 .green {
-    background-color: green;
-    opacity: 0.4;
+    background-color: red;
+    opacity: 0.8;
+}
+.purp {
+  background-color: purple;
+  opacity: 0.8;
 }
 .yel {
   color: yellow;

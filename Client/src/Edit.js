@@ -391,7 +391,8 @@ export default class EditPage extends React.Component {
                         switch (slot) {
                             case 'html':
                                 that.setState({
-                                    'htmlBlockId': result.id
+                                    'htmlBlockId': result.id,
+                                    'headData': result
                                 });
                                 break;
                             case 'head':
@@ -579,7 +580,7 @@ export default class EditPage extends React.Component {
                                 //console.log('Done!');
                                 // Make new layout
                                 that.setState({
-                                    'recursiveLayout': that.recursiveLayout(that.state.newLayout, true)
+                                    'recursiveLayout': that.recursiveLayout(newLayout, true)
                                 });
                             }
                         }
@@ -643,27 +644,31 @@ export default class EditPage extends React.Component {
             stackVisited: {}
         });
 
-        this.setState({
-            newLayout: {
-                children: {
+        let hd = this.state.headData;
+        if (hd) {
+            this.setState({
+                newLayout: {
+                    id: hd.id,
+                    blocktype: hd.blocktype,
+                    css: hd.css,
+                    parentid: hd.parentid,
+                    children: {
 
+                    }
                 }
-                // 0: {
-                //     id: this.state.htmlBlockId,
-                //     blocktype: 'html',
-                //     css: [],
-                //     parentId: null,
+            });
+        } else {
+            this.setState({
+                newLayout: {
+                    children: {
 
-                //     children: {
-
-                //     }
-                // }
-            }
-        });
+                    }
+                }
+            })
+        }
 
         // Recursively build the layout
         this.getBlock(this.state.htmlBlockId, true, [0]);
-
     }
 
 
@@ -795,17 +800,22 @@ export default class EditPage extends React.Component {
     // The type of brick placed is determined by the brick that was picked up on the left, from state
     drop(parentId, index, e) {
         e.stopPropagation();
+        console.log('Attempting to drop <' + brick + '> in ' + parentId + ' ' + index);
 
         let brick = this.state.selectedBrick;
-        if (parentId !== undefined && index !== undefined && brick) {
+        if (brick && parentId !== undefined && index !== undefined) {
             this.pickup(); // unselect the selected brick
             console.log('drop <' + brick + '> in ' + parentId + ' ' + index);
-        } else {
-            console.log('FAILED to drop <' + brick + '> in ' + parentId + ' ' + index)
+            this.createBlock(brick, parentId, index);
         }
     }
 
+    // Recursively build the display on the right
     recursiveLayout(current, first) {
+
+        if (!current) {
+            return;
+        }
 
         const blockTypesToIgnore = {
             'html': true,
@@ -813,7 +823,6 @@ export default class EditPage extends React.Component {
             'head': true
         };
 
-        //console.log('[[[[[RL]]]]]');
         if (first === true) {
             if (current.children !== undefined && current.children[0] !== undefined) {
                 current = current.children[0];
@@ -840,10 +849,11 @@ export default class EditPage extends React.Component {
                     // Place a dropspace before each child
                     let index = i;
                     b = (<span>
-                        <li className="green" onClick={function (e) { that.drop(current.id, index, e) }}>
+                        {b}
+                        <div className="red" onClick={function (e) { that.drop(current.id, index, e) }}>
                             <span className="yellow">&nbsp;&nbsp;&nbsp; parent: {current.id.substr(current.id.length - 3)}, index: {index}</span>
-                        </li>
-                        {b}{this.recursiveLayout(child)}
+                        </div>
+                        {this.recursiveLayout(child)}
                     </span>);
                 } else {
                     b = (<span>{b}{this.recursiveLayout(child)}</span>);
@@ -853,30 +863,27 @@ export default class EditPage extends React.Component {
                     if (blockTypesToIgnore[child.blocktype] !== true) {
                         // Place a dropspace after the last child
                         let index = i + 1;
-                        b = (<ul>{b}
-                            <li className="green" onClick={function (e) { that.drop(current.id, index, e) }}>
+                        b = (
+                        <span>
+                            {b}
+                            <div className="purp" onClick={function (e) { that.drop(current.id, index, e) }}>
                                 <span className="yellow">&nbsp;&nbsp;&nbsp; parent: {current.id.substr(current.id.length - 3)}, index: {index}</span>
-                            </li>
-                        </ul>);
+                            </div>
+                        </span>
+                        );
                     }
-                    // else {
-                    //     b = (<ul onClick={function (e) { that.drop(current.id, 0, e) }}>{b}</ul>)
-                    // }
                 }
             }
-
-            // b = (<li>&lt;{current.blocktype}&gt;<span className="yel">&nbsp;&nbsp;&nbsp;id: {current.id.substr(current.id.length - 3)}</span>{b}</li>);
-            // //if (first === true) {
-
             if (blockTypesToIgnore[current.blocktype] !== true) {
-                b = (<ul><li className="green"><span className="yellow">&nbsp;&nbsp;&nbsp; parent: {current.parentid.substr(current.parentid.length - 3)}, index: 0</span></li>{b}</ul>);
+                b = (
+                    <span>
+                        {/* <li className="red">
+                            <span className="yellow">&nbsp;&nbsp;&nbsp; parent: {current.parentid.substr(current.parentid.length - 3)}, index: 0</span>
+                        </li> */}
+                        {b}
+                    </span>
+                );
             }
-            // //}
-            // b = (<span>{b}{recursiveLayout(child)}</span>);
-
-            // if (i === current.children.length) {
-            //     b = (<ul>{b}</ul>);
-            // }
         }
 
         if (blockname !== undefined && blockname.type === "content") {
@@ -906,10 +913,12 @@ export default class EditPage extends React.Component {
             let startTag = '<' + current.blocktype + '>';
             let endTag = '</' + current.blocktype + '>';
             b = (
-                <ul  onClick={function (e) { that.drop(current.id, (Object.keys(current.children)).length, e) }}>
+                <ul onClick={function (e) { that.drop(current.id, (Object.keys(current.children)).length, e) }}>
                     <li className={blockclass}>
                         {startTag}
-                        <span className="yel">{current.id.substr(current.id.length - 3)}</span>
+                        {current.id !== undefined &&
+                            <span className="yel">{current.id.substr(current.id.length - 3)}</span>
+                        }
                         {b}
                         {endTag}
                     </li>
@@ -927,34 +936,6 @@ export default class EditPage extends React.Component {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-    /*
-                return (
-                    <ul>
-                        <li>&lt;html&gt;
-                            If there are children, put a <ul> inside with more children
-                            <ul>
-                                <li>&lt;head&gt;
-     
-                                </li>
-                                <li>&lt;body&gt;
-     
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                );
-                */
 
     render() {
 
