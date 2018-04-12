@@ -15,7 +15,6 @@ export default class EditPage extends React.Component {
         if (!ud || !auth || !this.props.location.query || !this.props.location.query.project) {
             hashHistory.push('/login');
         }
-
         let pid = this.props.location.query.project;
 
         this.state = {
@@ -24,18 +23,19 @@ export default class EditPage extends React.Component {
 
             'selectedBrick': undefined, // Which block on the left is selected (ID)
 
-            'projectData': undefined,
+            'projectData': undefined, // Data about the project
 
-            'projectId': pid,
+            'projectId': pid, // id of the project
 
-            'bricksByName': undefined,
+
             'bricksById': undefined, // All posible HTML blocks, will be called bricks throughout
+            'bricksByName': undefined, // All possible bricks by name (div, span, etc) instead of ID
 
-            'htmlBlockId': undefined,
+            'htmlBlockId': undefined, // ID of the root HTML block in the project data
 
             // For building the layout...
-            'newLayout': {},
             'layout': {},
+
             /* Example layout:
                 {
                     0: {
@@ -82,29 +82,33 @@ export default class EditPage extends React.Component {
         };
 
         // Setup functions
-        this.setup_getProjectData = this.setup_getProjectData.bind(this);
+        this.setup_getProjectData = this.setup_getProjectData.bind(this); // state.projectdata
         this.setup_getAllPossibleHtmlBlocks = this.setup_getAllPossibleHtmlBlocks.bind(this);
         this.setup_compareProjectUserIdToAuthTokenUserId = this.setup_compareProjectUserIdToAuthTokenUserId.bind(this); // dependent on getProjectData's user ID
 
-        // Project bodybuild
+        // Build the original project components - root, head, body, base. Maybe make these run when the project gets created
         this.setup_buildHtmlRoot = this.setup_buildHtmlRoot.bind(this); // dependent on getProjectData's content
         this.setup_buildHead = this.setup_buildHead.bind(this); // Root -> head -> body (in order, very important)
         this.setup_buildBody = this.setup_buildBody.bind(this);
         this.setup_createBaseBlock = this.setup_createBaseBlock.bind(this); // used in setup_build...s
 
-        this.createBlock = this.createBlock.bind(this);
-        this.makeLayout = this.makeLayout.bind(this);
+        // Editor preparation
+        this.makeLayout = this.makeLayout.bind(this); // Create "layout" state
+        this.recursiveLayout = this.recursiveLayout.bind(this); // Using the layout state, create the display on the right
 
-        this.updateProject = this.updateProject.bind(this);
-        this.getBlock = this.getBlock.bind(this);
+        // Set data
+        this.updateProject = this.updateProject.bind(this); // Update project, passing in the ID of the base HTML block
+        this.createBlock = this.createBlock.bind(this); // Create a new block in the project
 
-        this.recursiveLayout = this.recursiveLayout.bind(this);
+        // Get data
+        this.getBlock = this.getBlock.bind(this); // Get information about a block
+
+        // Editor functions
         this.pickup = this.pickup.bind(this);
         this.drop = this.drop.bind(this);
 
         console.log('______________________');
-
-        this.setup_getProjectData(); // state.projectdata
+        this.setup_getProjectData();
     }
 
     componentDidMount() {
@@ -468,7 +472,7 @@ export default class EditPage extends React.Component {
 
     // Used to get information about blocks, needed for building the display on the right
     // id: id of block to add to layout
-    // forSetup: if the getBlock() call is
+    // forSetup: if the getBlockgetBlock() call is
     // locationInLayout: e.g. if it's [0, 2, 4] then you can get to the block in state.layout at 0: children: { 2: children { 4 }}
     getBlock(id, forSetup, locationInLayout) {
         let that = this;
@@ -537,9 +541,9 @@ export default class EditPage extends React.Component {
 
 
                             // Place the current block into the layout
-                            let newLayout = that.state.newLayout;
+                            let layout = that.state.layout;
 
-                            let location = newLayout;
+                            let location = layout;
 
                             for (var i = 0; i < locationInLayout.length; i++) {
                                 if (location.children[locationInLayout[i]] === undefined) {
@@ -562,10 +566,10 @@ export default class EditPage extends React.Component {
                             location.children = {}; // Filled out later from stack
 
                             that.setState({
-                                newLayout: newLayout
+                                layout: layout
                             });
                             //console.log('LAYOUT');
-                            //console.log(that.state.newLayout);
+                            //console.log(that.state.layout);
 
 
                             // Recursion
@@ -579,7 +583,7 @@ export default class EditPage extends React.Component {
                                 //console.log('Done!');
                                 // Make new layout
                                 that.setState({
-                                    'recursiveLayout': that.recursiveLayout(newLayout, true)
+                                    'recursiveLayout': that.recursiveLayout(layout, true)
                                 });
                             }
                         }
@@ -598,9 +602,9 @@ export default class EditPage extends React.Component {
             .catch(err => {
                 // Cannot fetch block, this is likely to just be a content child
                 // Place the current block into the layout
-                let newLayout = that.state.newLayout;
+                let layout = that.state.layout;
 
-                let location = newLayout;
+                let location = layout;
 
                 for (var i = 0; i < locationInLayout.length; i++) {
                     if (location.children[locationInLayout[i]] === undefined) {
@@ -619,7 +623,7 @@ export default class EditPage extends React.Component {
                 location.children = { "content": id }; // Filled out later from stack
 
                 that.setState({
-                    newLayout: newLayout
+                    layout: layout
                 });
 
                 //console.log(id);
@@ -646,7 +650,7 @@ export default class EditPage extends React.Component {
         let hd = this.state.headData;
         if (hd) {
             this.setState({
-                newLayout: {
+                layout: {
                     id: hd.id,
                     blocktype: hd.blocktype,
                     css: hd.css,
@@ -658,7 +662,7 @@ export default class EditPage extends React.Component {
             });
         } else {
             this.setState({
-                newLayout: {
+                layout: {
                     children: {
 
                     }
@@ -670,70 +674,10 @@ export default class EditPage extends React.Component {
         this.getBlock(this.state.htmlBlockId, true, [0]);
     }
 
-
-
-
-    // Drop a block to specified location
-    /*
-        1 brickId: id of base HTML brick, such as for head, body, title, etc.
-        2 parentId: id of HTML block in project that a new brick is being placed in
-    */
-    // dropBlock(brickId, parentId, index) {
-
-    //     console.log('Drop!');
-
-    //     let that = this;
-    //     if (this.state.projectData === null) {
-    //         return;
-    //     }
-    //     // Create block
-    //     console.log('userid: ' + this.state.projectData.userid);
-    //     console.log('blocktype: ' + brickId);
-    //     console.log('parentid: ' + parentId);
-    //     console.log('index: ' + index);
-
-    //     fetch('https://api.webwizards.me/v1/blocks', {
-    //         method: 'POST',
-    //         headers: {
-    //             'Accept': 'application/json',
-    //             'Content-Type': 'application/json',
-    //             'Authorization': localStorage.getItem('Authorization')
-    //         },
-    //         body: JSON.stringify({
-    //             'userid': that.state.projectData.userid,
-    //             'blocktype': brickId,
-    //             'parentid': parentId,
-    //             'projectId': that.state.projectId,
-    //             'index': index
-    //         })
-    //     })
-    //         .then(function (response) {
-
-    //             if (response.ok) {
-    //                 response.json().then(function (result) {
-    //                     console.log(result);
-    //                     // Save
-    //                     that.updateProject({ 'block': parentId })
-    //                 });
-
-
-    //             } else {
-    //                 response.text().then(text => {
-    //                     console.log(text);
-    //                 });
-
-    //             }
-    //         })
-    //         .catch(err => {
-    //             console.log('ERROR: ', err);
-    //         });
-
-    //     // Update block by setting parentID
-    // }
-
-    // Update project (co = an object with keys)
-    updateProject(block) {
-        console.log('Update Project!' + block + '>');
+    // Update project
+    // blockId: the ID of the base <HTML> tag of the project's content
+    updateProject(blockId) {
+        console.log('Update Project!' + blockId + '>');
         let that = this;
 
         fetch('https://api.webwizards.me/v1/projects?id=' + this.state.projectId, {
@@ -744,12 +688,11 @@ export default class EditPage extends React.Component {
                 'Authorization': localStorage.getItem('Authorization')
             },
             body: JSON.stringify({
-                'content': [block]
+                'content': [blockId]
             })
         })
             .then(function (response) {
                 that.setup_getProjectData();
-                //that.getBlock(that.state.htmlBlockId);
                 that.makeLayout();
             })
             .catch(err => {
@@ -864,12 +807,12 @@ export default class EditPage extends React.Component {
                         // Place a dropspace after the last child
                         let index = i + 1;
                         b = (
-                        <span>
-                            {b}
-                            <div className="purp" onClick={function (e) { that.drop(current.id, index, e) }}>
-                                <span className="yellow">-> parent: {current.id.substr(current.id.length - 3)}, index: {index}</span>
-                            </div>
-                        </span>
+                            <span>
+                                {b}
+                                <div className="purp" onClick={function (e) { that.drop(current.id, index, e) }}>
+                                    <span className="yellow">-> parent: {current.id.substr(current.id.length - 3)}, index: {index}</span>
+                                </div>
+                            </span>
                         );
                     }
                 }
