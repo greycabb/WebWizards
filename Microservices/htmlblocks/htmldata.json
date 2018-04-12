@@ -106,5 +106,13 @@
 		"description": "An image",
 		"type": "image",
 		"css_groups": ["border", "size"]
+	},
+	{
+		"id": 14,
+		"name": "text-content",
+		"translation": "text content",
+		"description": "A place to put text",
+		"type": "text-content",
+		"css_groups": []
 	}
 ]
