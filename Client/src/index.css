@@ -314,13 +314,15 @@ li {
 
 
 /*For testing layout builder*/
-.green {
-    background-color: red;
+.red {
+    background-color: darkred;
     opacity: 0.8;
+    margin-left: 30px;
 }
 .purp {
   background-color: purple;
   opacity: 0.8;
+  margin-left: 30px;
 }
 .yel {
   color: yellow;

@@ -76,7 +76,6 @@ export default class EditPage extends React.Component {
             */
             'stack': [],
             'stackVisited': {},
-            'indexMapOfCurrent': [], // e.g. [0, 2, 3, 2, 1] for placing at layout[2][3][2][1]
 
             'finishedBuildingHeadBody': false,
             'recursiveLayout': undefined
@@ -826,12 +825,13 @@ export default class EditPage extends React.Component {
         if (first === true) {
             if (current.children !== undefined && current.children[0] !== undefined) {
                 current = current.children[0];
+                first = 0;
             } else {
                 return;
             }
         }
 
-        //console.log(current);
+        console.log(current);
 
         let b = (<span></span>);
 
@@ -851,12 +851,12 @@ export default class EditPage extends React.Component {
                     b = (<span>
                         {b}
                         <div className="red" onClick={function (e) { that.drop(current.id, index, e) }}>
-                            <span className="yellow">&nbsp;&nbsp;&nbsp; parent: {current.id.substr(current.id.length - 3)}, index: {index}</span>
+                            <span className="yellow">-> parent: {current.id.substr(current.id.length - 3)}, index: {index}</span>
                         </div>
-                        {this.recursiveLayout(child)}
+                        {this.recursiveLayout(child, i)}
                     </span>);
                 } else {
-                    b = (<span>{b}{this.recursiveLayout(child)}</span>);
+                    b = (<span>{b}{this.recursiveLayout(child, i)}</span>);
                 }
 
                 if (i === kids.length - 1) {
@@ -867,7 +867,7 @@ export default class EditPage extends React.Component {
                         <span>
                             {b}
                             <div className="purp" onClick={function (e) { that.drop(current.id, index, e) }}>
-                                <span className="yellow">&nbsp;&nbsp;&nbsp; parent: {current.id.substr(current.id.length - 3)}, index: {index}</span>
+                                <span className="yellow">-> parent: {current.id.substr(current.id.length - 3)}, index: {index}</span>
                             </div>
                         </span>
                         );
@@ -878,7 +878,7 @@ export default class EditPage extends React.Component {
                 b = (
                     <span>
                         {/* <li className="red">
-                            <span className="yellow">&nbsp;&nbsp;&nbsp; parent: {current.parentid.substr(current.parentid.length - 3)}, index: 0</span>
+                            <span className="yellow">-> parent: {current.parentid.substr(current.parentid.length - 3)}, index: 0</span>
                         </li> */}
                         {b}
                     </span>
@@ -917,7 +917,7 @@ export default class EditPage extends React.Component {
                     <li className={blockclass}>
                         {startTag}
                         {current.id !== undefined &&
-                            <span className="yel">{current.id.substr(current.id.length - 3)}</span>
+                            <span className="yel">id: {current.id.substr(current.id.length - 3)}, index: {first} </span>
                         }
                         {b}
                         {endTag}
