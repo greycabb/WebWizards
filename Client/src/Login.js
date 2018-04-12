@@ -16,6 +16,8 @@ export default class LoginPage extends React.Component {
             'error': undefined
         };
 
+        localStorage.clear();
+
         let auth = localStorage.getItem('Authorization');
 
         fetch('https://api.webwizards.me/v1/users/me', {
@@ -44,8 +46,6 @@ export default class LoginPage extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleLogin = this.handleLogin.bind(this);
         this.handleSignup = this.handleSignup.bind(this);
-
-        localStorage.clear();
     }
 
     componentDidMount() {

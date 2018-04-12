@@ -21,8 +21,6 @@ export default class MainPage extends React.Component {
             'projects': undefined // List of projects
         };
 
-        // Get project data
-        this.getAllUserProjects();
         fetch('https://api.webwizards.me/v1/users/me', {
             method: 'GET',
             headers: {
@@ -30,10 +28,11 @@ export default class MainPage extends React.Component {
                 'Authorization': auth
             }
         })
-            .then(function (response) {
+            .then((response) => {
 
                 if (response.ok) {
                     console.log("logged in");
+                    this.getAllUserProjects();
                 } else {
                     response.text().then(text => {
                         hashHistory.push('/login');
@@ -51,6 +50,7 @@ export default class MainPage extends React.Component {
                 this.state.username = ud.username;
             }
         }
+        // Get project data
     }
     // Get all projects for user
     getAllUserProjects() {

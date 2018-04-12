@@ -513,7 +513,6 @@ export default class EditPage extends React.Component {
 
                             //console.log('CHILDREN of : ' + id);
                             //console.log(result.children);
-
                             for (var i = 0; i < result.children.length; i++) {
                                 let lil = locationInLayout.slice(0);
                                 lil.push(i);
@@ -590,6 +589,34 @@ export default class EditPage extends React.Component {
                 }
             })
             .catch(err => {
+                // Cannot fetch block, this is likely to just be a content child
+                // Place the current block into the layout
+                let newLayout = that.state.newLayout;
+
+                let location = newLayout;
+
+                for (var i = 0; i < locationInLayout.length; i++) {
+                    if (location.children[locationInLayout[i]] === undefined) {
+                        location.children[locationInLayout[i]] = {
+                            children: {
+
+                            }
+                        };
+                    }
+                    location = location.children[locationInLayout[i]];
+                }
+
+                // Once at location, assign variables there
+                //location.id = '';
+                location.blocktype = "text-contents";
+                location.children = { "content": id }; // Filled out later from stack
+
+                that.setState({
+                    newLayout: newLayout
+                });
+
+                //console.log(id);
+                //console.log(locationInLayout);
                 console.log('ERROR: ', err);
             });
     }
@@ -730,7 +757,7 @@ export default class EditPage extends React.Component {
             if (this.state.bricksByName[brickName] !== undefined) {
                 console.log(brickName);
                 this.setState({
-                   'selectedBrick': brickName
+                    'selectedBrick': brickName
                 });
             }
             document.getElementById(brickName).classList.add('pressed-brick');
@@ -786,6 +813,8 @@ export default class EditPage extends React.Component {
             'head': true
         };
 
+        let that = this;
+
         function recursiveLayout(current, first) {
             //console.log('[[[[[RL]]]]]');
             if (first === true) {
@@ -800,60 +829,107 @@ export default class EditPage extends React.Component {
 
             let b = (<span></span>);
 
-            let kids = Object.keys(current.children);
-            //console.log(kids);
+            let blockname = that.state.bricksByName[current.blocktype];
 
-            for (var i = 0; i < kids.length; i++) {
-                let child = current.children[kids[i]];
+            if (blockname != undefined &&
+                (blockname.type == 'wrapper' || blockname.type == 'text-wrapper')) {
+                let kids = Object.keys(current.children);
+                for (var i = 0; i < kids.length; i++) {
+                    let child = current.children[kids[i]];
 
-                b = (<span>{b}{recursiveLayout(child)}</span>);
-
-                if (i == kids.length - 1) {
-                    //console.log('beep');
                     if (blockTypesToIgnore[child.blocktype] !== true) {
-                        b = (<ul>{b}<li className="green"><span className="yellow">&nbsp;&nbsp;&nbsp; parent: {current.id.substr(current.id.length - 3)}, index: {i + 1}</span></li></ul>);
+                        b = (<span><li className="green"><span className="yellow">&nbsp;&nbsp;&nbsp; parent: {current.id.substr(current.id.length - 3)}, index: {i}</span></li>{b}{recursiveLayout(child)}</span>);
                     } else {
-                        b = (<ul>{b}</ul>)
+                        b = (<span>{b}{recursiveLayout(child)}</span>);
+                    }
+
+                    if (i === kids.length - 1) {
+                        if (blockTypesToIgnore[child.blocktype] !== true) {
+                            b = (<ul>{b}<li className="green"><span className="yellow">&nbsp;&nbsp;&nbsp; parent: {current.id.substr(current.id.length - 3)}, index: {i + 1}</span></li></ul>);
+                        } else {
+                            b = (<ul>{b}</ul>)
+                        }
                     }
                 }
+
+                // b = (<li>&lt;{current.blocktype}&gt;<span className="yel">&nbsp;&nbsp;&nbsp;id: {current.id.substr(current.id.length - 3)}</span>{b}</li>);
+                // //if (first === true) {
+
+                if (blockTypesToIgnore[current.blocktype] !== true) {
+                    b = (<ul><li className="green"><span className="yellow">&nbsp;&nbsp;&nbsp; parent: {current.parentid.substr(current.parentid.length - 3)}, index: 0</span></li>{b}</ul>);
+                }
+                // //}
+                // b = (<span>{b}{recursiveLayout(child)}</span>);
+
+                // if (i === current.children.length) {
+                //     b = (<ul>{b}</ul>);
+                // }
             }
 
-            b = (<li>&lt;{current.blocktype}&gt;<span className="yel">&nbsp;&nbsp;&nbsp;id: {current.id.substr(current.id.length - 3)}</span>{b}</li>);
-            //if (first === true) {
+            if (blockname !== undefined && blockname.type === "content") {
+                let content = current.children;
+                console.log("current content: " + JSON.stringify(content));
+                b = (<span></span>);
+            }
+            if (current.children[0] !== undefined && current.children[0].blocktype === "text-contents") {
+                let content = current.children[0].children.content;
+                console.log("Testing " + content);
+                b = (<input type="text" className="editor-text-content" value={content} />);
+            }
 
-            if (blockTypesToIgnore[current.blocktype] !== true) {
-                b = (<ul><li className="green"><span className="yellow">&nbsp;&nbsp;&nbsp; parent: {current.parentid.substr(current.parentid.length - 3)}, index: 0</span></li>{b}</ul>);
-            } else {
+            var blockclass;
+            if (blockname !== undefined) {
+                if (blockname.type == 'wrapper') {
+                    blockclass = 'primary-brick';
+                }
+                if (blockname.type == 'content') {
+                    blockclass = 'secondary-brick';
+                }
+                if (blockname.type == 'text-wrapper') {
+                    blockclass = 'third-brick';
+                }
+            }
+            if (current.blocktype !== 'text') {
+                let startTag = '<' + current.blocktype + '>';
+                let endTag = '</' + current.blocktype + '>';
+                b = (<li className={blockclass}>{startTag}   <span className="yel">{current.id.substr(current.id.length - 3)}</span>{b}{endTag}</li>);
                 b = (<ul>{b}</ul>);
             }
-            //}
+            else {
+                b = (<li className={blockclass}>{b}</li>);
+                b = (<ul>{b}</ul>);
+            }
             return b;
-
         }
 
         var urlstring = "#/project/" + this.state.projectId;
 
-        let that = this;
-
         return (
             <div>
-                <Nav username={this.state.userdata.username} />
+                {this.state.userdata !== null && this.state.userdata.username !== undefined &&
+                    <Nav username={this.state.userdata.username} />
+                }
                 <div className="half-width">
                     <div className="edit-bar">
                         <Link to="/main"><button className="btn yellow-button">Back</button></Link>
-                        {this.state.projectId != undefined &&
-                            <a href={urlstring} target="_blank"><button className="btn yellow-button">View Page</button></a>
+                        {this.state.projectId != undefined && this.state.projectData != undefined &&
+                            <span>
+                                <a href={urlstring} target="_blank"><button className="btn yellow-button">View Page</button></a>
+                                <button className="btn yellow-button">Settings</button>
+                                <h2 className="editor-project-title">{this.state.projectData.name}</h2>
+                            </span>
                         }
                     </div>
                     {this.state.projectData != undefined &&
                         <PreviewProject projectObject={this.state.projectData} />
                     }
                     <div>
-                        <div className="brick primary-brick disable-select" id="head" onClick={function() { that.pickup('head')} } >head</div>
+                        <div className="brick primary-brick disable-select" id="head" onClick={function () { that.pickup('head') }} >head</div>
                         <div className="brick primary-brick disable-select" id="title">title</div>
                         <div className="brick primary-brick disable-select" id="body">body</div>
                         <div className="brick primary-brick disable-select" id="div">div</div>
                         <div className="brick primary-brick disable-select" id="span">span</div>
+                        <div className="brick primary-brick disable-select" id="span">p</div>
                     </div>
                     <div>
                         <div className="brick secondary-brick disable-select" id="img">img</div>
@@ -871,7 +947,7 @@ export default class EditPage extends React.Component {
                 </div>
                 <div className="half-width draggable-space">
                     <div>
-                        {this.state.newLayout !== undefined && this.state.finishedBuildingHeadBody === true &&
+                        {(this.state.newLayout !== undefined && this.state.finishedBuildingHeadBody === true) &&
                             recursiveLayout(this.state.newLayout, true)
                         }
                     </div>
