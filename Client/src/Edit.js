@@ -2,6 +2,7 @@ import React from 'react';
 import { hashHistory, Link } from 'react-router';
 import Nav from './Nav';
 import PreviewProject from './PreviewProject';
+import CSSModal from './CSSModal';
 
 export default class EditPage extends React.Component {
     constructor(props) {
@@ -18,6 +19,11 @@ export default class EditPage extends React.Component {
         let pid = this.props.location.query.project;
 
         this.state = {
+
+            styleToggled: false,
+
+            styleToggledBlock: undefined,
+
             'error': undefined,
             'userdata': ud, // first name, last name, etc., gotten from local storage
 
@@ -103,6 +109,9 @@ export default class EditPage extends React.Component {
         // Editor functions
         this.pickup = this.pickup.bind(this);
         this.drop = this.drop.bind(this);
+
+        this.cssModalToggleOn = this.cssModalToggleOn.bind(this);
+        this.cssModalToggleOff = this.cssModalToggleOff.bind(this);
 
         console.log('______________________');
         this.setup_getProjectData();
@@ -558,13 +567,14 @@ export default class EditPage extends React.Component {
 
         var blockclass;
         if (blockname !== undefined) {
+            console.log(blockname.type);
             if (blockname.type == 'wrapper') {
                 blockclass = 'primary-brick';
             }
             if (blockname.type == 'content') {
                 blockclass = 'secondary-brick';
             }
-            if (blockname.type == 'text-wrapper') {
+            if (blockname.type == 'textwrapper') {
                 blockclass = 'third-brick';
             }
         }
@@ -577,6 +587,7 @@ export default class EditPage extends React.Component {
                 }, 300);
                 return;
             }
+            /* onClick temporarily disabled for style double click testing
             b = (
                 <ul onClick={function (e) { that.drop(current.id, (Object.keys(current.children)).length, e) }}>
                     <li className={blockclass}>
@@ -586,6 +597,23 @@ export default class EditPage extends React.Component {
                         }
                         {b}
                         {endTag}
+                    </li>
+                </ul>
+            ); */
+
+            b = (
+                <ul>
+                    <li className={blockclass}>
+                        <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent)}}>
+                        {startTag}
+                        {current.id !== undefined &&
+                            <span className="yel">id: {current.id.substr(current.id.length - 3)}, index: {first} </span>
+                        }
+                        </div>
+                        {b}
+                        <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent)}}>
+                        {endTag}
+                        </div>
                     </li>
                 </ul>
             );
@@ -763,6 +791,7 @@ export default class EditPage extends React.Component {
                             // Once at location, assign variables there
                             location.id = result.id;
                             location.blocktype = that.state.bricksById[result.blocktype].name;
+                            location.blocktypeid = result.blocktype
                             location.css = result.css;
                             location.parentid = result.parentid;
                             location.children = {}; // Filled out later from stack
@@ -885,7 +914,24 @@ export default class EditPage extends React.Component {
     }
 
 
+    cssModalToggleOn(currBlock) {
 
+        // Only do something if modal is not already up
+        if (!this.state.styleToggled) {
+            console.log(currBlock);
+            this.setState({
+                styleToggled: true,
+                styleToggledBlock: currBlock
+            });
+        }
+    }
+
+    cssModalToggleOff() {
+        this.setState({
+            styleToggled: false,
+            styleToggledBlock: undefined
+        });
+    }
 
 
 
@@ -957,7 +1003,9 @@ export default class EditPage extends React.Component {
                         }
                     </div>
                 </div>
-
+                {this.state.styleToggled &&
+                    <CSSModal currBlock={this.state.styleToggledBlock} toggle={this.cssModalToggleOff}/>
+                }
             </div>
 
         );

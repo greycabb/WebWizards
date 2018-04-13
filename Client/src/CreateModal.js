@@ -83,24 +83,6 @@ export default class CreateModal extends React.Component {
         return (
             <div className="modal-container">
                 <div className="modal-background">
-                    <div id="modal-popup">
-                        <h2>Create Project</h2>
-                        <div>
-                            <label htmlFor="title">Project Title </label>
-                            <input id="proj-title" type="name" maxLength="15" name="proj-title" onChange={(e) => this.handleName(e)} />
-                            {this.state.error !== false &&
-                                <div className="text-danger">{this.state.error}</div>
-                            }
-                        </div>
-                        <div>
-                            <input type="checkbox" id="share-box" name="share-proj" value="share" onClick={this.handleCheck} />
-                            <label>Share with others</label>
-                        </div>
-                        <center>
-                            <button className="btn orange-button" onClick={(e) => this.props.toggle(e)}>Cancel</button>
-                            <button className="btn green-button" onClick={this.create}>Create</button>
-                        </center>
-                    </div>
                     <OutsideAlerter handler={(e) => this.props.toggle(e)}>
                         <div id="modal-popup">
                             <h2>Create Project</h2>

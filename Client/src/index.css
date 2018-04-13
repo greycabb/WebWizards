@@ -292,13 +292,15 @@ ul {
   margin-left: -10px;
   font-size: 14pt;
   cursor: pointer;
-  
+  width: min-content;
 }
 
 li {
   font-size: 16px;
   color: white;
-  border: 1px solid white;
+  -webkit-box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.75);
+  box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.75);
   padding: 10px 0px 10px 10px;
   border-radius: 10px;
   width: 200px;
@@ -340,4 +342,8 @@ li {
 .pressed-brick {
   color: orange;
   outline: 3px solid orange;
+}
+
+.tag-block-span {
+  width: 190px;
 }
