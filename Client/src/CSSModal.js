@@ -33,7 +33,6 @@ export default class CSSModal extends React.Component {
                 if (response.ok) {
                     response.json().then(function (result) {
                         var cssGroups = result.css_groups;
-                        console.log(cssGroups);
                         var allCssGroupData;
                         fetch('https://api.webwizards.me/v1/cssgroups', {
                             method: 'GET',
@@ -111,14 +110,7 @@ export default class CSSModal extends React.Component {
 
                     if (response.ok) {
                         response.json().then(function (result) {
-                            // DO STUFF
-                            console.log(result);
                             inputBoxes.push(<CSSInputBox name={attributes[i]} currentVal={defaultVal} object={result}/>);
-                            /*if (i == attributes.length - 1) {
-                                this.setState({
-                                    inputBoxes: inputBoxes
-                                });
-                            } */
                             if (i == attributes.length - 1) {
                                 return inputBoxes;
                             }
