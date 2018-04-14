@@ -112,12 +112,12 @@ export default class CSSModal extends React.Component {
             for (var i = 0; i < attributes.length; i ++) {
                 var defaultVal; 
                 for (var i = 0; i < this.state.currAppliedCss.length; i++) {
-                    if (attribute[i] == this.state.currAppliedCss[i].attribute) {
+                    if (attributes[i] == this.state.currAppliedCss[i].attribute) {
                         defaultVal = this.state.currAppliedCss[i].value;
                         break;
                     }
                 }
-                fetch('https://api.webwizards.me/v1/cssattributes?attr=' + attribute[i], {
+                fetch('https://api.webwizards.me/v1/cssattributes?attr=' + attributes[i], {
                     method: 'GET',
                 })
                     .then((response) => {
