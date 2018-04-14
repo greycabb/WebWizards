@@ -5,7 +5,7 @@
 		"translation": "html",
 		"description": "A 'html' block defines a HTML document",
 		"type": "wrapper",
-		"css_groups": ["font", "background", "border", "sizing"]
+		"css_groups": ["font", "background", "border", "size"]
 	},
 	{
         "id": 1,
@@ -13,7 +13,7 @@
 		"translation": "head",
 		"description": "A 'head' block defines information about HTML document",
 		"type": "wrapper",
-		"css_groups": ["font", "background", "border", "sizing"]
+		"css_groups": ["font", "background", "border", "size"]
 	},
 	{
         "id": 2,
@@ -28,7 +28,7 @@
 		"translation": "body",
 		"description": "A 'body' block defines the page body",
 		"type": "wrapper",
-		"css_groups": ["font", "background", "border", "sizing"]
+		"css_groups": ["font", "background", "border", "size"]
 	},
 	{
         "id": 4,
@@ -36,7 +36,7 @@
 		"translation": "paragraph",
 		"description": "A 'p' block defines a paragraph",
 		"type": "wrapper",
-		"css_groups": ["font", "background", "border", "sizing"]
+		"css_groups": ["font", "background", "border", "size"]
     },
 	{
         "id": 5,
@@ -44,7 +44,7 @@
 		"translation": "block",
 		"description": "A 'div' is a section that is a block element. Block elements appear on a new row.",
 		"type": "wrapper",
-		"css_groups": ["font", "background", "border", "sizing"]
+		"css_groups": ["font", "background", "border", "size"]
 	},
 	{
         "id": 6,
@@ -59,7 +59,7 @@
 		"translation": "header 1",
 		"description": "Largest heading",
 		"type": "textwrapper",
-		"css_groups": ["font", "background", "border", "sizing"]
+		"css_groups": ["font", "background", "border", "size"]
 	},
 	{
         "id": 8,
@@ -67,7 +67,7 @@
 		"translation": "header 2",
 		"description": "Second largest heading",
 		"type": "textwrapper",
-		"css_groups": ["font", "background", "border", "sizing"]
+		"css_groups": ["font", "background", "border", "size"]
 	},
 	{
         "id": 9,
@@ -75,7 +75,7 @@
 		"translation": "header 3",
 		"description": "Third largest heading",
 		"type": "textwrapper",
-		"css_groups": ["font", "background", "border", "sizing"]
+		"css_groups": ["font", "background", "border", "size"]
 	},
 	{
         "id": 10,
@@ -83,7 +83,7 @@
 		"translation": "header 4",
 		"description": "Fourth largest heading",
 		"type": "textwrapper",
-		"css_groups": ["font", "background", "border", "sizing"]
+		"css_groups": ["font", "background", "border", "size"]
 	},
 	{
         "id": 11,

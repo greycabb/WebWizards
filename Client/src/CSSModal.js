@@ -34,39 +34,41 @@ export default class CSSModal extends React.Component {
                     response.json().then(function (result) {
                         var cssGroups = result.css_groups;
                         var allCssGroupData;
-                        fetch('https://api.webwizards.me/v1/cssgroups', {
-                            method: 'GET',
-                        })
-                            .then((response) => {
-
-                                if (response.ok) {
-                                    response.json().then(function (result2) {
-
-                                        var buttons = [];
-                                        var categories = cssGroups;
-                                        for (var i = 0; i < categories.length; i++) {
-                                            var current = categories[i];
-                                            buttons.push(<CSSModalButton key={current} category={current} handle={that.handle}/>);
-                                        }
-
-                                        that.setState({
-                                            buttons: buttons,
-                                            cssGroups: cssGroups,
-                                            allCssGroupData: result2
-                                        });
-                                    });
-
-
-                                } else {
-                                    response.text().then(text => {
-                                        console.log(text);
-                                    });
-
-                                }
+                        if (cssGroups) {
+                            fetch('https://api.webwizards.me/v1/cssgroups', {
+                                method: 'GET',
                             })
-                            .catch(err => {
-                                console.log('caught it!', err);
-                            });
+                                .then((response) => {
+
+                                    if (response.ok) {
+                                        response.json().then(function (result2) {
+
+                                            var buttons = [];
+                                            var categories = cssGroups;
+                                            for (var i = 0; i < categories.length; i++) {
+                                                var current = categories[i];
+                                                buttons.push(<CSSModalButton key={current} category={current} handle={that.handle}/>);
+                                            }
+
+                                            that.setState({
+                                                buttons: buttons,
+                                                cssGroups: cssGroups,
+                                                allCssGroupData: result2
+                                            });
+                                        });
+
+
+                                    } else {
+                                        response.text().then(text => {
+                                            console.log(text);
+                                        });
+
+                                    }
+                                })
+                                .catch(err => {
+                                    console.log('caught it!', err);
+                                });
+                        }
                     });
 
 
@@ -83,60 +85,71 @@ export default class CSSModal extends React.Component {
     }
 
     populateInputBoxes(cat) {
-        var inputBoxes = [];
-        // Find all attributes
-        var attributes = [];
-        for (var i = 0; i < this.state.allCssGroupData.length; i++) {
-            if (this.state.allCssGroupData[i].name == cat) {
-                attributes = this.state.allCssGroupData[i].attributes;
-                break;
-            }
-        }
-        // Attribute boxes
-        /* this.state.currAppliedCss = [{attribute: "", value: ""}, {}] */
-        for (var i = 0; i < attributes.length; i ++) {
-            var defaultVal; 
-            for (var k = 0; k < this.state.currAppliedCss.length; k++) {
-                if (attributes[k] == this.state.currAppliedCss[k].attribute) {
-                    defaultVal = this.state.currAppliedCss[k].value;
+        console.log("beginning input population");
+        return new Promise((resolve, reject) => {
+            var inputBoxes = [];
+            // Find all attributes
+            var attributes = [];
+            for (let i = 0; i < this.state.allCssGroupData.length; i++) {
+                if (this.state.allCssGroupData[i].name == cat) {
+                    attributes = this.state.allCssGroupData[i].attributes;
                     break;
                 }
             }
-            //Get all attribute data
-            fetch('https://api.webwizards.me/v1/cssattributes?attr=' + attributes[i], {
-                method: 'GET',
-            })
-                .then((response) => {
-
-                    if (response.ok) {
-                        response.json().then(function (result) {
-                            inputBoxes.push(<CSSInputBox name={attributes[i]} currentVal={defaultVal} object={result}/>);
-                            if (i == attributes.length - 1) {
-                                return inputBoxes;
-                            }
-                        });
-
-
-                    } else {
-                        response.text().then(text => {
-                            console.log(text);
-                        });
-
+            // Attribute boxes
+            /* this.state.currAppliedCss = [{attribute: "", value: ""}, {}] */
+            for (let i = 0; i < attributes.length; i ++) {
+                let defaultVal; 
+                for (let k = 0; k < this.state.currAppliedCss.length; k++) {
+                    if (attributes[k] == this.state.currAppliedCss[k].attribute) {
+                        defaultVal = this.state.currAppliedCss[k].value;
+                        break;
                     }
+                }
+
+                //Get all attribute data
+                fetch('https://api.webwizards.me/v1/cssattributes?attr=' + attributes[i], {
+                    method: 'GET',
                 })
-                .catch(err => {
-                    console.log('caught it!', err);
-                }); 
-        }
+                    .then((response) => {
+
+                        console.log("fetching " + attributes[i] +  " attribute");
+
+                        if (response.ok) { 
+                            response.json().then(function (result) {
+                                inputBoxes.push(<CSSInputBox key={attributes[i]} name={attributes[i]} currentVal={defaultVal} object={result}/>);
+                                if (inputBoxes.length == attributes.length) {
+                                    resolve(inputBoxes);
+                                }
+                            });
+
+
+                        } else {
+                            response.text().then(text => {
+                                console.log(text);
+                                reject(text);
+                            });
+
+                        }
+                    })
+                    .catch(err => {
+                        console.log('caught it!', err);
+                        reject(err);
+                    }); 
+            }
+        });
     }
 
     handle(cat) {
-        var inputBoxes = this.populateInputBoxes(cat);
-        this.setState({
-            inputBoxes: inputBoxes,
-            viewingCategory: true,
-            currentCategory: cat
-        });
+        this.populateInputBoxes(cat)
+            .then((inputBoxes) => {
+                console.log("reached");
+                this.setState({
+                    inputBoxes: inputBoxes,
+                    viewingCategory: true,
+                    currentCategory: cat
+                });
+            });
     }
 
     goBack() {
@@ -155,7 +168,7 @@ export default class CSSModal extends React.Component {
                         <div id="modal-popup" className="css-modal-popup">
                             {!this.state.viewingCategory &&
                                 <div className="modal-buttons-container">
-                                    <h2>Edit &lt;{this.props.currBlock.blocktype}&gt;</h2>
+                                    <h2>Editing &lt;{this.props.currBlock.blocktype}&gt;</h2>
                                     {this.state.buttons}
                                     {this.state.buttons.length == 0 &&
                                         "There are no CSS styles to change"
@@ -230,8 +243,8 @@ class CSSInputBox extends React.Component {
         return (
             <div className="css-input">
                 <span>
-                    {this.state.name}
-                    {this.state.units == 'rgb' &&
+                    {this.props.name}
+                    {this.props.units == 'rgb' &&
                         <ColorPickerInput />
                     }
                 </span>
