@@ -14,11 +14,13 @@ export default class CSSModal extends React.Component {
             currAppliedCss: this.props.currBlock.css,
             viewingCategory: false,
             hidden: true,
-            allCssGroupData: []
+            allCssGroupData: [],
+            buttons: []
         };
 
         this.handle = this.handle.bind(this);
         this.goBack = this.goBack.bind(this);
+        this.populateInputBoxes = this.populateInputBoxes.bind(this);
     }
 
     componentWillMount() {
@@ -40,8 +42,16 @@ export default class CSSModal extends React.Component {
 
                                 if (response.ok) {
                                     response.json().then(function (result2) {
-                                        console.log(result2)
+
+                                        var buttons = [];
+                                        var categories = cssGroups;
+                                        for (var i = 0; i < categories.length; i++) {
+                                            var current = categories[i];
+                                            buttons.push(<CSSModalButton key={current} category={current} handle={that.handle}/>);
+                                        }
+
                                         that.setState({
+                                            buttons: buttons,
                                             cssGroups: cssGroups,
                                             allCssGroupData: result2
                                         });
@@ -73,8 +83,65 @@ export default class CSSModal extends React.Component {
             });
     }
 
+    populateInputBoxes(cat) {
+        var inputBoxes = [];
+        // Find all attributes
+        var attributes = [];
+        for (var i = 0; i < this.state.allCssGroupData.length; i++) {
+            if (this.state.allCssGroupData[i].name == cat) {
+                attributes = this.state.allCssGroupData[i].attributes;
+                break;
+            }
+        }
+        // Attribute boxes
+        /* this.state.currAppliedCss = [{attribute: "", value: ""}, {}] */
+        for (var i = 0; i < attributes.length; i ++) {
+            var defaultVal; 
+            for (var k = 0; k < this.state.currAppliedCss.length; k++) {
+                if (attributes[k] == this.state.currAppliedCss[k].attribute) {
+                    defaultVal = this.state.currAppliedCss[k].value;
+                    break;
+                }
+            }
+            //Get all attribute data
+            fetch('https://api.webwizards.me/v1/cssattributes?attr=' + attributes[i], {
+                method: 'GET',
+            })
+                .then((response) => {
+
+                    if (response.ok) {
+                        response.json().then(function (result) {
+                            // DO STUFF
+                            console.log(result);
+                            inputBoxes.push(<CSSInputBox name={attributes[i]} currentVal={defaultVal} object={result}/>);
+                            /*if (i == attributes.length - 1) {
+                                this.setState({
+                                    inputBoxes: inputBoxes
+                                });
+                            } */
+                            if (i == attributes.length - 1) {
+                                return inputBoxes;
+                            }
+                        });
+
+
+                    } else {
+                        response.text().then(text => {
+                            console.log(text);
+                        });
+
+                    }
+                })
+                .catch(err => {
+                    console.log('caught it!', err);
+                }); 
+        }
+    }
+
     handle(cat) {
+        var inputBoxes = this.populateInputBoxes(cat);
         this.setState({
+            inputBoxes: inputBoxes,
             viewingCategory: true,
             currentCategory: cat
         });
@@ -89,60 +156,6 @@ export default class CSSModal extends React.Component {
 
     render() {
 
-        var buttons = [];
-        var inputBoxes = [];
-        if (!this.state.viewingCategory && this.state.cssGroups) {
-            var categories = this.state.cssGroups;
-            for (var i = 0; i < categories.length; i++) {
-                var current = categories[i];
-                buttons.push(<CSSModalButton key={current} category={current} handle={this.handle}/>);
-            }
-        }
-        if (this.state.viewingCategory) {
-            // Find all attributes
-            var attributes;
-            for (var i = 0; i < this.state.allCssGroupData.length; i++) {
-                if (this.state.allCssGroupData[i].name == this.state.currentCategory) {
-                    attributes = this.state.allCssGroupData[i].attributes;
-                    break;
-                }
-            }
-            // Attribute boxes
-            /* this.state.currAppliedCss = [{attribute: "", value: ""}, {}] */
-            for (var i = 0; i < attributes.length; i ++) {
-                var defaultVal; 
-                for (var i = 0; i < this.state.currAppliedCss.length; i++) {
-                    if (attributes[i] == this.state.currAppliedCss[i].attribute) {
-                        defaultVal = this.state.currAppliedCss[i].value;
-                        break;
-                    }
-                }
-                fetch('https://api.webwizards.me/v1/cssattributes?attr=' + attributes[i], {
-                    method: 'GET',
-                })
-                    .then((response) => {
-
-                        if (response.ok) {
-                            response.json().then(function (result) {
-                                // DO STUFF
-
-
-                            });
-
-
-                        } else {
-                            response.text().then(text => {
-                                console.log(text);
-                            });
-
-                        }
-                    })
-                    .catch(err => {
-                        console.log('caught it!', err);
-                    });
-            }
-        }
-
         return (
             <div className="modal-container">
                 <div className="modal-background">
@@ -150,9 +163,9 @@ export default class CSSModal extends React.Component {
                         <div id="modal-popup" className="css-modal-popup">
                             {!this.state.viewingCategory &&
                                 <div className="modal-buttons-container">
-                                    <h2>Edit &lt;{this.props.currBlock.blocktype}&gt; Styles</h2>
-                                    {buttons}
-                                    {buttons.length == 0 &&
+                                    <h2>Edit &lt;{this.props.currBlock.blocktype}&gt;</h2>
+                                    {this.state.buttons}
+                                    {this.state.buttons.length == 0 &&
                                         "There are no CSS styles to change"
                                     }
                                 </div>
@@ -163,7 +176,7 @@ export default class CSSModal extends React.Component {
                                         <div id="css-modal-back-button" className="disable-select" onClick={this.goBack}>&#x276e;</div>
                                         <h2 className="css-modal-category-header">{this.state.currentCategory}</h2>
                                     </div>
-                                    {inputBoxes}
+                                    {this.state.inputBoxes}
                                 </div>
                             }
                         </div>
