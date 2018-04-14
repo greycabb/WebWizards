@@ -1,3 +1,37 @@
 .css-modal-popup {
     height: auto !important;
+    width: 350px !important;
+}
+
+.css-modal-button {
+    font-size: 20px !important;
+    width: 200px;
+    height: 60px;
+    margin: 10px 10px 0px 0px;
+    padding: 0px;
+    color: white;
+    background-color: #E0A738;
+}
+
+.css-modal-top-bar {
+    display: inline;
+}
+
+#css-modal-back-button {
+    cursor: pointer;
+    padding-left: 20px;
+    text-align: center;
+    width: min-content;
+    font-size: 30px !important;
+    display: inline-block !important;
+}
+
+.css-modal-category-header {
+    text-align: center;
+    display: inline-block;
+    width: 240px;
+}
+
+.modal-buttons-container {
+    text-align: center;
 }
