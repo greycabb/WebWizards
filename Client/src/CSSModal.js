@@ -4,6 +4,8 @@ import './CreateModal.css';
 import './CSSModal.css';
 import OutsideAlerter from './OutsideAlerter';
 import ColorPickerInput from './ColorPickerInput';
+import ReactSlider from 'react-slider';
+import ImageLibrary from './ImageLibrary';
 
 export default class CSSModal extends React.Component {
     constructor(props) {
@@ -224,7 +226,7 @@ export default class CSSModal extends React.Component {
                                 <div>
                                     <div className="css-modal-top-bar">
                                         <div id="css-modal-back-button" className="disable-select" onClick={this.goBack}>&#x276e;</div>
-                                        <h2 className="css-modal-category-header">{this.state.currentCategory}</h2>
+                                        <h2 className="css-modal-category-header">{this.state.currentCategory} CSS</h2>
                                     </div>
                                     {this.state.inputBoxes}
                                 </div>
@@ -275,16 +277,34 @@ class CSSInputBox extends React.Component {
             currentVal = this.props.currentVal;
         }
 
-        this.state = {
-            value: currentVal
+        // Sizing options
+        var chosenUnit;
+        var numValue;
+        if (this.props.object.extra_options && this.props.object.extra_options.pixels) {
+            //Need to parse value and determine unit type
+            if (currentVal.includes("px")) {
+                numValue = currentVal.substring(0, currentVal.length - 2);
+                chosenUnit = "pixels";
+            }
+            if (currentVal.includes("%")) {
+                numValue = currentVal.substring(0, currentVal.length - 1);
+                chosenUnit = "percentage";
+            }
         }
 
-        this.colorHandler = this.colorHandler.bind(this);
-        this.valHandler = this.valHandler.bind(this);
+        this.state = {
+            value: currentVal,
+            numValue: numValue,
+            chosenUnit: chosenUnit
+        }
 
+        this.colorImgHandler = this.colorImgHandler.bind(this);
+        this.valHandler = this.valHandler.bind(this);
+        this.multiValHandler = this.multiValHandler.bind(this);
+        this.typeValHandler = this.typeValHandler.bind(this);
     }
 
-    colorHandler(val) {
+    colorImgHandler(val) {
         this.props.handleChange(this.props.name, val);
         this.setState({
                 value: val
@@ -295,6 +315,38 @@ class CSSInputBox extends React.Component {
         this.props.handleChange(this.props.name, event.target.value);
         this.setState({
             value: event.target.value
+        });
+    }
+    
+    typeValHandler(event) {
+        var stringVal = event.target.value;
+        if (event.target.value == "auto") {
+            stringVal = "auto";
+        }
+        if (event.target.value == "pixels") {
+            stringVal = "300px";
+        }
+        if (event.target.value == "percentage") {
+            stringVal = "100%";
+        }
+        this.setState({
+            value: stringVal,
+            chosenUnit: event.target.value
+        });
+    }
+
+    multiValHandler(event) {
+        var stringVal = event.target.value;
+        if (this.state.chosenUnit == "pixels") {
+            stringVal += "px";
+        }
+        if (this.state.chosenUnit == "percentage") {
+            stringVal += "%";
+        }
+        this.props.handleChange(this.props.name, stringVal);
+        this.setState({
+            value: stringVal,
+            numValue: event.target.value
         });
     }
 
@@ -313,14 +365,45 @@ class CSSInputBox extends React.Component {
         return (
             <div className="css-input">
                 <span className="css-input-title">{this.props.name}: </span>
-                {this.props.object.units == 'rgb' &&
-                    <ColorPickerInput default={this.state.value} handle={this.colorHandler}/>
-                }
-                {this.props.object.units == 'EO_choices' && this.props.object.extra_options.choices &&
-                    <select className="css-select"  value={this.state.value} onChange={this.valHandler}>
-                        {options}
-                    </select>
-                }
+                <div className="css-input-selections">
+                    {this.props.object.units == 'rgb' &&
+                        <ColorPickerInput default={this.state.value} handle={this.colorImgHandler}/>
+                    }
+                    {this.props.object.units == 'EO_choices' && this.props.object.extra_options.choices &&
+                        <select className="css-select"  value={this.state.value} onChange={this.valHandler}>
+                            {options}
+                        </select>
+                    }
+                    {this.props.object.units == 'EO_choices' && this.props.object.extra_options.range &&
+                        <span className="css-input-selections">
+                            {this.state.value} pixels
+                            <input type="range" min={this.props.object.extra_options.range[0]} max={this.props.object.extra_options.range[1]} value={this.state.value}  onChange={this.valHandler} className="slider" id="myRange"/>
+                        </span>
+                    }
+                    {this.props.object.units == 'EO_many_choices' && this.props.object.extra_options.choices &&
+                        <div className="css-input-selections">
+                            {this.state.value}
+                            <select className="css-select"  value={this.state.chosenUnit} onChange={this.typeValHandler}>
+                                {options}
+                            </select>
+                            {this.state.chosenUnit == "pixels" &&
+                                <input type="range" min={this.props.object.extra_options.pixels[0]} max={this.props.object.extra_options.pixels[1]} value={this.state.numValue}  onChange={this.multiValHandler} className="slider" id="myRange"/>
+                            }
+                            {this.state.chosenUnit == "percentage" &&
+                                <input type="range" min={this.props.object.extra_options.percentage[0]} max={this.props.object.extra_options.percentage[1]} value={this.state.numValue}  onChange={this.multiValHandler} className="slider" id="myRange"/>
+                            }
+                        </div>
+                    }
+                    {this.props.object.units == 'px' &&
+                        <span className="css-input-selections">
+                            {this.state.value} pixels
+                            <input type="range" min={this.props.object.extra_options.range[0]} max={this.props.object.extra_options.range[1]} value={this.state.numValue}  onChange={this.multiValHandler} className="slider" id="myRange"/>
+                        </span>
+                    }
+                    {this.props.object.units == "image" &&
+                        <ImageLibrary currentImg={this.state.value} handleChange={this.colorImgHandler} />
+                    }
+                </div>
             </div>
         );
 

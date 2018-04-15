@@ -13,12 +13,12 @@ export default class ImageLibrary extends React.Component {
             hidden: true,
             image: this.props.currentImg
         }
-        this.componentWillMount = this.componentWillMount.bind(this);
         this.handle = this.handle.bind(this);
         this.goBack = this.goBack.bind(this);
         this.clicked = this.clicked.bind(this);
         this.closed = this.closed.bind(this);
         this.handleImageChoice = this.handleImageChoice.bind(this);
+
     }
 
     componentWillMount() {
@@ -36,6 +36,10 @@ export default class ImageLibrary extends React.Component {
             })
     }
 
+    componentDidMount() {
+        this.refs.imageInput.scrollLeft = this.refs.imageInput.scrollWidth;
+    }
+
     handle(cat) {
         this.setState({
             viewingCategory: true,
@@ -51,6 +55,7 @@ export default class ImageLibrary extends React.Component {
     }
 
     handleImageChoice(url) {
+        this.props.handleChange(url);
         this.setState({
             image: url
         });
@@ -84,7 +89,7 @@ export default class ImageLibrary extends React.Component {
 
         return (
             <div>
-            <input type="text" name="image" className="image-input" readOnly spellCheck="false" value={this.state.image} onClick={this.clicked}/>
+            <input type="text" name="image" ref="imageInput" className="image-input" readOnly spellCheck="false" value={this.state.image} onClick={this.clicked}/>
                 {!this.state.hidden &&
                     <OutsideAlerter handler={this.closed}>
                         <div id="image-library-container">
