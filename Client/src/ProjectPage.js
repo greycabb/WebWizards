@@ -104,7 +104,7 @@ export default class ProjectPage extends React.Component {
                                                 var string = ""; // what is returned to the user when asked for code
                                                 var displayedString = "" // what is really displayed
                                                 if (blockJson.name == "html") {
-                                                    displayedString += "<div style=\"width:100% !important; height: 100% !important; top: 0; left: 0; position: relative\">&nbsp;"
+                                                    displayedString += "<div style=\"width:100% !important; height: 100% !important; top: 0; left: 0; position: relative\">"
                                                 } 
                                                 if (blockJson.name == "body") {
                                                     displayedString += "<div" + cssString + ">&nbsp;";

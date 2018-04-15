@@ -936,25 +936,53 @@ export default class EditPage extends React.Component {
 
     handleProjectUpdates(newBlock) {
         var that = this;
-        fetch('https://api.webwizards.me/v1/projects?id=' + this.state.projectId, {
-            method: 'GET',
+        var d = new Date();
+        var timeEdited = d.toLocaleString();  
+        fetch('https://api.webwizards.me/v1/projects?id=' + that.state.projectId, {
+            method: 'PATCH',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 'Authorization': localStorage.getItem('Authorization')
-            }
+            },
+            body: 
+                JSON.stringify({ 
+                })
         })
             .then(function (response) {
 
                 if (response.ok) {
-                    response.json().then(function (result) {
-                        console.log(result);
+                    console.log(response);
+                    fetch('https://api.webwizards.me/v1/projects?id=' + that.state.projectId, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'Authorization': localStorage.getItem('Authorization')
+                        }
+                    })
+                        .then(function (response2) {
 
-                        // Set projectData state
-                        that.setState({
-                            projectData: result
-                        });
-                    });
+                            if (response.ok) {
+                                console.log(response2);
+                                response2.json().then(function (result2) {
+                                    console.log(result2);
+
+                                    // Set projectData state
+                                    that.setState({
+                                        projectData: result2
+                                    });
+                                });
+                            } else {
+                                response2.text().then(text => {
+                                    console.log(text);
+                                });
+
+                                }
+                            })
+                            .catch(err => {
+                                console.log('caught it!', err);
+                            });
                 } else {
                     response.text().then(text => {
                         console.log(text);
