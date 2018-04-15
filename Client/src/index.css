@@ -347,3 +347,34 @@ li {
 .tag-block-span {
   width: 190px;
 }
+
+
+.short-text-box {
+  width: 50px;
+  color: black;
+  margin: 2px;
+  text-align: center;
+}
+.short-text-box:hover {
+  outline: 3px solid yellow;
+}
+
+.editor-text-expanded {
+  overflow-y: scroll;
+  height: 100px;
+}
+
+.hidden {
+  display: none;
+}
+textarea {
+  color: black;
+}
+.edit-text-button {
+  border-radius: 5px;
+  width: 50px;
+  padding: 3px;
+  text-align: center;
+  margin: auto;
+  margin-bottom: 10px;
+}

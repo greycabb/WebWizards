@@ -269,6 +269,7 @@ export default class EditPage extends React.Component {
                             'bricksById': result,
                             'bricksByName': brickContainer
                         });
+                        console.log(result);
 
                         // If body not built yet, build it
                         if (that.state.needsHtmlRoot === true) {
@@ -361,7 +362,7 @@ export default class EditPage extends React.Component {
         this.setState({
             'buildTimer': setInterval(function () {
                 if (that.state.bodyBlockId !== undefined) { // when setup_createBaseBlock(body) completes
-                    
+
                     clearInterval(that.state.buildTimer);
                     that.setState({
                         'buildTimer': null,
@@ -559,11 +560,11 @@ export default class EditPage extends React.Component {
             console.log("current content: " + JSON.stringify(content));
             b = (<span></span>);
         }
-        if (current.children[0] !== undefined && current.children[0].blocktype === "text-contents") {
-            let content = current.children[0].children.content;
-            console.log("Testing " + content);
-            b = (<input type="text" className="editor-text-content" value={content} />);
-        }
+        // if (current.children[0] !== undefined && current.children[0].blocktype === "text-content") {
+        //     let content = current.children[0].children.content;
+        //     console.log("Testing " + content);
+        //     b = (<input type="text" className="editor-text-content" value={content} />);
+        // }
 
         var blockclass;
         if (blockname !== undefined) {
@@ -578,11 +579,11 @@ export default class EditPage extends React.Component {
                 blockclass = 'third-brick';
             }
         }
-        if (current.blocktype !== 'text') {
+        if (current.blocktype !== 'text-content') {
             let startTag = '<' + current.blocktype + '>';
             let endTag = '</' + current.blocktype + '>';
             if (current.blocktype === undefined) {
-                setTimeout(function() {
+                setTimeout(function () {
                     that.makeLayout();
                 }, 300);
                 return;
@@ -604,15 +605,15 @@ export default class EditPage extends React.Component {
             b = (
                 <ul>
                     <li className={blockclass}>
-                        <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent)}}>
-                        {startTag}
-                        {current.id !== undefined &&
-                            <span className="yel">id: {current.id.substr(current.id.length - 3)}, index: {first} </span>
-                        }
+                        <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
+                            {startTag}
+                            {current.id !== undefined &&
+                                <span className="yel">id: {current.id.substr(current.id.length - 3)}, index: {first} </span>
+                            }
                         </div>
                         {b}
-                        <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent)}}>
-                        {endTag}
+                        <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
+                            {endTag}
                         </div>
                     </li>
                 </ul>
@@ -621,11 +622,99 @@ export default class EditPage extends React.Component {
             //b = ({b});
         }
         else {
-            b = (<li className={blockclass}>{b}</li>);
-            b = (<ul>{b}</ul>);
+            let text = '';
+            console.log('XXXXXX');
+            console.log(current);
+            if (current.children.length > 0) {
+                text = current.children[0];
+            }
+
+            // Expand block to show all text and allow user to type
+            function expandEditText(e, blockId) {
+                let blockShow = document.getElementById('expanded-edit-text-' + blockId);
+                let blockHide = document.getElementById('collapsed-edit-text-' + blockId);
+                blockHide.classList.add('hidden')
+                blockShow.classList.remove('hidden');
+            }
+            // Collapse text to be what it was before
+            function collapseEditText(e, blockId) {
+                let blockHide = document.getElementById('expanded-edit-text-' + blockId);
+                let blockShow = document.getElementById('collapsed-edit-text-' + blockId);
+                blockHide.classList.add('hidden')
+                blockShow.classList.remove('hidden');
+            }
+
+            // Change text of block in database
+            function saveEditedText(e, blockId) {
+                let value = document.getElementById('input-edit-text-' + blockId).value;
+                console.log(value);
+                if (value.length > 1000) {
+                    return;
+                }
+                // sanitize this?
+                
+
+                fetch('https://api.webwizards.me/v1/blocks?id=' + blockId, {
+                    method: 'PATCH',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'Authorization': localStorage.getItem('Authorization')
+                    },
+                    body: JSON.stringify({
+                        'children': [value]
+                    })
+                })
+                    .then(function (response) {
+                        
+                        console.log('_________');
+                        console.log('VVVVVV');
+                        //that.getBlock(blockId);
+                        //that.setup_getProjectData();
+                        //that.updateProject(that.state.htmlBlockId);
+                        handleProjectUpdates(newBlock);
+                    })
+                    .catch(err => {
+                        console.log('ERROR: ', err);
+                    });
+            }
+
+            let currentId = current.id;
+
+            console.log('CID ' + currentId);
+
+            b = (<ul>
+                <li className={blockclass}>
+                    {b}
+                    {/* Collapsed div */}
+                    <div id={'collapsed-edit-text-' + currentId}>
+                        <input type="text" id={'input-preview-edit-text-' + currentId} readOnly value={text} title="Click to change text" className="editor-text-content"
+                            onClick={function (e) {
+                                expandEditText(e, currentId);
+                            }} />
+                    </div>
+                    {/* Expanded div */}
+                    <div id={'expanded-edit-text-' + currentId} className="hidden">
+                        <textarea rows="4" cols="20" maxLength="1000" className="editor-text-content editor-text-expanded" id={'input-edit-text-' + currentId} />
+
+                        {/* Save edited text to DB*/}
+                        <div className="edit-text-button btn-success" onClick={function (e) {
+                            saveEditedText(e, currentId);
+                        }}>Save</div>
+
+                        {/* Cancel editing text */}
+                        <div className="edit-text-button btn-danger" onClick={function (e) {
+                            collapseEditText(e, currentId);
+                        }}>Cancel</div>
+                    </div>
+                </li>
+            </ul>
+            );
         }
         return b;
     }
+
+
 
     //____________________________________________________________________________
     // Update project
@@ -705,6 +794,7 @@ export default class EditPage extends React.Component {
     // forSetup: if the getBlockgetBlock() call is
     // locationInLayout: e.g. if it's [0, 2, 4] then you can get to the block in state.layout at 0: children: { 2: children { 4 }}
     getBlock(id, forSetup, locationInLayout) {
+
         let that = this;
         fetch('https://api.webwizards.me/v1/blocks?id=' + id, {
             method: 'GET',
@@ -750,15 +840,18 @@ export default class EditPage extends React.Component {
 
                             //console.log('CHILDREN of : ' + id);
                             //console.log(result.children);
-                            for (var i = 0; i < result.children.length; i++) {
-                                let lil = locationInLayout.slice(0);
-                                lil.push(i);
-                                let newChild = {
-                                    'id': result.children[i],
-                                    'location': lil, // If parent was [0], then this is [0, i]
-                                    'locked': locked
-                                };
-                                newChildren.push(newChild);
+
+                            if (that.state.bricksById[result.blocktype].name !== 'text-content') {
+                                for (var i = 0; i < result.children.length; i++) {
+                                    let lil = locationInLayout.slice(0);
+                                    lil.push(i);
+                                    let newChild = {
+                                        'id': result.children[i],
+                                        'location': lil, // If parent was [0], then this is [0, i]
+                                        'locked': locked
+                                    };
+                                    newChildren.push(newChild);
+                                }
                             }
                             if (newChildren.length > 0) {
                                 //console.log("NCL" + newChildren.length);
@@ -817,6 +910,8 @@ export default class EditPage extends React.Component {
                                     'recursiveLayout': that.recursiveLayout(layout, true)
                                 });
                             }
+                        } else {
+                            console.log(result);
                         }
                     });
                 } else {
@@ -982,7 +1077,7 @@ export default class EditPage extends React.Component {
                     <div>
                         <div className="brick secondary-brick disable-select" id="img" onClick={function () { that.pickup('img') }} >img</div>
                         {/* <div className="brick secondary-brick disable-select" id="audio" onClick={function () { that.pickup('audio') }} >audio</div> */}
-                        {/* <div className="brick secondary-brick disable-select" id="textContent" onClick={function () { that.pickup('textContent') }} >text content</div> */}
+                        <div className="brick secondary-brick disable-select" id="text-content" onClick={function () { that.pickup('text-content') }} ><input type="text" name="lname" disabled value="text" className="short-text-box" /></div>
                     </div>
                     <div>
                         <div className="brick third-brick disable-select" id="h1" onClick={function () { that.pickup('h1') }} >h1</div>
@@ -1004,7 +1099,7 @@ export default class EditPage extends React.Component {
                     </div>
                 </div>
                 {this.state.styleToggled &&
-                    <CSSModal currBlock={this.state.styleToggledBlock} toggle={this.cssModalToggleOff}/>
+                    <CSSModal currBlock={this.state.styleToggledBlock} toggle={this.cssModalToggleOff} />
                 }
             </div>
 
