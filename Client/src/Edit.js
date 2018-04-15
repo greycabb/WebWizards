@@ -449,8 +449,7 @@ export default class EditPage extends React.Component {
         // Clear stack
         this.setState({
             stack: [],
-            stackVisited: {},
-            textContents: {}
+            stackVisited: {}
         });
 
         // let hd = this.state.headData;
@@ -701,7 +700,7 @@ export default class EditPage extends React.Component {
                     </div>
                     {/* Expanded div */}
                     <div id={'expanded-edit-text-' + currentId} className="hidden">
-                        <textarea rows="4" cols="20" maxLength="1000" className="editor-text-content editor-text-expanded" id={'input-edit-text-' + currentId} defaultValue={text}/>
+                        <textarea rows="4" cols="20" maxLength="1000" className="editor-text-content editor-text-expanded" id={'input-edit-text-' + currentId} defaultValue={text} />
 
                         {/* Save edited text to DB*/}
                         <div className="edit-text-button btn-success" onClick={function () {
@@ -822,45 +821,14 @@ export default class EditPage extends React.Component {
                             let layout = that.state.layout;
                             let location = layout;
 
-                            let isTextContent = that.state.textContents[id] !== undefined
-
-                            if (isTextContent === true) {
-                                let tc = that.state.textContents[id];
-                                console.log(tc.content);
-                                for (let i = 0; i < tc.location.length; i++) {
-
-                                    if (location.children[tc.location[i]] === undefined) {
-                                        location.children[tc.location[i]] = {
-                                            children: {
-
-                                            }
-                                        };
-                                    }
-
-                                    location = location.children[tc.location[i]];
-                                }
-                                location.textContent = tc.content;
-                            }
-
-                            //console.log('___________________________');
-                            //console.log(locationInLayout);
-                            
-
                             // Remove the current block from the stack
                             let newStack = that.state.stack.slice(0);
                             newStack.shift();
 
                             let sv = that.state.stackVisited;
 
-
-                            if (isTextContent === false && sv[id] === true) {
+                            if (sv[id] === true) {
                                 return;
-                            } else if (isTextContent === true) {
-                                if (that.state.textContents[id].done === undefined) {
-                                    that.state.textContents[id].done = true;
-                                } else {
-                                    return;
-                                }
                             }
 
                             sv[id] = true;
@@ -871,83 +839,67 @@ export default class EditPage extends React.Component {
                             // Send children of the current block into the stack:
                             let newChildren = [];
 
-
                             let locked = locationInLayout.length <= 1; // Can't move or delete blocks with depth <= 2 (html, head, body)
-
 
                             //console.log('CHILDREN of : ' + id);
                             //console.log(result.children);
 
-                            if (!isTextContent) {
-                                if (that.state.bricksById[result.blocktype].name !== 'text-content') {
-                                    for (var i = 0; i < result.children.length; i++) {
-                                        let lil = locationInLayout.slice(0);
-                                        lil.push(i);
-                                        let newChild = {
-                                            'id': result.children[i],
-                                            'location': lil, // If parent was [0], then this is [0, i]
-                                            'locked': locked
-                                        };
-                                        newChildren.push(newChild);
-                                    }
+                            let textContent = null;
+
+                            if (that.state.bricksById[result.blocktype].name !== 'text-content') {
+                                for (var i = 0; i < result.children.length; i++) {
+                                    let lil = locationInLayout.slice(0);
+                                    lil.push(i);
+                                    let newChild = {
+                                        'id': result.children[i],
+                                        'location': lil, // If parent was [0], then this is [0, i]
+                                        'locked': locked
+                                    };
+                                    newChildren.push(newChild);
+                                }
+                            } else {
+                                if (result.children.length > 0) {
+                                    textContent = result.children[0];
                                 } else {
-                                    if (result.children.length > 0) {
-                                        let lil = locationInLayout.slice(0);
-                                        let newChild = {
-                                            'id': result.id,
-                                            'location': lil,
-                                            'locked': locked
-                                        }
-                                        newChildren.push(newChild);
-                                        let tc = that.state.textContents;
-                                        tc[result.id] = {
-                                            'content': result.children[0], // Words
-                                            'location': lil // Location of text content block
-                                        };
-                                        that.setState({
-                                            textContents: tc
-                                        });
-                                    }
+                                    textContent = '';
                                 }
-                                if (newChildren.length > 0) {
-                                    //console.log("NCL" + newChildren.length);
-                                    newStack = newChildren.concat(newStack);
-                                }
+                            }
+                            if (newChildren.length > 0) {
+                                newStack = newChildren.concat(newStack);
                             }
 
                             that.setState({
                                 stack: newStack
                             });
 
-                            if (!isTextContent) {
-                                for (var i = 0; i < locationInLayout.length; i++) {
-                                    if (location.children[locationInLayout[i]] === undefined) {
-                                        location.children[locationInLayout[i]] = {
-                                            children: {
+                            for (var i = 0; i < locationInLayout.length; i++) {
+                                if (location.children[locationInLayout[i]] === undefined) {
+                                    location.children[locationInLayout[i]] = {
+                                        children: {
 
-                                            }
-                                        };
-                                    }
-                                    location = location.children[locationInLayout[i]];
-                                    //console.log("LL[");
-                                    //console.log(locationInLayout);
-                                    //console.log("]");
+                                        }
+                                    };
                                 }
-                                // Once at location, assign variables there
-                                location.id = result.id;
-                                location.blocktype = that.state.bricksById[result.blocktype].name;
-                                location.blocktypeid = result.blocktype
-                                location.css = result.css;
-                                location.parentid = result.parentid;
-                                location.children = {}; // Filled out later from stack
+                                location = location.children[locationInLayout[i]];
+                                //console.log("LL[");
+                                //console.log(locationInLayout);
+                                //console.log("]");
+                            }
+                            // Once at location, assign variables there
+                            location.id = result.id;
+                            location.blocktype = that.state.bricksById[result.blocktype].name;
+                            location.blocktypeid = result.blocktype
+                            location.css = result.css;
+                            location.parentid = result.parentid;
+                            location.children = {}; // Filled out later from stack
+
+                            if (textContent != null) {
+                                location.textContent = textContent;
                             }
 
                             that.setState({
                                 layout: layout
                             });
-                            //console.log('LAYOUT');
-                            //console.log(that.state.layout);
-
 
                             // Recursion
                             if (newStack.length > 0) {
