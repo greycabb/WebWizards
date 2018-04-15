@@ -270,7 +270,7 @@ class CSSInputBox extends React.Component {
     constructor(props) {
         super(props);
 
-        var currentVal;
+        var currentVal = " ";
 
         if (!this.props.currentVal) {
             currentVal = this.props.object.default;
@@ -282,7 +282,8 @@ class CSSInputBox extends React.Component {
         // Sizing options
         var chosenUnit;
         var numValue;
-        if (this.props.object.extra_options && this.props.object.extra_options.pixels) {
+        if (this.props.object.extra_options && 
+            (this.props.object.extra_options.pixels || this.props.name == "background-image")) {
             //Need to parse value and determine unit type
             if (currentVal.includes("px")) {
                 numValue = currentVal.substring(0, currentVal.length - 2);
@@ -292,10 +293,9 @@ class CSSInputBox extends React.Component {
                 numValue = currentVal.substring(0, currentVal.length - 1);
                 chosenUnit = "percentage";
             }
-        }
-
-        if (currentVal.includes("url")) {
-            numValue = currentVal.substring(4, currentVal.length - 2);
+            if (currentVal.includes("url")) {
+                numValue = currentVal.substring(4, currentVal.length - 2);
+            }
         }
 
         this.state = {
