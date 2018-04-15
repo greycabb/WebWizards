@@ -294,6 +294,10 @@ class CSSInputBox extends React.Component {
             }
         }
 
+        if (currentVal.includes("url")) {
+            numValue = currentVal.substring(4, currentVal.length - 2);
+        }
+
         this.state = {
             value: currentVal,
             numValue: numValue,
@@ -307,9 +311,13 @@ class CSSInputBox extends React.Component {
     }
 
     colorImgHandler(val) {
+        var trueVal = val;
+        if (this.props.name == "background-image") {
+            val = "url('" + val + "')";
+        }
         this.props.handleChange(this.props.name, val);
         this.setState({
-                value: val
+                value: trueVal
         });
     }
 
@@ -403,7 +411,7 @@ class CSSInputBox extends React.Component {
                         </span>
                     }
                     {this.props.object.units == "image" &&
-                        <ImageLibrary currentImg={this.state.value} handleChange={this.colorImgHandler} />
+                        <ImageLibrary currentImg={this.state.numValue} handleChange={this.colorImgHandler} />
                     }
                 </div>
             </div>

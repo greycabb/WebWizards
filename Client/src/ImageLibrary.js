@@ -58,6 +58,9 @@ export default class ImageLibrary extends React.Component {
         this.props.handleChange(url);
         this.setState({
             image: url
+        }, 
+        () => {
+            this.refs.imageInput.scrollLeft = this.refs.imageInput.scrollWidth;
         });
     }
 
