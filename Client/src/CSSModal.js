@@ -188,6 +188,7 @@ export default class CSSModal extends React.Component {
 
                 if (response.ok) {
                     response.json().then((result) => {
+                        console.log(curr);
                         this.props.handleChange(result);
                         this.setState({
                             currAppliedCss: curr
@@ -217,9 +218,6 @@ export default class CSSModal extends React.Component {
                                 <div className="modal-buttons-container">
                                     <h2>Editing &lt;{this.props.currBlock.blocktype}&gt;</h2>
                                     {this.state.buttons}
-                                    {this.state.buttons.length == 0 &&
-                                        "There are no CSS styles to change"
-                                    }
                                 </div>
                             }
                             {this.state.viewingCategory &&
@@ -278,28 +276,50 @@ class CSSInputBox extends React.Component {
         }
 
         this.state = {
-            units: this.props.object.units,
             value: currentVal
         }
 
         this.colorHandler = this.colorHandler.bind(this);
+        this.valHandler = this.valHandler.bind(this);
 
     }
 
-    colorHandler(color) {
-        this.props.handleChange(this.props.name, color);
+    colorHandler(val) {
+        this.props.handleChange(this.props.name, val);
         this.setState({
-                value: color
+                value: val
+        });
+    }
+
+    valHandler(event) {
+        this.props.handleChange(this.props.name, event.target.value);
+        this.setState({
+            value: event.target.value
         });
     }
 
     render() {
 
+        var options = [];
+
+        if (this.props.object.extra_options && this.props.object.extra_options.choices) {
+            for (let i = 0; i < this.props.object.extra_options.choices.length; i ++) {
+                options.push(<option value={this.props.object.extra_options.choices[i]} key={i}>
+                                {this.props.object.extra_options.choices[i]}
+                            </option>);
+            }
+        }
+
         return (
             <div className="css-input">
                 <span className="css-input-title">{this.props.name}: </span>
-                {this.state.units == 'rgb' &&
+                {this.props.object.units == 'rgb' &&
                     <ColorPickerInput default={this.state.value} handle={this.colorHandler}/>
+                }
+                {this.props.object.units == 'EO_choices' && this.props.object.extra_options.choices &&
+                    <select className="css-select"  value={this.state.value} onChange={this.valHandler}>
+                        {options}
+                    </select>
                 }
             </div>
         );

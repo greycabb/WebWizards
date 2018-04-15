@@ -12,8 +12,7 @@
         "name": "head",
 		"translation": "head",
 		"description": "A 'head' block defines information about HTML document",
-		"type": "wrapper",
-		"css_groups": ["font", "background", "border", "size"]
+		"type": "wrapper"
 	},
 	{
         "id": 2,
