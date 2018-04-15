@@ -499,7 +499,7 @@ export default class EditPage extends React.Component {
             }
         }
 
-        //console.log(current);
+        console.log(current);
 
         let b = (<span></span>);
 
@@ -645,6 +645,10 @@ export default class EditPage extends React.Component {
                 blockShow.classList.remove('hidden');
             }
 
+            let cIndex = current.index;
+
+            console.log('cindex ' + cIndex);
+
             // Change text of block in database
             function saveEditedText(blockId) {
                 let value = document.getElementById('input-edit-text-' + blockId).value;
@@ -655,7 +659,7 @@ export default class EditPage extends React.Component {
                 // sanitize this?
                 collapseEditText(blockId, value);
 
-
+                
                 fetch('https://api.webwizards.me/v1/blocks?id=' + blockId, {
                     method: 'PATCH',
                     headers: {
@@ -664,7 +668,8 @@ export default class EditPage extends React.Component {
                         'Authorization': localStorage.getItem('Authorization')
                     },
                     body: JSON.stringify({
-                        'children': [value]
+                        'children': [value],
+                        'index': cIndex
                     })
                 })
                     .then(function (response) {
@@ -848,7 +853,8 @@ export default class EditPage extends React.Component {
                                     let newChild = {
                                         'id': result.children[i],
                                         'location': lil, // If parent was [0], then this is [0, i]
-                                        'locked': locked
+                                        'locked': locked,
+                                        'index': i
                                     };
                                     newChildren.push(newChild);
                                 }
@@ -886,6 +892,7 @@ export default class EditPage extends React.Component {
                             location.blocktypeid = result.blocktype
                             location.css = result.css;
                             location.parentid = result.parentid;
+                            location.index = result.index;
                             location.children = {}; // Filled out later from stack
 
                             if (textContent != null) {
