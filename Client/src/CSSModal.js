@@ -89,7 +89,6 @@ export default class CSSModal extends React.Component {
 
     populateInputBoxes(cat) {
         return new Promise((resolve, reject) => {
-            var inputBoxes = [];
             // Find all attributes
             var attributes = [];
             for (let i = 0; i < this.state.allCssGroupData.length; i++) {
@@ -98,6 +97,8 @@ export default class CSSModal extends React.Component {
                     break;
                 }
             }
+            var inputBoxes = new Array(attributes.length + "");
+            var inputCount = 0;
             // Attribute boxes
             /* this.state.currAppliedCss = [{attribute: "", value: ""}, {}] */
             for (let i = 0; i < attributes.length; i ++) {
@@ -117,8 +118,9 @@ export default class CSSModal extends React.Component {
 
                         if (response.ok) { 
                             response.json().then((result) => {
-                                inputBoxes.push(<CSSInputBox key={attributes[i]} name={attributes[i]} currentVal={defaultVal} object={result} handleChange={this.handleValueChange}/>);
-                                if (inputBoxes.length == attributes.length) {
+                                inputBoxes[i] = (<CSSInputBox key={attributes[i]} name={attributes[i]} currentVal={defaultVal} object={result} handleChange={this.handleValueChange}/>);
+                                inputCount ++;
+                                if (inputCount == attributes.length) {
                                     resolve(inputBoxes);
                                 }
                             });
