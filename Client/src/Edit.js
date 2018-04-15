@@ -952,8 +952,7 @@ export default class EditPage extends React.Component {
 
                         // Set projectData state
                         that.setState({
-                            projectData: result,
-                            styleToggledBlock: newBlock
+                            projectData: result
                         });
                     });
                 } else {

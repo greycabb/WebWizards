@@ -101,8 +101,6 @@ export default class CSSModal extends React.Component {
             for (let i = 0; i < attributes.length; i ++) {
                 let defaultVal; 
                 for (let k = 0; k < this.state.currAppliedCss.length; k++) {
-                    console.log(this.state.currAppliedCss[k].attribute);
-                    console.log(attributes[i]);
                     if (attributes[i] == this.state.currAppliedCss[k].attribute) {
                         defaultVal = this.state.currAppliedCss[k].value;
                         break;
@@ -190,7 +188,6 @@ export default class CSSModal extends React.Component {
 
                 if (response.ok) {
                     response.json().then((result) => {
-                        console.log(result);
                         this.props.handleChange(result);
                         this.setState({
                             currAppliedCss: curr
