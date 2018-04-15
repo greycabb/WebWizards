@@ -38,7 +38,6 @@ export default class EditPage extends React.Component {
             'htmlBlockId': undefined, // ID of the root HTML block in the project data
 
             'layout': {}, // Layout of the right display
-            'textContents': {},
 
             /* Example layout:
                 {
@@ -175,7 +174,6 @@ export default class EditPage extends React.Component {
                             }
                         }
                         if (that.state.bricksByName === undefined) {
-                            console.log('Beep boop');
                             that.setup_getAllPossibleHtmlBlocks();
                         }
                         return true;
@@ -265,7 +263,6 @@ export default class EditPage extends React.Component {
                                 'type': current.type
                             }
                         }
-                        console.log('Bonk');
                         //console.log(brickContainer);
                         that.setState({
                             'bricksById': result,
@@ -686,8 +683,6 @@ export default class EditPage extends React.Component {
 
             let currentId = current.id;
 
-            console.log('CID ' + currentId);
-
             b = (<ul>
                 <li className={blockclass}>
                     {b}
@@ -920,8 +915,7 @@ export default class EditPage extends React.Component {
                         console.log(text);
                         that.setState({
                             stack: [],
-                            stackVisited: {},
-                            textContents: {}
+                            stackVisited: {}
                         });
                     });
 
@@ -1000,9 +994,10 @@ export default class EditPage extends React.Component {
     // The type of brick placed is determined by the brick that was picked up on the left, from state
     drop(parentId, index, e) {
         e.stopPropagation();
+        let brick = this.state.selectedBrick;
         console.log('Attempting to drop <' + brick + '> in ' + parentId + ' ' + index);
 
-        let brick = this.state.selectedBrick;
+        
         if (brick && parentId !== undefined && index !== undefined) {
             this.pickup(); // unselect the selected brick
             console.log('drop <' + brick + '> in ' + parentId + ' ' + index);
