@@ -1,4 +1,5 @@
 import React from 'react';
+import './ProjectPage.css';
 
 export default class ProjectPage extends React.Component {
     constructor(props) {
@@ -33,7 +34,8 @@ export default class ProjectPage extends React.Component {
                         console.log(result);
 
                         that.blockToHtml(result.content[0]).then((string) => {
-                            that.setState({object: string});
+                            console.log(string);
+                            that.setState({object: string[0]});
                         });
             
                     });
@@ -99,25 +101,49 @@ export default class ProjectPage extends React.Component {
                                                     }
                                                     cssString += '"';
                                                 }
-                                                var string = '<' + blockJson.name + cssString + '>';
+                                                var string = ""; // what is returned to the user when asked for code
+                                                var displayedString = "" // what is really displayed
+                                                if (blockJson.name == "html") {
+                                                    displayedString += "<div style=\"width:100% !important; height: 100% !important; top: 0; left: 0; position: relative\">"
+                                                } 
+                                                if (blockJson.name == "body") {
+                                                    displayedString += "<div" + cssString + ">&nbsp;";
+                                                }
+                                                if (blockJson.name != "head" && blockJson.name != "html" && blockJson.name != "body") {
+                                                    displayedString += '<' + blockJson.name + cssString + '>';
+                                                }
+                                                string = '<' + blockJson.name + cssString + '>';
                                                 if (children != null && children.length > 0) {
                                                     for (var i = 0; i < children.length; i ++) {
                                                         this.blockToHtml(children[i]).then((result) => {
-                                                            string += result;
+
+                                                            displayedString += result[0]
+                                                            string += result[1];
+
+                                                            if (blockJson.name == "html" || blockJson.name == "body") {
+                                                                displayedString += "</div>"
+                                                            } 
+                                                            if (blockJson.name != "head" && blockJson.name != "html" && blockJson.name != "body") {
+                                                                displayedString += '<' + blockJson.name + cssString + '>';
+                                                            }
                                                             string += '</' + blockJson.name + '>';
-                                                            resolve(string);
+
+                                                            resolve([displayedString, string]);
                                                             //return string;
                                                         });
                                                     }
                                                 }
                                                 else {
                                                     string += '</' + blockJson.name + '>';
-                                                    resolve(string);
+                                                    if (blockJson.name == "html" || blockJson.name == "body") {
+                                                        displayedString += "</div>"
+                                                    }
+                                                    resolve([displayedString, string]);
                                                     //return string;
                                                 }
                                             }
                                             else if (blockJson.type == "content") {
-                                                resolve(children[0]);
+                                                resolve([children[0], children[0]]);
                                             }
                                             else {
                                                 // Will not require recursive call
@@ -129,7 +155,7 @@ export default class ProjectPage extends React.Component {
                                                     }
                                                 }
                                                 var string = '<' + blockJson.name + cssString + '/>';
-                                                resolve(string);
+                                                resolve([displayedString, string]);
                                             }
                                         });
                                     } else {
@@ -155,7 +181,7 @@ export default class ProjectPage extends React.Component {
     render() {
 
         return (
-            <div ref="container" dangerouslySetInnerHTML={{ __html: this.state.object }}>
+            <div ref="container" className="full-page-container" dangerouslySetInnerHTML={{ __html: this.state.object }}>
             </div>
         );
     }

@@ -112,6 +112,7 @@ export default class EditPage extends React.Component {
 
         this.cssModalToggleOn = this.cssModalToggleOn.bind(this);
         this.cssModalToggleOff = this.cssModalToggleOff.bind(this);
+        this.handleProjectUpdates = this.handleProjectUpdates.bind(this);
 
         console.log('______________________');
         this.setup_getProjectData();
@@ -652,7 +653,7 @@ export default class EditPage extends React.Component {
                     return;
                 }
                 // sanitize this?
-                
+
 
                 fetch('https://api.webwizards.me/v1/blocks?id=' + blockId, {
                     method: 'PATCH',
@@ -666,13 +667,13 @@ export default class EditPage extends React.Component {
                     })
                 })
                     .then(function (response) {
-                        
+
                         console.log('_________');
                         console.log('VVVVVV');
                         //that.getBlock(blockId);
                         //that.setup_getProjectData();
                         //that.updateProject(that.state.htmlBlockId);
-                        handleProjectUpdates(newBlock);
+                        that.handleProjectUpdates();
                     })
                     .catch(err => {
                         console.log('ERROR: ', err);
@@ -1028,6 +1029,67 @@ export default class EditPage extends React.Component {
         });
     }
 
+    handleProjectUpdates(newBlock) {
+        var that = this;
+        var d = new Date();
+        var timeEdited = d.toLocaleString();
+        fetch('https://api.webwizards.me/v1/projects?id=' + that.state.projectId, {
+            method: 'PATCH',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('Authorization')
+            },
+            body:
+                JSON.stringify({
+                })
+        })
+            .then(function (response) {
+
+                if (response.ok) {
+                    console.log(response);
+                    fetch('https://api.webwizards.me/v1/projects?id=' + that.state.projectId, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'Authorization': localStorage.getItem('Authorization')
+                        }
+                    })
+                        .then(function (response2) {
+
+                            if (response.ok) {
+                                console.log(response2);
+                                response2.json().then(function (result2) {
+                                    console.log(result2);
+
+                                    // Set projectData state
+                                    that.setState({
+                                        projectData: result2
+                                    });
+                                });
+                            } else {
+                                response2.text().then(text => {
+                                    console.log(text);
+                                });
+
+                            }
+                        })
+                        .catch(err => {
+                            console.log('caught it!', err);
+                        });
+                } else {
+                    response.text().then(text => {
+                        console.log(text);
+                    });
+
+                }
+            })
+            .catch(err => {
+                console.log('caught it!', err);
+            });
+    }
+
 
 
     //____________________________________________________________________________
@@ -1098,9 +1160,14 @@ export default class EditPage extends React.Component {
                         }
                     </div>
                 </div>
+
                 {this.state.styleToggled &&
-                    <CSSModal currBlock={this.state.styleToggledBlock} toggle={this.cssModalToggleOff} />
+                    <div>
+                        <CSSModal currBlock={this.state.styleToggledBlock} toggle={this.cssModalToggleOff} />
+                        <CSSModal currBlock={this.state.styleToggledBlock} toggle={this.cssModalToggleOff} handleChange={this.handleProjectUpdates} />
+                    </div>
                 }
+
             </div>
 
         );
