@@ -21,6 +21,7 @@ export default class CSSModal extends React.Component {
         this.handle = this.handle.bind(this);
         this.goBack = this.goBack.bind(this);
         this.populateInputBoxes = this.populateInputBoxes.bind(this);
+        this.handleValueChange = this.handleValueChange.bind(this);
     }
 
     componentWillMount() {
@@ -85,7 +86,6 @@ export default class CSSModal extends React.Component {
     }
 
     populateInputBoxes(cat) {
-        console.log("beginning input population");
         return new Promise((resolve, reject) => {
             var inputBoxes = [];
             // Find all attributes
@@ -101,7 +101,9 @@ export default class CSSModal extends React.Component {
             for (let i = 0; i < attributes.length; i ++) {
                 let defaultVal; 
                 for (let k = 0; k < this.state.currAppliedCss.length; k++) {
-                    if (attributes[k] == this.state.currAppliedCss[k].attribute) {
+                    console.log(this.state.currAppliedCss[k].attribute);
+                    console.log(attributes[i]);
+                    if (attributes[i] == this.state.currAppliedCss[k].attribute) {
                         defaultVal = this.state.currAppliedCss[k].value;
                         break;
                     }
@@ -113,11 +115,9 @@ export default class CSSModal extends React.Component {
                 })
                     .then((response) => {
 
-                        console.log("fetching " + attributes[i] +  " attribute");
-
                         if (response.ok) { 
-                            response.json().then(function (result) {
-                                inputBoxes.push(<CSSInputBox key={attributes[i]} name={attributes[i]} currentVal={defaultVal} object={result}/>);
+                            response.json().then((result) => {
+                                inputBoxes.push(<CSSInputBox key={attributes[i]} name={attributes[i]} currentVal={defaultVal} object={result} handleChange={this.handleValueChange}/>);
                                 if (inputBoxes.length == attributes.length) {
                                     resolve(inputBoxes);
                                 }
@@ -143,7 +143,6 @@ export default class CSSModal extends React.Component {
     handle(cat) {
         this.populateInputBoxes(cat)
             .then((inputBoxes) => {
-                console.log("reached");
                 this.setState({
                     inputBoxes: inputBoxes,
                     viewingCategory: true,
@@ -157,6 +156,57 @@ export default class CSSModal extends React.Component {
             viewingCategory: false,
             currentCategory:''
         });
+    }
+
+    handleValueChange(attribute, value) {
+        //Grab current value
+        var curr = this.state.currAppliedCss;
+        var exists = false;
+
+        for (let i = 0; i < curr.length; i ++) {
+            if (curr[i].attribute == attribute) {
+                exists = true;
+                curr[i].value = value;
+            }
+        }
+
+        if (!exists) {
+            curr.push({attribute: attribute, value: value});
+        }
+
+        //Patch to API
+        fetch('https://api.webwizards.me/v1/blocks?id=' + this.props.currBlock.id, {
+            method: 'PATCH',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('Authorization')
+            },
+            body: JSON.stringify({
+                'css': curr
+            })
+        })
+            .then((response) => {
+
+                if (response.ok) {
+                    response.json().then((result) => {
+                        console.log(result);
+                        this.props.handleChange(result);
+                        this.setState({
+                            currAppliedCss: curr
+                        });
+                    });
+                } else {
+                    response.text().then(text => {
+                        console.log(text);
+                    });
+
+                }
+            })
+            .catch(err => {
+                console.log('ERROR: ', err);
+            });
+
     }
 
     render() {
@@ -231,23 +281,29 @@ class CSSInputBox extends React.Component {
         }
 
         this.state = {
-            name: this.props.name,
             units: this.props.object.units,
             value: currentVal
         }
 
+        this.colorHandler = this.colorHandler.bind(this);
+
+    }
+
+    colorHandler(color) {
+        this.props.handleChange(this.props.name, color);
+        this.setState({
+                value: color
+        });
     }
 
     render() {
 
         return (
             <div className="css-input">
-                <span>
-                    {this.props.name}
-                    {this.props.units == 'rgb' &&
-                        <ColorPickerInput />
-                    }
-                </span>
+                <span className="css-input-title">{this.props.name}: </span>
+                {this.state.units == 'rgb' &&
+                    <ColorPickerInput default={this.state.value} handle={this.colorHandler}/>
+                }
             </div>
         );
 

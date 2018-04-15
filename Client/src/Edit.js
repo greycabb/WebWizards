@@ -112,6 +112,7 @@ export default class EditPage extends React.Component {
 
         this.cssModalToggleOn = this.cssModalToggleOn.bind(this);
         this.cssModalToggleOff = this.cssModalToggleOff.bind(this);
+        this.handleProjectUpdates = this.handleProjectUpdates.bind(this);
 
         console.log('______________________');
         this.setup_getProjectData();
@@ -933,6 +934,40 @@ export default class EditPage extends React.Component {
         });
     }
 
+    handleProjectUpdates(newBlock) {
+        var that = this;
+        fetch('https://api.webwizards.me/v1/projects?id=' + this.state.projectId, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('Authorization')
+            }
+        })
+            .then(function (response) {
+
+                if (response.ok) {
+                    response.json().then(function (result) {
+                        console.log(result);
+
+                        // Set projectData state
+                        that.setState({
+                            projectData: result,
+                            styleToggledBlock: newBlock
+                        });
+                    });
+                } else {
+                    response.text().then(text => {
+                        console.log(text);
+                    });
+
+                    }
+                })
+                .catch(err => {
+                    console.log('caught it!', err);
+                });
+    }
+
 
 
     //____________________________________________________________________________
@@ -1004,7 +1039,7 @@ export default class EditPage extends React.Component {
                     </div>
                 </div>
                 {this.state.styleToggled &&
-                    <CSSModal currBlock={this.state.styleToggledBlock} toggle={this.cssModalToggleOff}/>
+                    <CSSModal currBlock={this.state.styleToggledBlock} toggle={this.cssModalToggleOff} handleChange={this.handleProjectUpdates}/>
                 }
             </div>
 

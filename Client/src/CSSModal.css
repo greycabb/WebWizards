@@ -1,3 +1,8 @@
+.css-input {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
 .css-modal-popup {
     height: auto !important;
     width: 350px !important;
@@ -34,4 +39,9 @@
 
 .modal-buttons-container {
     text-align: center;
+}
+
+.css-input-title {
+    margin-right: 10px;
+    font-size: 20px;
 }
