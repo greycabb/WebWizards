@@ -38,7 +38,6 @@ export default class EditPage extends React.Component {
             'htmlBlockId': undefined, // ID of the root HTML block in the project data
 
             'layout': {}, // Layout of the right display
-            'textContents': {},
 
             /* Example layout:
                 {
@@ -80,6 +79,7 @@ export default class EditPage extends React.Component {
             */
             'stack': [], // For building the layout
             'stackVisited': {}, // Also for building the layout
+            'textContentBlockIds': {}, // For building layout, IDs of text content that are children of blocks
 
             'finishedBuildingHeadBody': false, // If html, head, body tags exist in the project content
             'recursiveLayout': undefined // JSX content of the right display, built from layout
@@ -449,8 +449,7 @@ export default class EditPage extends React.Component {
         // Clear stack
         this.setState({
             stack: [],
-            stackVisited: {},
-            textContents: {}
+            stackVisited: {}
         });
 
         // let hd = this.state.headData;
@@ -626,38 +625,35 @@ export default class EditPage extends React.Component {
         }
         else {
             let text = '';
+            console.log('XXXXXX');
             console.log(current);
             if (current.textContent !== undefined) {
                 text = current.textContent;
             }
 
             // Expand block to show all text and allow user to type
-            function expandEditText(blockId, newText) {
+            function expandEditText(e, blockId) {
                 let blockShow = document.getElementById('expanded-edit-text-' + blockId);
                 let blockHide = document.getElementById('collapsed-edit-text-' + blockId);
                 blockHide.classList.add('hidden')
                 blockShow.classList.remove('hidden');
             }
             // Collapse text to be what it was before
-            function collapseEditText(blockId, newText) {
+            function collapseEditText(e, blockId) {
                 let blockHide = document.getElementById('expanded-edit-text-' + blockId);
                 let blockShow = document.getElementById('collapsed-edit-text-' + blockId);
-                if (newText) {
-                    document.getElementById('input-preview-edit-text-' + blockId).value = newText;
-                }
                 blockHide.classList.add('hidden')
                 blockShow.classList.remove('hidden');
             }
 
             // Change text of block in database
-            function saveEditedText(blockId) {
+            function saveEditedText(e, blockId) {
                 let value = document.getElementById('input-edit-text-' + blockId).value;
                 console.log(value);
                 if (value.length > 1000) {
                     return;
                 }
                 // sanitize this?
-                collapseEditText(blockId, value);
 
 
                 fetch('https://api.webwizards.me/v1/blocks?id=' + blockId, {
@@ -695,22 +691,22 @@ export default class EditPage extends React.Component {
                     {/* Collapsed div */}
                     <div id={'collapsed-edit-text-' + currentId}>
                         <input type="text" id={'input-preview-edit-text-' + currentId} readOnly value={text} title="Click to change text" className="editor-text-content"
-                            onClick={function () {
-                                expandEditText(currentId);
+                            onClick={function (e) {
+                                expandEditText(e, currentId);
                             }} />
                     </div>
                     {/* Expanded div */}
                     <div id={'expanded-edit-text-' + currentId} className="hidden">
-                        <textarea rows="4" cols="20" maxLength="1000" className="editor-text-content editor-text-expanded" id={'input-edit-text-' + currentId} defaultValue={text}/>
+                        <textarea rows="4" cols="20" maxLength="1000" className="editor-text-content editor-text-expanded" id={'input-edit-text-' + currentId} />
 
                         {/* Save edited text to DB*/}
-                        <div className="edit-text-button btn-success" onClick={function () {
-                            saveEditedText(currentId);
+                        <div className="edit-text-button btn-success" onClick={function (e) {
+                            saveEditedText(e, currentId);
                         }}>Save</div>
 
                         {/* Cancel editing text */}
-                        <div className="edit-text-button btn-danger" onClick={function () {
-                            collapseEditText(currentId);
+                        <div className="edit-text-button btn-danger" onClick={function (e) {
+                            collapseEditText(e, currentId);
                         }}>Cancel</div>
                     </div>
                 </li>
@@ -799,7 +795,7 @@ export default class EditPage extends React.Component {
     // id: id of block to add to layout
     // forSetup: if the getBlockgetBlock() call is
     // locationInLayout: e.g. if it's [0, 2, 4] then you can get to the block in state.layout at 0: children: { 2: children { 4 }}
-    getBlock(id, forSetup, locationInLayout) {
+    getBlock(id, forSetup, locationInLayout, isTextContent) {
 
         let that = this;
         fetch('https://api.webwizards.me/v1/blocks?id=' + id, {
@@ -818,49 +814,14 @@ export default class EditPage extends React.Component {
 
                         if (forSetup === true && locationInLayout !== undefined && locationInLayout.length > 0) {
 
-                            // Place the current block into the layout
-                            let layout = that.state.layout;
-                            let location = layout;
-
-                            let isTextContent = that.state.textContents[id] !== undefined
-
-                            if (isTextContent === true) {
-                                let tc = that.state.textContents[id];
-                                console.log(tc.content);
-                                for (let i = 0; i < tc.location.length; i++) {
-
-                                    if (location.children[tc.location[i]] === undefined) {
-                                        location.children[tc.location[i]] = {
-                                            children: {
-
-                                            }
-                                        };
-                                    }
-
-                                    location = location.children[tc.location[i]];
-                                }
-                                location.textContent = tc.content;
-                            }
 
                             //console.log('___________________________');
                             //console.log(locationInLayout);
-                            
-
-                            // Remove the current block from the stack
-                            let newStack = that.state.stack.slice(0);
-                            newStack.shift();
-
                             let sv = that.state.stackVisited;
 
 
-                            if (isTextContent === false && sv[id] === true) {
+                            if (sv[id] === true) {
                                 return;
-                            } else if (isTextContent === true) {
-                                if (that.state.textContents[id].done === undefined) {
-                                    that.state.textContents[id].done = true;
-                                } else {
-                                    return;
-                                }
                             }
 
                             sv[id] = true;
@@ -868,17 +829,40 @@ export default class EditPage extends React.Component {
                                 'stackVisited': sv
                             });
 
+                            // Remove the current block from the stack
+                            let newStack = that.state.stack.slice(0);
+                            newStack.shift();
+
                             // Send children of the current block into the stack:
                             let newChildren = [];
 
 
                             let locked = locationInLayout.length <= 1; // Can't move or delete blocks with depth <= 2 (html, head, body)
 
+                            let layout = that.state.layout;
+                            let location = layout;
 
                             //console.log('CHILDREN of : ' + id);
                             //console.log(result.children);
 
-                            if (!isTextContent) {
+                            if (isTextContent === true) {
+                                if (result.children.length > 0) {
+                                    let lil = locationInLayout.slice(0);
+                                    lil.slice(-1);
+
+                                    for (var i = 0; i < locationInLayout.length; i++) {
+                                        if (location.children[locationInLayout[i]] === undefined) {
+                                            location.children[locationInLayout[i]] = {
+                                                children: {
+
+                                                }
+                                            };
+                                        }
+                                        location = location.children[locationInLayout[i]];
+                                    }
+                                    location.textContent = result.children[0];
+                                }
+                            } else {
                                 if (that.state.bricksById[result.blocktype].name !== 'text-content') {
                                     for (var i = 0; i < result.children.length; i++) {
                                         let lil = locationInLayout.slice(0);
@@ -894,19 +878,17 @@ export default class EditPage extends React.Component {
                                     if (result.children.length > 0) {
                                         let lil = locationInLayout.slice(0);
                                         let newChild = {
-                                            'id': result.id,
-                                            'location': lil,
+                                            'id': result.children[0],
+                                            'parentLocation': lil,
                                             'locked': locked
                                         }
-                                        newChildren.push(newChild);
-                                        let tc = that.state.textContents;
-                                        tc[result.id] = {
-                                            'content': result.children[0], // Words
-                                            'location': lil // Location of text content block
-                                        };
+                                        let tcbi = that.state.textContentBlockIds;
+                                        tcbi[result.children[0]] = true;
                                         that.setState({
-                                            textContents: tc
+                                            'textContentBlockIds': tcbi
                                         });
+
+                                        newChildren.push(newChild);
                                     }
                                 }
                                 if (newChildren.length > 0) {
@@ -919,7 +901,9 @@ export default class EditPage extends React.Component {
                                 stack: newStack
                             });
 
-                            if (!isTextContent) {
+                            // Place the current block into the layout
+                            if (isTextContent !== true) {
+
                                 for (var i = 0; i < locationInLayout.length; i++) {
                                     if (location.children[locationInLayout[i]] === undefined) {
                                         location.children[locationInLayout[i]] = {
@@ -929,9 +913,6 @@ export default class EditPage extends React.Component {
                                         };
                                     }
                                     location = location.children[locationInLayout[i]];
-                                    //console.log("LL[");
-                                    //console.log(locationInLayout);
-                                    //console.log("]");
                                 }
                                 // Once at location, assign variables there
                                 location.id = result.id;
@@ -941,17 +922,14 @@ export default class EditPage extends React.Component {
                                 location.parentid = result.parentid;
                                 location.children = {}; // Filled out later from stack
                             }
-
                             that.setState({
                                 layout: layout
                             });
-                            //console.log('LAYOUT');
-                            //console.log(that.state.layout);
-
 
                             // Recursion
                             if (newStack.length > 0) {
-                                that.getBlock(newStack[0].id, true, newStack[0].location);
+                                let nextId = newStack[0].id;
+                                that.getBlock(nextId, true, newStack[0].location, that.state.textContentBlockIds[nextId] !== true);
                             } else {
                                 //console.log('Done!');
                                 // Make new layout for the right display
@@ -968,8 +946,7 @@ export default class EditPage extends React.Component {
                         console.log(text);
                         that.setState({
                             stack: [],
-                            stackVisited: {},
-                            textContents: {}
+                            stackVisited: {}
                         });
                     });
 
@@ -995,7 +972,7 @@ export default class EditPage extends React.Component {
 
                 // Once at location, assign variables there
                 //location.id = '';
-                location.blocktype = "text-content";
+                location.blocktype = "text-contents";
                 location.children = { "content": id }; // Filled out later from stack
 
                 that.setState({
