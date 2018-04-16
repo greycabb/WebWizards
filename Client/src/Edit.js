@@ -3,8 +3,11 @@ import { hashHistory, Link } from 'react-router';
 import Nav from './Nav';
 import PreviewProject from './PreviewProject';
 import CSSModal from './CSSModal';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
+import Block from './Block';
 
-export default class EditPage extends React.Component {
+class EditPage extends React.Component {
     constructor(props) {
         super(props);
 
@@ -571,7 +574,7 @@ export default class EditPage extends React.Component {
             if (blockname.type == 'wrapper') {
                 blockclass = 'primary-brick';
             }
-            if (blockname.type == 'content') {
+            if (blockname.type == 'text-content' || blockname.type == 'image') {
                 blockclass = 'secondary-brick';
             }
             if (blockname.type == 'textwrapper') {
@@ -1135,20 +1138,22 @@ export default class EditPage extends React.Component {
                         {/* <div className="brick primary-brick disable-select" id="head" onClick={function () { that.pickup('head') }} >head</div> */}
                         {/* <div className="brick primary-brick disable-select" id="title" onClick={function () { that.pickup('title') }} >title</div> */}
                         {/* <div className="brick primary-brick disable-select" id="body" onClick={function () { that.pickup('body') }} >body</div> */}
-                        <div className="brick primary-brick disable-select" id="div" onClick={function () { that.pickup('div') }} >div</div>
+                        <Block name={"div"} handler={that.pickup} />
                         {/* <div className="brick primary-brick disable-select" id="span" onClick={function () { that.pickup('span') }} >span</div> */}
-                        <div className="brick primary-brick disable-select" id="p" onClick={function () { that.pickup('p') }} >p</div>
+                        <Block name={"p"} handler={that.pickup} />
                     </div>
                     <div>
-                        <div className="brick secondary-brick disable-select" id="img" onClick={function () { that.pickup('img') }} >img</div>
+                        <Block name={"img"} handler={that.pickup} />
+                        <Block name={"text-content"} handler={that.pickup}> 
+                            <input type="text" name="lname" disabled value="text" className="short-text-box" />
+                        </Block>
                         {/* <div className="brick secondary-brick disable-select" id="audio" onClick={function () { that.pickup('audio') }} >audio</div> */}
-                        <div className="brick secondary-brick disable-select" id="text-content" onClick={function () { that.pickup('text-content') }} ><input type="text" name="lname" disabled value="text" className="short-text-box" /></div>
                     </div>
                     <div>
-                        <div className="brick third-brick disable-select" id="h1" onClick={function () { that.pickup('h1') }} >h1</div>
-                        <div className="brick third-brick disable-select" id="h2" onClick={function () { that.pickup('h2') }} >h2</div>
-                        <div className="brick third-brick disable-select" id="h3" onClick={function () { that.pickup('h3') }} >h3</div>
-                        <div className="brick third-brick disable-select" id="h4" onClick={function () { that.pickup('h4') }} >h4</div>
+                        <Block name={"h1"} handler={that.pickup} />
+                        <Block name={"h2"} handler={that.pickup} />
+                        <Block name={"h3"} handler={that.pickup} />
+                        <Block name={"h4"} handler={that.pickup} />
                         {/* <div className="brick third-brick disable-select" id="h5" onClick={function () { that.pickup('h5') }} >h5</div> */}
                         {/* <div className="brick third-brick disable-select" id="h6" onClick={function () { that.pickup('h6') }} >h6</div> */}
                     </div>
@@ -1166,7 +1171,6 @@ export default class EditPage extends React.Component {
 
                 {this.state.styleToggled &&
                     <div>
-                        <CSSModal currBlock={this.state.styleToggledBlock} toggle={this.cssModalToggleOff} />
                         <CSSModal currBlock={this.state.styleToggledBlock} toggle={this.cssModalToggleOff} handleChange={this.handleProjectUpdates} />
                     </div>
                 }
@@ -1176,3 +1180,5 @@ export default class EditPage extends React.Component {
         );
     }
 }
+
+export default DragDropContext(HTML5Backend)(EditPage);
