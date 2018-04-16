@@ -503,8 +503,6 @@ class EditPage extends React.Component {
             }
         }
 
-        console.log(current);
-
         let b = (<span></span>);
 
         let blockname = this.state.bricksByName[current.blocktype];
@@ -512,7 +510,7 @@ class EditPage extends React.Component {
         let that = this;
 
         if (blockname != undefined &&
-            (blockname.type == 'wrapper' || blockname.type == 'text-wrapper')) {
+            (blockname.type == 'wrapper' || blockname.type == 'textwrapper')) {
             let kids = Object.keys(current.children);
             for (var i = 0; i < kids.length; i++) {
                 let child = current.children[kids[i]];

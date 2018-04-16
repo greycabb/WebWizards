@@ -91,6 +91,10 @@ export default class ProjectPage extends React.Component {
                                     if (response.ok) {
                                         var json = response.json().then((blockJson) => {
                                             // what to do with block type information
+
+                                            console.log('---------------');
+                                            console.log(blockJson);
+
                                             if (blockJson.type == "wrapper" || blockJson.type == "textwrapper") {
                                                 // Will require recursive call for potential children elements
                                                 var cssString = "";
@@ -104,7 +108,7 @@ export default class ProjectPage extends React.Component {
                                                 var string = ""; // what is returned to the user when asked for code
                                                 var displayedString = "" // what is really displayed
                                                 if (blockJson.name == "html") {
-                                                    displayedString += "<div style=\"width:100% !important; height: 100% !important; top: 0; left: 0; position: relative\">"
+                                                    displayedString += "<div style=\"width:100%; height: 100%; top: 0; left: 0; position: relative\">"
                                                 } 
                                                 if (blockJson.name == "body") {
                                                     displayedString += "<div" + cssString + ">&nbsp;";
@@ -142,7 +146,7 @@ export default class ProjectPage extends React.Component {
                                                     //return string;
                                                 }
                                             }
-                                            else if (blockJson.type == "content") {
+                                            else if (blockJson.type == "text-content") {
                                                 resolve([children[0], children[0]]);
                                             }
                                             else {
