@@ -523,7 +523,9 @@ class EditPage extends React.Component {
                     b = (<span>
                         {b}
                         <DropSlot handle={function () { that.drop(current.id, index) }}>
-                            <span className="yellow">-> parent: {current.id.substr(current.id.length - 3)}, index: {index}</span>
+                            <div className="red">
+                                <span className="yellow">-> parent: {current.id.substr(current.id.length - 3)}, index: {index}</span>
+                            </div>
                         </DropSlot>
                         {this.recursiveLayout(child, i)}
                     </span>);
@@ -539,7 +541,9 @@ class EditPage extends React.Component {
                             <span>
                                 {b}
                                 <DropSlot handle={function () { that.drop(current.id, index) }}>
-                                    <span className="yellow">-> parent: {current.id.substr(current.id.length - 3)}, index: {index}</span>
+                                    <div className="red">
+                                        <span className="yellow">-> parent: {current.id.substr(current.id.length - 3)}, index: {index}</span>
+                                    </div>
                                 </DropSlot>
                             </span>
                         );
@@ -606,20 +610,22 @@ class EditPage extends React.Component {
             ); */
 
             b = (
-                <ul>
-                    <li className={blockclass}>
-                        <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
-                            {startTag}
-                            {current.id !== undefined &&
-                                <span className="yel">id: {current.id.substr(current.id.length - 3)}, index: {first} </span>
-                            }
-                        </div>
-                        {b}
-                        <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
-                            {endTag}
-                        </div>
-                    </li>
-                </ul>
+                <DropSlot handle={function (e) { that.drop(current.id, (Object.keys(current.children)).length, e) }}>
+                    <ul>
+                        <li className={blockclass}>
+                            <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
+                                {startTag}
+                                {current.id !== undefined &&
+                                    <span className="yel">id: {current.id.substr(current.id.length - 3)}, index: {first} </span>
+                                }
+                            </div>
+                            {b}
+                            <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
+                                {endTag}
+                            </div>
+                        </li>
+                    </ul>
+                </DropSlot>
             );
 
             //b = ({b});

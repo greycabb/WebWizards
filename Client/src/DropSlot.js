@@ -22,7 +22,7 @@ class DropSlot extends Component {
     const { connectDropTarget, isOver } = this.props;
 
     return connectDropTarget(
-        <div className="red">
+        <div>
             {this.props.children}
         </div>
     );
