@@ -33,7 +33,7 @@ export default class ProjectPage extends React.Component {
 
                         console.log(result);
 
-                        that.blockToHtml(result.content[0]).then((string) => {
+                        that.blockToHtml(result.content[0], false).then((string) => {
                             console.log(string);
                             that.setState({object: string});
                         });
@@ -63,7 +63,7 @@ export default class ProjectPage extends React.Component {
     //Should return an array with start tag and end tag
     //Ex: ["<div>", "</div>"]
     generateHtmlString(blockType, css) {
-        if (blockType != "text-content") {
+        if (blockType != "text-content" && blockType != "title") {
             //Generate css string first
             var cssString = "";
             if (css != null && css.length > 0) {
@@ -78,7 +78,7 @@ export default class ProjectPage extends React.Component {
             var endTag = "";
 
             //We want to convert head, body, title, and html tags to div tags to be previewable
-            if (blockType == "head" || blockType == "body" || blockType == "title" || blockType == "html") {
+            if (blockType == "head" || blockType == "body" || blockType == "html") {
                 startTag = "<div" + cssString + ">";
                 endTag = "</div>";
             }
@@ -94,7 +94,7 @@ export default class ProjectPage extends React.Component {
     }
 
     // Recursive calls
-    blockToHtml(id) {
+    blockToHtml(id, isTitle) {
         return new Promise((resolve, reject) => {
             var auth = localStorage.getItem('Authorization');
             fetch('https://api.webwizards.me/v1/blocks?id=' + id, {
@@ -134,16 +134,16 @@ export default class ProjectPage extends React.Component {
 
                                             //Does not have children and is not a text content block
                                             let counter = 0;
-                                            if (blockInfo.name != "text-content" && children != null && children.length > 0) {
+                                            if (blockInfo.name != "text-content" && blockInfo.name != "title" && children != null && children.length > 0) {
                                                 for (let i = 0; i < children.length; i ++) {
-                                                    this.blockToHtml(children[i]).then((result) => {
+                                                    this.blockToHtml(children[i], false).then((result) => {
                                                         childTags[i] = result;
                                                         counter ++;
                                                         //We have reached the end
                                                         if (counter == children.length) {
                                                             //Combine strings
                                                             let combinedString = blockTags[0];
-                                                            combinedString += childTags.toString();
+                                                            combinedString += childTags.join("");
                                                             combinedString += blockTags[1];
                                                             console.log(combinedString);
                                                             //Resolve with string
@@ -153,9 +153,12 @@ export default class ProjectPage extends React.Component {
                                                 }
                                             }
                                             else if (blockInfo.name == "text-content") {
-                                                childTags = children[0];
+                                                if (isTitle) {
+                                                    document.title = children[0];
+                                                    resolve("");
+                                                }
                                                 //Resolve with string
-                                                resolve(childTags);
+                                                resolve(children[0]);
                                             }
                                             else {
                                                 resolve(blockTags[0] + blockTags[1]);

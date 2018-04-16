@@ -518,11 +518,20 @@ class EditPage extends React.Component {
                 if (blockTypesToIgnore[child.blocktype] !== true) {
                     // Place a dropspace before each child
                     let index = i;
-                    b = (<span>
+                    /*b = (<span>
                         {b}
                         <DropSlot handle={function () { that.drop(current.id, index) }}>
                             <div className="red">
                                 <span className="yellow">-> parent: {current.id.substr(current.id.length - 3)}, index: {index}</span>
+                            </div>
+                        </DropSlot>
+                        {this.recursiveLayout(child, i)}
+                    </span>); */
+                    b = (<span>
+                        {b}
+                        <DropSlot handle={function () { that.drop(current.id, index) }}>
+                            <div>
+                                &nbsp;
                             </div>
                         </DropSlot>
                         {this.recursiveLayout(child, i)}
@@ -535,6 +544,7 @@ class EditPage extends React.Component {
                     if (blockTypesToIgnore[child.blocktype] !== true) {
                         // Place a dropspace after the last child
                         let index = i + 1;
+                        /*
                         b = (
                             <span>
                                 {b}
@@ -544,7 +554,16 @@ class EditPage extends React.Component {
                                     </div>
                                 </DropSlot>
                             </span>
-                        );
+                        ); */
+                        b = (<span>
+                            {b}
+                            <DropSlot handle={function () { that.drop(current.id, index) }}>
+                                <div>
+                                    &nbsp;
+                                </div>
+                            </DropSlot>
+                            {this.recursiveLayout(child, i)}
+                        </span>);
                     }
                 }
             }
@@ -593,19 +612,6 @@ class EditPage extends React.Component {
                 }, 300);
                 return;
             }
-            /* onClick temporarily disabled for style double click testing
-            b = (
-                <ul onClick={function (e) { that.drop(current.id, (Object.keys(current.children)).length, e) }}>
-                    <li className={blockclass}>
-                        {startTag}
-                        {current.id !== undefined &&
-                            <span className="yel">id: {current.id.substr(current.id.length - 3)}, index: {first} </span>
-                        }
-                        {b}
-                        {endTag}
-                    </li>
-                </ul>
-            ); */
 
             b = (
                 <DropSlot handle={function (e) { that.drop(current.id, (Object.keys(current.children)).length, e) }}>
@@ -1091,6 +1097,10 @@ class EditPage extends React.Component {
             .catch(err => {
                 console.log('caught it!', err);
             });
+    }
+
+    hoverDropSlot() {
+        console.log("hovering");
     }
 
 
