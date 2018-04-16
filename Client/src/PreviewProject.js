@@ -43,10 +43,18 @@ export default class PreviewProject extends React.Component {
             var cssString = "";
             if (css != null && css.length > 0) {
                 cssString = ' style="';
+                if (blockType == "body" || blockType == "html") {
+                    cssString += "width: 100%; height: 100%;"
+                }
                 for (var i = 0; i < css.length; i ++) {
                     cssString += (css[i].attribute + ": " + css[i].value + "; ");
                 }
                 cssString += '"';
+            }
+            else {
+                if (blockType == "body" || blockType == "html") {
+                    cssString += " style=\"width: 100%; height: 100%;\"";
+                }
             }
             
             var startTag = "";

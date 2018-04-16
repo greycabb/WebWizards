@@ -562,7 +562,6 @@ class EditPage extends React.Component {
                                     &nbsp;
                                 </div>
                             </DropSlot>
-                            {this.recursiveLayout(child, i)}
                         </span>);
                     }
                 }
