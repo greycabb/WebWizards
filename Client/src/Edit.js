@@ -991,8 +991,6 @@ class EditPage extends React.Component {
                 });
             }
 
-            document.getElementById(brickName).classList.add('pressed-brick');
-
             // debug purposes
             this.setState({
                 'status': brickName + ' -> '
@@ -1004,12 +1002,6 @@ class EditPage extends React.Component {
     // Place a block into the right, after picking up a brick on the left
     // The type of brick placed is determined by the brick that was picked up on the left, from state
     drop(parentId, index) {
-
-        // Remove highlight class from previously selected bricks
-        let clicked = document.querySelectorAll('.pressed-brick');
-        for (let i = 0; i < clicked.length; i++) {
-            clicked[i].classList.remove('pressed-brick');
-        }
 
         let brick = this.state.selectedBrick;
         console.log('Attempting to drop <' + brick + '> in ' + parentId + ' ' + index);
