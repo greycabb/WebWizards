@@ -6,6 +6,7 @@ import CSSModal from './CSSModal';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import Block from './Block';
+import DropSlot from './DropSlot';
 
 class EditPage extends React.Component {
     constructor(props) {
@@ -521,9 +522,9 @@ class EditPage extends React.Component {
                     let index = i;
                     b = (<span>
                         {b}
-                        <div className="red" onClick={function (e) { that.drop(current.id, index, e) }}>
+                        <DropSlot handle={function () { that.drop(current.id, index) }}>
                             <span className="yellow">-> parent: {current.id.substr(current.id.length - 3)}, index: {index}</span>
-                        </div>
+                        </DropSlot>
                         {this.recursiveLayout(child, i)}
                     </span>);
                 } else {
@@ -537,9 +538,9 @@ class EditPage extends React.Component {
                         b = (
                             <span>
                                 {b}
-                                <div className="purp" onClick={function (e) { that.drop(current.id, index, e) }}>
+                                <DropSlot handle={function () { that.drop(current.id, index) }}>
                                     <span className="yellow">-> parent: {current.id.substr(current.id.length - 3)}, index: {index}</span>
-                                </div>
+                                </DropSlot>
                             </span>
                         );
                     }
@@ -969,12 +970,6 @@ class EditPage extends React.Component {
     // Click a brick on the left
     pickup(brickName) {
 
-        // Remove highlight class from previously selected bricks
-        let clicked = document.querySelectorAll('.pressed-brick');
-        for (let i = 0; i < clicked.length; i++) {
-            clicked[i].classList.remove('pressed-brick');
-        }
-
         if (brickName === undefined || brickName === this.state.selectedBrick) {
             this.setState({
                 'status': '',
@@ -1002,8 +997,14 @@ class EditPage extends React.Component {
     //____________________________________________________________________________
     // Place a block into the right, after picking up a brick on the left
     // The type of brick placed is determined by the brick that was picked up on the left, from state
-    drop(parentId, index, e) {
-        e.stopPropagation();
+    drop(parentId, index) {
+
+        // Remove highlight class from previously selected bricks
+        let clicked = document.querySelectorAll('.pressed-brick');
+        for (let i = 0; i < clicked.length; i++) {
+            clicked[i].classList.remove('pressed-brick');
+        }
+
         let brick = this.state.selectedBrick;
         console.log('Attempting to drop <' + brick + '> in ' + parentId + ' ' + index);
 

@@ -7,6 +7,7 @@ import { DragSource } from 'react-dnd'
 
 const blockSource = {
 	beginDrag(props) {
+        props.handler(props.name)
 		return {
 			name: props.name,
 		}
@@ -59,7 +60,7 @@ class Block extends React.Component {
         const { connectDragSource, isDragging } = this.props;
 
         return connectDragSource(
-            <div className={this.state.classes} id={this.props.name} onClick={() => { this.props.handler(this.props.name) }} >
+            <div className={this.state.classes} id={this.props.name} >
                 {this.props.name != "text-content" &&
                     <div>
                         {this.props.name}
