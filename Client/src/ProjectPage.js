@@ -16,6 +16,7 @@ export default class ProjectPage extends React.Component {
     }
 
     componentWillMount() {
+        document.title = "Project Page"
         var that = this;
 
         // Get the project's data
@@ -163,8 +164,28 @@ export default class ProjectPage extends React.Component {
                                                     });
                                                 }
                                             }
+                                            else if (blockInfo.name == "title") {
+                                                for (let i = 0; i < children.length; i ++) {
+                                                    this.blockToHtml(children[i], true).then((result) => {
+                                                        childTags[i] = result;
+                                                        counter ++;
+                                                        //We have reached the end
+                                                        if (counter == children.length) {
+                                                            //Combine strings
+                                                            let combinedString = blockTags[0];
+                                                            combinedString += childTags.join("");
+                                                            combinedString += blockTags[1];
+                                                            console.log(combinedString);
+                                                            //Resolve with string
+                                                            resolve(combinedString);
+                                                        }
+                                                    });
+                                                }
+                                            }
                                             else if (blockInfo.name == "text-content") {
                                                 if (isTitle) {
+                                                    console.log("reached title");
+                                                    console.log(children[0]);
                                                     document.title = children[0];
                                                     resolve("");
                                                 }

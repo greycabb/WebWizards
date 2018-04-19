@@ -1125,7 +1125,7 @@ class EditPage extends React.Component {
                 }
                 <div className="half-width">
                     <div className="edit-bar">
-                        <div><h3>&nbsp;{this.state.status}</h3></div>
+                        {/*<div><h3>&nbsp;{this.state.status}</h3></div>*/}
                         <Link to="/main"><button className="btn yellow-button">Back</button></Link>
                         {this.state.projectId != undefined && this.state.projectData != undefined &&
                             <span>
