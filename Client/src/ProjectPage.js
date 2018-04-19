@@ -5,7 +5,8 @@ export default class ProjectPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            object: ''
+            object: '',
+            error: ''
         }
         this.componentWillMount = this.componentWillMount.bind(this);
         //this.componentDidMount = this.componentDidMount.bind(this);
@@ -43,6 +44,7 @@ export default class ProjectPage extends React.Component {
 
                 } else {
                     response.text().then(text => {
+                        that.setState({error: text});
                         console.log(text);
                     });
 
@@ -193,7 +195,14 @@ export default class ProjectPage extends React.Component {
     render() {
 
         return (
-            <div ref="container" className="full-page-container" dangerouslySetInnerHTML={{ __html: this.state.object }}>
+            <div>
+                {this.state.error.length > 0} {
+                    <div>
+                        {this.state.error}
+                    </div>
+                }
+                <div ref="container" className="full-page-container" dangerouslySetInnerHTML={{ __html: this.state.object }}>
+                </div>
             </div>
         );
     }
