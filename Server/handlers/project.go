@@ -36,23 +36,26 @@ func (ctx *HandlerContext) UserProjectHandler(w http.ResponseWriter, r *http.Req
 
 //ProjectHandler handles requests for the "project" resource if authenticated
 func (ctx *HandlerContext) ProjectHandler(w http.ResponseWriter, r *http.Request) {
-	//Check for authentication
-	id, err := sessions.GetSessionID(r, ctx.SigningKey)
-	if err != nil {
-		http.Error(w, fmt.Sprintf("error getting sessionID"), http.StatusUnauthorized)
-		return
-	}
-	// Get SessionState with sessionID
-	state := &SessionState{}
-	err = ctx.SessionStore.Get(id, &state)
-	if err != nil {
-		http.Error(w, fmt.Sprintf("error retrieving SessionState"), http.StatusUnauthorized)
-		return
-	}
-	userID := state.Authenticated.ID
 	switch r.Method {
 	//Case for getting a specific projet by project id
 	case "GET":
+		//Check for authentication
+		authid, err := sessions.GetSessionID(r, ctx.SigningKey)
+		if err != nil {
+			authid = ""
+		}
+		// Get SessionState with sessionID
+		var userID bson.ObjectId
+		if len(authid) > 0 {
+			state := &SessionState{}
+			err = ctx.SessionStore.Get(authid, &state)
+			if err != nil {
+				http.Error(w, fmt.Sprintf("error retrieving SessionState"), http.StatusUnauthorized)
+				return
+			}
+			userID = state.Authenticated.ID
+		}
+
 		id := r.URL.Query().Get("id")
 		if len(id) == 0 {
 			http.Error(w, "Please provide a correct project id", http.StatusBadRequest)
@@ -71,6 +74,20 @@ func (ctx *HandlerContext) ProjectHandler(w http.ResponseWriter, r *http.Request
 
 	//Case for creating a new project
 	case "POST":
+		//Check for authentication
+		id, err := sessions.GetSessionID(r, ctx.SigningKey)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("error getting sessionID"), http.StatusUnauthorized)
+			return
+		}
+		// Get SessionState with sessionID
+		state := &SessionState{}
+		err = ctx.SessionStore.Get(id, &state)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("error retrieving SessionState"), http.StatusUnauthorized)
+			return
+		}
+		userID := state.Authenticated.ID
 		newProject := &projects.NewProject{}
 		if err := json.NewDecoder(r.Body).Decode(newProject); err != nil {
 			http.Error(w, fmt.Sprintf("error decoding JSON: %v", err), http.StatusBadRequest)
@@ -85,6 +102,20 @@ func (ctx *HandlerContext) ProjectHandler(w http.ResponseWriter, r *http.Request
 		respond(w, proj)
 	//Case for deleting a project
 	case "DELETE":
+		//Check for authentication
+		authid, err := sessions.GetSessionID(r, ctx.SigningKey)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("error getting sessionID"), http.StatusUnauthorized)
+			return
+		}
+		// Get SessionState with sessionID
+		state := &SessionState{}
+		err = ctx.SessionStore.Get(authid, &state)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("error retrieving SessionState"), http.StatusUnauthorized)
+			return
+		}
+		userID := state.Authenticated.ID
 		id := r.URL.Query().Get("id")
 		if len(id) == 0 {
 			http.Error(w, "Please provide a correct project id", http.StatusBadRequest)
@@ -103,6 +134,20 @@ func (ctx *HandlerContext) ProjectHandler(w http.ResponseWriter, r *http.Request
 		}
 	//Case for updating a project's name
 	case "PATCH":
+		//Check for authentication
+		authid, err := sessions.GetSessionID(r, ctx.SigningKey)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("error getting sessionID"), http.StatusUnauthorized)
+			return
+		}
+		// Get SessionState with sessionID
+		state := &SessionState{}
+		err = ctx.SessionStore.Get(authid, &state)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("error retrieving SessionState"), http.StatusUnauthorized)
+			return
+		}
+		userID := state.Authenticated.ID
 		id := r.URL.Query().Get("id")
 		if len(id) == 0 {
 			http.Error(w, "Please provide a correct project id", http.StatusBadRequest)
@@ -128,23 +173,27 @@ func (ctx *HandlerContext) ProjectHandler(w http.ResponseWriter, r *http.Request
 
 //BlocksHandler handles requests for the "blocks" resource if authenticated
 func (ctx *HandlerContext) BlocksHandler(w http.ResponseWriter, r *http.Request) {
-	//Check for authentication
-	id, err := sessions.GetSessionID(r, ctx.SigningKey)
-	if err != nil {
-		http.Error(w, fmt.Sprintf("error getting sessionID"), http.StatusUnauthorized)
-		return
-	}
-	// Get SessionState with sessionID
-	state := &SessionState{}
-	err = ctx.SessionStore.Get(id, &state)
-	if err != nil {
-		http.Error(w, fmt.Sprintf("error retrieving SessionState"), http.StatusUnauthorized)
-		return
-	}
-	userID := state.Authenticated.ID
 	switch r.Method {
 	//Case for getting a block
 	case "GET":
+
+		//Check for authentication
+		authid, err := sessions.GetSessionID(r, ctx.SigningKey)
+		if err != nil {
+			authid = ""
+		}
+		// Get SessionState with sessionID
+		var userID bson.ObjectId
+		if len(authid) > 0 {
+			state := &SessionState{}
+			err = ctx.SessionStore.Get(authid, &state)
+			if err != nil {
+				http.Error(w, fmt.Sprintf("error retrieving SessionState"), http.StatusUnauthorized)
+				return
+			}
+			userID = state.Authenticated.ID
+		}
+
 		id := r.URL.Query().Get("id")
 		if len(id) == 0 {
 			http.Error(w, "Please provide a correct block id", http.StatusBadRequest)
@@ -152,6 +201,12 @@ func (ctx *HandlerContext) BlocksHandler(w http.ResponseWriter, r *http.Request)
 		}
 		hexed := bson.ObjectIdHex(id)
 		block, err := ctx.blockStore.GetByBlockID(hexed)
+		hexedProjectID := bson.ObjectIdHex(block.ProjectID)
+		project, err := ctx.projectStore.GetByProjectID(hexedProjectID)
+		if project.Private == "y" && project.UserID != userID {
+			http.Error(w, "This is a private block!", http.StatusBadRequest)
+			return
+		}
 		if err != nil {
 			http.Error(w, fmt.Sprintf("error getting block id: %v", err), http.StatusBadRequest)
 		}
@@ -159,6 +214,20 @@ func (ctx *HandlerContext) BlocksHandler(w http.ResponseWriter, r *http.Request)
 
 	//Case for adding a block
 	case "POST":
+		//Check for authentication
+		authid, err := sessions.GetSessionID(r, ctx.SigningKey)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("error getting sessionID"), http.StatusUnauthorized)
+			return
+		}
+		// Get SessionState with sessionID
+		state := &SessionState{}
+		err = ctx.SessionStore.Get(authid, &state)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("error retrieving SessionState"), http.StatusUnauthorized)
+			return
+		}
+		userID := state.Authenticated.ID
 		newBlock := &blocks.NewBlock{}
 		newBlock.UserID = userID
 		if err := json.NewDecoder(r.Body).Decode(newBlock); err != nil {
@@ -207,6 +276,20 @@ func (ctx *HandlerContext) BlocksHandler(w http.ResponseWriter, r *http.Request)
 
 	//Case for updating content of a block
 	case "PATCH":
+		//Check for authentication
+		authid, err := sessions.GetSessionID(r, ctx.SigningKey)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("error getting sessionID"), http.StatusUnauthorized)
+			return
+		}
+		// Get SessionState with sessionID
+		state := &SessionState{}
+		err = ctx.SessionStore.Get(authid, &state)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("error retrieving SessionState"), http.StatusUnauthorized)
+			return
+		}
+		userID := state.Authenticated.ID
 		id := r.URL.Query().Get("id")
 		if len(id) == 0 {
 			http.Error(w, "Please provide a correct block id", http.StatusBadRequest)
@@ -299,6 +382,20 @@ func (ctx *HandlerContext) BlocksHandler(w http.ResponseWriter, r *http.Request)
 
 	//Case for deleting a block
 	case "DELETE":
+		//Check for authentication
+		authid, err := sessions.GetSessionID(r, ctx.SigningKey)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("error getting sessionID"), http.StatusUnauthorized)
+			return
+		}
+		// Get SessionState with sessionID
+		state := &SessionState{}
+		err = ctx.SessionStore.Get(authid, &state)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("error retrieving SessionState"), http.StatusUnauthorized)
+			return
+		}
+		userID := state.Authenticated.ID
 		id := r.URL.Query().Get("id")
 		if len(id) == 0 {
 			http.Error(w, "Please provide a correct block id", http.StatusBadRequest)
