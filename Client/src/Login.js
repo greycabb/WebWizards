@@ -73,13 +73,15 @@ export default class LoginPage extends React.Component {
 
     handleLogin() {
         this.setState({
-            loginClicked: !this.state.loginClicked
+            loginClicked: !this.state.loginClicked,
+            error: ''
         });
     }
 
     handleSignup() {
         this.setState({
-            signupClicked: !this.state.signupClicked
+            signupClicked: !this.state.signupClicked,
+            error: ''
         });
     }
 
@@ -216,11 +218,11 @@ export default class LoginPage extends React.Component {
                                     <div>
                                         <ValidatedInput field="password" type="password" maxLength="30" label="Password" tabIndex={2} changeCallback={this.handleChange} errors={passwordErrors} />
                                     </div>
-                                    <div className="form-group">
+                                    <div className="form-group login-group">
                                         <br />
                                         <button className="btn yellow-button" disabled={!signInEnabled} onClick={(e) => this.signIn(e)}>Login</button>
+                                        <div id="postError" className="help-block error">{this.state.error}</div>
                                     </div>
-                                    <div id="postError" className="help-block error">{this.state.error}</div>
 
                                 </form>
                                 {/*<div className="box-link"><Link to="/signup">Don't have an account? Sign up!</Link></div>

@@ -530,7 +530,7 @@ class EditPage extends React.Component {
                     b = (<span>
                         {b}
                         <DropSlot handle={function () { that.drop(current.id, index) }}>
-                            <div>
+                            <div className="drop-slot-space">
                                 &nbsp;
                             </div>
                         </DropSlot>
@@ -558,7 +558,7 @@ class EditPage extends React.Component {
                         b = (<span>
                             {b}
                             <DropSlot handle={function () { that.drop(current.id, index) }}>
-                                <div>
+                                <div className="drop-slot-space">
                                     &nbsp;
                                 </div>
                             </DropSlot>
@@ -618,9 +618,9 @@ class EditPage extends React.Component {
                         <li className={blockclass}>
                             <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
                                 {startTag}
-                                {current.id !== undefined &&
+                                {/*current.id !== undefined &&
                                     <span className="yel">id: {current.id.substr(current.id.length - 3)}, index: {first} </span>
-                                }
+                                */}
                             </div>
                             {b}
                             <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
