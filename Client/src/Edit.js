@@ -1093,6 +1093,17 @@ export default class EditPage extends React.Component {
             });
     }
 
+    // Delete block
+    //      parentId: of the block to delete
+    //      indexToDelete: # child of the parent to delete
+    deleteBlock(parentId, indexToDelete) {
+
+    }
+    // Move block
+    moveBlock(oldParentId, oldIndex, newParentId, newIndex) {
+
+    }
+
 
 
     //____________________________________________________________________________
