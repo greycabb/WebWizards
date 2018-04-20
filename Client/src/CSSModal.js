@@ -184,7 +184,8 @@ export default class CSSModal extends React.Component {
                 'Authorization': localStorage.getItem('Authorization')
             },
             body: JSON.stringify({
-                'css': curr
+                'css': curr,
+                'index': this.props.currBlock.index
             })
         })
             .then((response) => {
