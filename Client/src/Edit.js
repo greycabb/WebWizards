@@ -615,10 +615,6 @@ class EditPage extends React.Component {
                 return;
             }
 
-            console.log(current);
-
-            let hh = that.state.htmlBlockId;
-
             b = (
                 <DropSlot handle={function (e) { that.drop(current.id, (Object.keys(current.children)).length, e) }}>
                     <ul>
@@ -628,7 +624,7 @@ class EditPage extends React.Component {
                                 {(!['head', 'body', 'title', 'html'].includes(current.blocktype)) &&
                                     <span>
                                         <span onClick={function () { that.deleteBlock(current.id) }} >[Delete]</span>
-                                        <span onClick={function () { that.moveBlock(current.id, hh, 2) }} >[Move]</span>
+                                        {/* <span onClick={function () { that.moveBlock(current.id, that.state.htmlBlockId, 2) }} >[Move]</span> */}
                                     </span>
                                 }
                                 {/*current.id !== undefined &&
@@ -1138,10 +1134,6 @@ class EditPage extends React.Component {
     //oldParentId, oldIndex, newParentId, newIndex, e
     moveBlock(blockId, newParentId, newIndex) {
         let that = this;
-        console.log('===Moveblock===');
-        console.log(blockId);
-        console.log(newParentId);
-        console.log(newIndex);
 
         fetch('https://api.webwizards.me/v1/blocks?id=' + blockId, {
             method: 'PATCH',
