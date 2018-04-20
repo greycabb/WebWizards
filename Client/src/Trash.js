@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { BlockTypes } from './BlockTypes';
 import { DropTarget } from 'react-dnd';
 import img from './img/trash.png';
+import img2 from './img/trash2.png';
 import './Trash.css';
 
 const target = {
@@ -55,7 +56,7 @@ class Trash extends Component {
         
         {isOverCurrent &&
           <div className="trash-bin trash-bin-hover">
-            <img src={img} width="50px" />
+            <img src={img2} width="50px" />
           </div>
         }
       </div>

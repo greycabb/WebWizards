@@ -624,11 +624,9 @@ class EditPage extends React.Component {
             }
 
             b = (
-                <ExistingDropSlot handle={function (e) { that.moveBlock(current.id, (Object.keys(current.children)).length, e) }}>
-                    <DropSlot handle={function (e) { that.drop(current.id, (Object.keys(current.children)).length, e) }}>
                         <ul>
-                            {(['head', 'body', 'title', 'html'].includes(current.blocktype)) &&
-                                <li className={blockclass}>
+                            {(['head', 'html'].includes(current.blocktype)) &&
+                                 <li className={blockclass}>
                                     <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
                                         {startTag}
                                         {/*current.id !== undefined &&
@@ -641,30 +639,51 @@ class EditPage extends React.Component {
                                     </div>
                                 </li>
                             }
+                            {(['body', 'title'].includes(current.blocktype)) &&
+                                <ExistingDropSlot handle={function (e) { that.moveBlock(current.id, (Object.keys(current.children)).length, e) }}>
+                                    <DropSlot handle={function (e) { that.drop(current.id, (Object.keys(current.children)).length, e) }}>
+                                        <li className={blockclass}>
+                                            <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
+                                                {startTag}
+                                                {/*current.id !== undefined &&
+                                                    <span className="yel">id: {current.id.substr(current.id.length - 3)}, index: {first} </span>
+                                                */}
+                                            </div>
+                                            {b}
+                                            <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
+                                                {endTag}
+                                            </div>
+                                        </li>
+                                    </DropSlot>
+                                </ExistingDropSlot>
+                            }
                             {!(['head', 'body', 'title', 'html'].includes(current.blocktype)) &&
-                                <ExistingBlock id={current.id} handle={function (id) { that.pickupBlock(id) }}>
-                                    <li className={blockclass}>
-                                        <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
-                                            {startTag}
-                                            {/*(!['head', 'body', 'title', 'html'].includes(current.blocktype)) &&
-                                                <span>
-                                                    <span onClick={function () { that.pickupBlock(current.id) }} >[Grab]</span>
-                                                </span>
-                                            */}
-                                            {/*current.id !== undefined &&
-                                                <span className="yel">id: {current.id.substr(current.id.length - 3)}, index: {first} </span>
-                                            */}
-                                        </div>
-                                        {b}
-                                        <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
-                                            {endTag}
-                                        </div>
-                                    </li>
-                                </ExistingBlock>
+                                <ExistingDropSlot handle={function (e) { that.moveBlock(current.id, (Object.keys(current.children)).length, e) }}>
+                                    <DropSlot handle={function (e) { that.drop(current.id, (Object.keys(current.children)).length, e) }}>
+                                        <ExistingBlock id={current.id} handle={function (id) { that.pickupBlock(id) }}>
+                                            <li className={blockclass}>
+                                                <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
+                                                    {startTag}
+                                                    {/*(!['head', 'body', 'title', 'html'].includes(current.blocktype)) &&
+                                                        <span>
+                                                            <span onClick={function () { that.pickupBlock(current.id) }} >[Grab]</span>
+                                                        </span>
+                                                    */}
+                                                    {/*current.id !== undefined &&
+                                                        <span className="yel">id: {current.id.substr(current.id.length - 3)}, index: {first} </span>
+                                                    */}
+                                                </div>
+                                                {b}
+                                                <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
+                                                    {endTag}
+                                                </div>
+                                            </li>
+                                        </ExistingBlock>
+                                    </DropSlot>
+                                </ExistingDropSlot>
+
                             }
                         </ul>
-                    </DropSlot>
-                </ExistingDropSlot>
             );
 
             //b = ({b});
