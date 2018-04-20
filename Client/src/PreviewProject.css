@@ -4,9 +4,11 @@
     border: 0.5px solid gray;
     margin-top: 10px;
     margin-bottom: 20px;
+    overflow: scroll;
 }
 
 #preview-container {
+    all: initial;
     top: 0px;
     left: 0px;
     zoom: 46%;

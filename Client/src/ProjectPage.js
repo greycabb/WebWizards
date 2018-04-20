@@ -5,7 +5,8 @@ export default class ProjectPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            object: ''
+            object: '',
+            error: ''
         }
         this.componentWillMount = this.componentWillMount.bind(this);
         //this.componentDidMount = this.componentDidMount.bind(this);
@@ -15,6 +16,7 @@ export default class ProjectPage extends React.Component {
     }
 
     componentWillMount() {
+        document.title = "Project Page"
         var that = this;
 
         // Get the project's data
@@ -33,9 +35,9 @@ export default class ProjectPage extends React.Component {
 
                         console.log(result);
 
-                        that.blockToHtml(result.content[0]).then((string) => {
+                        that.blockToHtml(result.content[0], false).then((string) => {
                             console.log(string);
-                            that.setState({object: string[0]});
+                            that.setState({object: string});
                         });
             
                     });
@@ -43,6 +45,7 @@ export default class ProjectPage extends React.Component {
 
                 } else {
                     response.text().then(text => {
+                        that.setState({error: text});
                         console.log(text);
                     });
 
@@ -59,7 +62,51 @@ export default class ProjectPage extends React.Component {
         });
     } */
 
-    blockToHtml(id) {
+    
+    
+    //Should return an array with start tag and end tag
+    //Ex: ["<div>", "</div>"]
+    generateHtmlString(blockType, css) {
+        if (blockType != "text-content" && blockType != "title") {
+            //Generate css string first
+            var cssString = "";
+            if (css != null && css.length > 0) {
+                cssString = ' style="';
+                if (blockType == "body" || blockType == "html") {
+                    cssString += "width: 100%; height: 100%;"
+                }
+                for (var i = 0; i < css.length; i ++) {
+                    cssString += (css[i].attribute + ": " + css[i].value + "; ");
+                }
+                cssString += '"';
+            }
+            else {
+                if (blockType == "body" || blockType == "html") {
+                    cssString += " style=\"width: 100%; height: 100%;\"";
+                }
+            }
+            
+            var startTag = "";
+            var endTag = "";
+
+            //We want to convert head, body, title, and html tags to div tags to be previewable
+            if (blockType == "head" || blockType == "body" || blockType == "html") {
+                startTag = "<div" + cssString + ">";
+                endTag = "</div>";
+            }
+            else {
+                startTag = "<" + blockType + cssString + ">";
+                endTag = "</" + blockType + ">";
+            }
+            return [startTag, endTag];
+        }
+        else {
+            return ["", ""];
+        }
+    }
+
+    // Recursive calls
+    blockToHtml(id, isTitle) {
         return new Promise((resolve, reject) => {
             var auth = localStorage.getItem('Authorization');
             fetch('https://api.webwizards.me/v1/blocks?id=' + id, {
@@ -72,13 +119,12 @@ export default class ProjectPage extends React.Component {
                 .then((response) => {
 
                     if (response.ok) {
-                        var json = response.json().then((json) => {
-                            var type = json.blocktype;
-                            var css = json.css;
-                            var children = json.children;
+                        let json = response.json().then((json) => {
+                            let type = json.blocktype;
+                            let css = json.css;
+                            let children = json.children;
 
-                            // now get block type information
-
+                            //Need to grab information on current block type
                             fetch('https://api.webwizards.me/v1/htmlblocks?id=' + type, {
                                 method: 'GET',
                                 headers: {
@@ -89,99 +135,95 @@ export default class ProjectPage extends React.Component {
                                 .then((response) => {
 
                                     if (response.ok) {
-                                        var json = response.json().then((blockJson) => {
-                                            // what to do with block type information
-                                            if (blockJson.type == "wrapper" || blockJson.type == "textwrapper") {
-                                                // Will require recursive call for potential children elements
-                                                var cssString = "";
-                                                if (css != null && css.length > 0) {
-                                                    cssString = ' style="';
-                                                    for (var i = 0; i < css.length; i ++) {
-                                                        cssString += (css[i].attribute + ": " + css[i].value + "; ");
-                                                    }
-                                                    cssString += '"';
-                                                }
-                                                var string = ""; // what is returned to the user when asked for code
-                                                var displayedString = "" // what is really displayed
-                                                if (blockJson.name == "html") {
-                                                    displayedString += "<div style=\"width:100% !important; height: 100% !important; top: 0; left: 0; position: relative\">"
-                                                } 
-                                                if (blockJson.name == "body") {
-                                                    displayedString += "<div" + cssString + ">&nbsp;";
-                                                }
-                                                if (blockJson.name != "head" && blockJson.name != "html" && blockJson.name != "body") {
-                                                    displayedString += '<' + blockJson.name + cssString + '>';
-                                                }
-                                                string = '<' + blockJson.name + cssString + '>';
-                                                if (children != null && children.length > 0) {
-                                                    for (var i = 0; i < children.length; i ++) {
-                                                        this.blockToHtml(children[i]).then((result) => {
+                                        
+                                        let json = response.json().then((blockInfo) => {
 
-                                                            displayedString += result[0]
-                                                            string += result[1];
+                                            //Generate a string of this block
+                                            let blockTags = this.generateHtmlString(blockInfo.name, css);
 
-                                                            if (blockJson.name == "html" || blockJson.name == "body") {
-                                                                displayedString += "</div>"
-                                                            } 
-                                                            if (blockJson.name != "head" && blockJson.name != "html" && blockJson.name != "body") {
-                                                                displayedString += '<' + blockJson.name + cssString + '>';
-                                                            }
-                                                            string += '</' + blockJson.name + '>';
+                                            // An array of child tags 
+                                            let childTags = Array(children.length);
 
-                                                            resolve([displayedString, string]);
-                                                            //return string;
-                                                        });
-                                                    }
-                                                }
-                                                else {
-                                                    string += '</' + blockJson.name + '>';
-                                                    if (blockJson.name == "html" || blockJson.name == "body") {
-                                                        displayedString += "</div>"
-                                                    }
-                                                    resolve([displayedString, string]);
-                                                    //return string;
+                                            //Does not have children and is not a text content block
+                                            let counter = 0;
+                                            if (blockInfo.name != "text-content" && blockInfo.name != "title" && children != null && children.length > 0) {
+                                                for (let i = 0; i < children.length; i ++) {
+                                                    this.blockToHtml(children[i], false).then((result) => {
+                                                        childTags[i] = result;
+                                                        counter ++;
+                                                        //We have reached the end
+                                                        if (counter == children.length) {
+                                                            //Combine strings
+                                                            let combinedString = blockTags[0];
+                                                            combinedString += childTags.join("");
+                                                            combinedString += blockTags[1];
+                                                            console.log(combinedString);
+                                                            //Resolve with string
+                                                            resolve(combinedString);
+                                                        }
+                                                    });
                                                 }
                                             }
-                                            else if (blockJson.type == "content") {
-                                                resolve([children[0], children[0]]);
+                                            else if (blockInfo.name == "title") {
+                                                for (let i = 0; i < children.length; i ++) {
+                                                    this.blockToHtml(children[i], true).then((result) => {
+                                                        childTags[i] = result;
+                                                        counter ++;
+                                                        //We have reached the end
+                                                        if (counter == children.length) {
+                                                            //Combine strings
+                                                            let combinedString = blockTags[0];
+                                                            combinedString += childTags.join("");
+                                                            combinedString += blockTags[1];
+                                                            console.log(combinedString);
+                                                            //Resolve with string
+                                                            resolve(combinedString);
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                            else if (blockInfo.name == "text-content") {
+                                                if (isTitle) {
+                                                    console.log("reached title");
+                                                    console.log(children[0]);
+                                                    document.title = children[0];
+                                                    resolve("");
+                                                }
+                                                //Resolve with string
+                                                resolve(children[0]);
                                             }
                                             else {
-                                                // Will not require recursive call
-                                                var cssString = "";
-                                                if (css != null && css.length > 0) {
-                                                    cssString = ' style="';
-                                                    for (var i = 0; i < css.length; i ++) {
-                                                        cssString += (css[i].attribute + ": " + css[i].value + "; ");
-                                                    }
-                                                }
-                                                var string = '<' + blockJson.name + cssString + '/>';
-                                                resolve([displayedString, string]);
+                                                resolve(blockTags[0] + blockTags[1]);
                                             }
                                         });
-                                    } else {
-                                        reject(response.text());
                                     }
-                                })
-                                .catch(err => {
-                                    reject(err);
+
                                 });
 
-                                
                         });
-                    } else {
-                        console.log(response.text());
+                    }
+                    // response is not ok
+                    else {
+                        reject(response.text());
                     }
                 })
                 .catch(err => {
-                    console.log('caught it!', err);
+                    reject(err);
                 });
-        });
-    }
+            });
+        }
 
     render() {
 
         return (
-            <div ref="container" className="full-page-container" dangerouslySetInnerHTML={{ __html: this.state.object }}>
+            <div>
+                {this.state.error.length > 0} {
+                    <div>
+                        {this.state.error}
+                    </div>
+                }
+                <div ref="container" className="full-page-container" dangerouslySetInnerHTML={{ __html: this.state.object }}>
+                </div>
             </div>
         );
     }

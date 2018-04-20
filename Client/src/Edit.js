@@ -3,8 +3,12 @@ import { hashHistory, Link } from 'react-router';
 import Nav from './Nav';
 import PreviewProject from './PreviewProject';
 import CSSModal from './CSSModal';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
+import Block from './Block';
+import DropSlot from './DropSlot';
 
-export default class EditPage extends React.Component {
+class EditPage extends React.Component {
     constructor(props) {
         super(props);
 
@@ -113,6 +117,9 @@ export default class EditPage extends React.Component {
         this.cssModalToggleOn = this.cssModalToggleOn.bind(this);
         this.cssModalToggleOff = this.cssModalToggleOff.bind(this);
         this.handleProjectUpdates = this.handleProjectUpdates.bind(this);
+
+        this.deleteBlock = this.deleteBlock.bind(this);
+        this.moveBlock = this.moveBlock.bind(this);
 
         console.log('______________________');
         this.setup_getProjectData();
@@ -499,8 +506,6 @@ export default class EditPage extends React.Component {
             }
         }
 
-        console.log(current);
-
         let b = (<span></span>);
 
         let blockname = this.state.bricksByName[current.blocktype];
@@ -508,7 +513,7 @@ export default class EditPage extends React.Component {
         let that = this;
 
         if (blockname != undefined &&
-            (blockname.type == 'wrapper' || blockname.type == 'text-wrapper')) {
+            (blockname.type == 'wrapper' || blockname.type == 'textwrapper')) {
             let kids = Object.keys(current.children);
             for (var i = 0; i < kids.length; i++) {
                 let child = current.children[kids[i]];
@@ -516,11 +521,22 @@ export default class EditPage extends React.Component {
                 if (blockTypesToIgnore[child.blocktype] !== true) {
                     // Place a dropspace before each child
                     let index = i;
+                    /*b = (<span>
+                        {b}
+                        <DropSlot handle={function () { that.drop(current.id, index) }}>
+                            <div className="red">
+                                <span className="yellow">-> parent: {current.id.substr(current.id.length - 3)}, index: {index}</span>
+                            </div>
+                        </DropSlot>
+                        {this.recursiveLayout(child, i)}
+                    </span>); */
                     b = (<span>
                         {b}
-                        <div className="red" onClick={function (e) { that.drop(current.id, index, e) }}>
-                            <span className="yellow">-> parent: {current.id.substr(current.id.length - 3)}, index: {index}</span>
-                        </div>
+                        <DropSlot handle={function () { that.drop(current.id, index) }}>
+                            <div className="drop-slot-space">
+                                &nbsp;
+                            </div>
+                        </DropSlot>
                         {this.recursiveLayout(child, i)}
                     </span>);
                 } else {
@@ -531,14 +547,25 @@ export default class EditPage extends React.Component {
                     if (blockTypesToIgnore[child.blocktype] !== true) {
                         // Place a dropspace after the last child
                         let index = i + 1;
+                        /*
                         b = (
                             <span>
                                 {b}
-                                <div className="purp" onClick={function (e) { that.drop(current.id, index, e) }}>
-                                    <span className="yellow">-> parent: {current.id.substr(current.id.length - 3)}, index: {index}</span>
-                                </div>
+                                <DropSlot handle={function () { that.drop(current.id, index) }}>
+                                    <div className="red">
+                                        <span className="yellow">-> parent: {current.id.substr(current.id.length - 3)}, index: {index}</span>
+                                    </div>
+                                </DropSlot>
                             </span>
-                        );
+                        ); */
+                        b = (<span>
+                            {b}
+                            <DropSlot handle={function () { that.drop(current.id, index) }}>
+                                <div className="drop-slot-space">
+                                    &nbsp;
+                                </div>
+                            </DropSlot>
+                        </span>);
                     }
                 }
             }
@@ -571,7 +598,7 @@ export default class EditPage extends React.Component {
             if (blockname.type == 'wrapper') {
                 blockclass = 'primary-brick';
             }
-            if (blockname.type == 'content') {
+            if (blockname.type == 'text-content' || blockname.type == 'image') {
                 blockclass = 'secondary-brick';
             }
             if (blockname.type == 'textwrapper') {
@@ -587,35 +614,24 @@ export default class EditPage extends React.Component {
                 }, 300);
                 return;
             }
-            /* onClick temporarily disabled for style double click testing
-            b = (
-                <ul onClick={function (e) { that.drop(current.id, (Object.keys(current.children)).length, e) }}>
-                    <li className={blockclass}>
-                        {startTag}
-                        {current.id !== undefined &&
-                            <span className="yel">id: {current.id.substr(current.id.length - 3)}, index: {first} </span>
-                        }
-                        {b}
-                        {endTag}
-                    </li>
-                </ul>
-            ); */
 
             b = (
-                <ul>
-                    <li className={blockclass}>
-                        <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
-                            {startTag}
-                            {current.id !== undefined &&
-                                <span className="yel">id: {current.id.substr(current.id.length - 3)}, index: {first} </span>
-                            }
-                        </div>
-                        {b}
-                        <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
-                            {endTag}
-                        </div>
-                    </li>
-                </ul>
+                <DropSlot handle={function (e) { that.drop(current.id, (Object.keys(current.children)).length, e) }}>
+                    <ul>
+                        <li className={blockclass}>
+                            <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
+                                {startTag}
+                                {/*current.id !== undefined &&
+                                    <span className="yel">id: {current.id.substr(current.id.length - 3)}, index: {first} </span>
+                                */}
+                            </div>
+                            {b}
+                            <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
+                                {endTag}
+                            </div>
+                        </li>
+                    </ul>
+                </DropSlot>
             );
 
             //b = ({b});
@@ -966,12 +982,6 @@ export default class EditPage extends React.Component {
     // Click a brick on the left
     pickup(brickName) {
 
-        // Remove highlight class from previously selected bricks
-        let clicked = document.querySelectorAll('.pressed-brick');
-        for (let i = 0; i < clicked.length; i++) {
-            clicked[i].classList.remove('pressed-brick');
-        }
-
         if (brickName === undefined || brickName === this.state.selectedBrick) {
             this.setState({
                 'status': '',
@@ -987,8 +997,6 @@ export default class EditPage extends React.Component {
                 });
             }
 
-            document.getElementById(brickName).classList.add('pressed-brick');
-
             // debug purposes
             this.setState({
                 'status': brickName + ' -> '
@@ -999,8 +1007,8 @@ export default class EditPage extends React.Component {
     //____________________________________________________________________________
     // Place a block into the right, after picking up a brick on the left
     // The type of brick placed is determined by the brick that was picked up on the left, from state
-    drop(parentId, index, e) {
-        e.stopPropagation();
+    drop(parentId, index) {
+
         let brick = this.state.selectedBrick;
         console.log('Attempting to drop <' + brick + '> in ' + parentId + ' ' + index);
 
@@ -1104,6 +1112,10 @@ export default class EditPage extends React.Component {
 
     }
 
+    hoverDropSlot() {
+        console.log("hovering");
+    }
+
 
 
     //____________________________________________________________________________
@@ -1127,7 +1139,7 @@ export default class EditPage extends React.Component {
                 }
                 <div className="half-width">
                     <div className="edit-bar">
-                        <div><h3>&nbsp;{this.state.status}</h3></div>
+                        {/*<div><h3>&nbsp;{this.state.status}</h3></div>*/}
                         <Link to="/main"><button className="btn yellow-button">Back</button></Link>
                         {this.state.projectId != undefined && this.state.projectData != undefined &&
                             <span>
@@ -1146,20 +1158,22 @@ export default class EditPage extends React.Component {
                         {/* <div className="brick primary-brick disable-select" id="head" onClick={function () { that.pickup('head') }} >head</div> */}
                         {/* <div className="brick primary-brick disable-select" id="title" onClick={function () { that.pickup('title') }} >title</div> */}
                         {/* <div className="brick primary-brick disable-select" id="body" onClick={function () { that.pickup('body') }} >body</div> */}
-                        <div className="brick primary-brick disable-select" id="div" onClick={function () { that.pickup('div') }} >div</div>
+                        <Block name={"div"} handler={that.pickup} />
                         {/* <div className="brick primary-brick disable-select" id="span" onClick={function () { that.pickup('span') }} >span</div> */}
-                        <div className="brick primary-brick disable-select" id="p" onClick={function () { that.pickup('p') }} >p</div>
+                        <Block name={"p"} handler={that.pickup} />
                     </div>
                     <div>
-                        <div className="brick secondary-brick disable-select" id="img" onClick={function () { that.pickup('img') }} >img</div>
+                        <Block name={"img"} handler={that.pickup} />
+                        <Block name={"text-content"} handler={that.pickup}> 
+                            <input type="text" name="lname" disabled value="text" className="short-text-box" />
+                        </Block>
                         {/* <div className="brick secondary-brick disable-select" id="audio" onClick={function () { that.pickup('audio') }} >audio</div> */}
-                        <div className="brick secondary-brick disable-select" id="text-content" onClick={function () { that.pickup('text-content') }} ><input type="text" name="lname" disabled value="text" className="short-text-box" /></div>
                     </div>
                     <div>
-                        <div className="brick third-brick disable-select" id="h1" onClick={function () { that.pickup('h1') }} >h1</div>
-                        <div className="brick third-brick disable-select" id="h2" onClick={function () { that.pickup('h2') }} >h2</div>
-                        <div className="brick third-brick disable-select" id="h3" onClick={function () { that.pickup('h3') }} >h3</div>
-                        <div className="brick third-brick disable-select" id="h4" onClick={function () { that.pickup('h4') }} >h4</div>
+                        <Block name={"h1"} handler={that.pickup} />
+                        <Block name={"h2"} handler={that.pickup} />
+                        <Block name={"h3"} handler={that.pickup} />
+                        <Block name={"h4"} handler={that.pickup} />
                         {/* <div className="brick third-brick disable-select" id="h5" onClick={function () { that.pickup('h5') }} >h5</div> */}
                         {/* <div className="brick third-brick disable-select" id="h6" onClick={function () { that.pickup('h6') }} >h6</div> */}
                     </div>
@@ -1177,7 +1191,6 @@ export default class EditPage extends React.Component {
 
                 {this.state.styleToggled &&
                     <div>
-                        <CSSModal currBlock={this.state.styleToggledBlock} toggle={this.cssModalToggleOff} />
                         <CSSModal currBlock={this.state.styleToggledBlock} toggle={this.cssModalToggleOff} handleChange={this.handleProjectUpdates} />
                     </div>
                 }
@@ -1187,3 +1200,5 @@ export default class EditPage extends React.Component {
         );
     }
 }
+
+export default DragDropContext(HTML5Backend)(EditPage);
