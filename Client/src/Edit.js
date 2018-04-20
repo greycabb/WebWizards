@@ -9,6 +9,7 @@ import Block from './Block';
 import DropSlot from './DropSlot';
 import Trash from './Trash';
 import ExistingBlock from './ExistingBlock';
+import ExistingDropSlot from './ExistingDropSlot';
 
 class EditPage extends React.Component {
     constructor(props) {
@@ -535,11 +536,13 @@ class EditPage extends React.Component {
                     </span>); */
                     b = (<span>
                         {b}
-                        <DropSlot handle={function () { that.drop(current.id, index) }}>
-                            <div className="drop-slot-space">
-                                &nbsp;
-                            </div>
-                        </DropSlot>
+                        <ExistingDropSlot handle={function () { that.moveBlock(current.id, index) }}>
+                            <DropSlot handle={function () { that.drop(current.id, index) }}>
+                                <div className="drop-slot-space">
+                                    &nbsp;
+                                </div>
+                            </DropSlot>
+                        </ExistingDropSlot>
                         {this.recursiveLayout(child, i)}
                     </span>);
                 } else {
@@ -563,11 +566,13 @@ class EditPage extends React.Component {
                         ); */
                         b = (<span>
                             {b}
-                            <DropSlot handle={function () { that.drop(current.id, index) }}>
-                                <div className="drop-slot-space">
-                                    &nbsp;
-                                </div>
-                            </DropSlot>
+                            <ExistingDropSlot handle={function () { that.moveBlock(current.id, index) }}>
+                                <DropSlot handle={function () { that.drop(current.id, index) }}>
+                                    <div className="drop-slot-space">
+                                        &nbsp;
+                                    </div>
+                                </DropSlot>
+                            </ExistingDropSlot>
                         </span>);
                     }
                 }
@@ -619,29 +624,47 @@ class EditPage extends React.Component {
             }
 
             b = (
-                <DropSlot handle={function (e) { that.drop(current.id, (Object.keys(current.children)).length, e) }}>
-                    <ul>
-                        <ExistingBlock id={current.id}>
-                            <li className={blockclass}>
-                                <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
-                                    {startTag}
-                                    {(!['head', 'body', 'title', 'html'].includes(current.blocktype)) &&
-                                        <span>
-                                            <span onClick={function () { that.pickupBlock(current.id) }} >[Grab]</span>
-                                        </span>
-                                    }
-                                    {/*current.id !== undefined &&
-                                        <span className="yel">id: {current.id.substr(current.id.length - 3)}, index: {first} </span>
-                                    */}
-                                </div>
-                                {b}
-                                <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
-                                    {endTag}
-                                </div>
-                            </li>
-                        </ExistingBlock>
-                    </ul>
-                </DropSlot>
+                <ExistingDropSlot handle={function (e) { that.moveBlock(current.id, (Object.keys(current.children)).length, e) }}>
+                    <DropSlot handle={function (e) { that.drop(current.id, (Object.keys(current.children)).length, e) }}>
+                        <ul>
+                            {(['head', 'body', 'title', 'html'].includes(current.blocktype)) &&
+                                <li className={blockclass}>
+                                    <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
+                                        {startTag}
+                                        {/*current.id !== undefined &&
+                                            <span className="yel">id: {current.id.substr(current.id.length - 3)}, index: {first} </span>
+                                        */}
+                                    </div>
+                                    {b}
+                                    <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
+                                        {endTag}
+                                    </div>
+                                </li>
+                            }
+                            {!(['head', 'body', 'title', 'html'].includes(current.blocktype)) &&
+                                <ExistingBlock id={current.id} handle={function (id) { that.pickupBlock(id) }}>
+                                    <li className={blockclass}>
+                                        <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
+                                            {startTag}
+                                            {/*(!['head', 'body', 'title', 'html'].includes(current.blocktype)) &&
+                                                <span>
+                                                    <span onClick={function () { that.pickupBlock(current.id) }} >[Grab]</span>
+                                                </span>
+                                            */}
+                                            {/*current.id !== undefined &&
+                                                <span className="yel">id: {current.id.substr(current.id.length - 3)}, index: {first} </span>
+                                            */}
+                                        </div>
+                                        {b}
+                                        <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
+                                            {endTag}
+                                        </div>
+                                    </li>
+                                </ExistingBlock>
+                            }
+                        </ul>
+                    </DropSlot>
+                </ExistingDropSlot>
             );
 
             //b = ({b});
@@ -714,31 +737,34 @@ class EditPage extends React.Component {
 
             let currentId = current.id;
 
-            b = (<ul>
-                <li className={blockclass}>
-                    {b}
-                    {/* Collapsed div */}
-                    <div id={'collapsed-edit-text-' + currentId}>
-                        <input type="text" id={'input-preview-edit-text-' + currentId} readOnly value={text} title="Click to change text" className="editor-text-content"
-                            onClick={function () {
-                                expandEditText(currentId);
-                            }} />
-                    </div>
-                    {/* Expanded div */}
-                    <div id={'expanded-edit-text-' + currentId} className="hidden">
-                        <textarea rows="4" cols="20" maxLength="1000" className="editor-text-content editor-text-expanded" id={'input-edit-text-' + currentId} defaultValue={text} />
+            b = (
+                <ul>
+                    <ExistingBlock id={currentId} handle={function (id) { that.pickupBlock(id) }}>
+                        <li className={blockclass}>
+                            {b}
+                            {/* Collapsed div */}
+                            <div id={'collapsed-edit-text-' + currentId}>
+                                <input type="text" id={'input-preview-edit-text-' + currentId} readOnly value={text} title="Click to change text" className="editor-text-content"
+                                    onClick={function () {
+                                        expandEditText(currentId);
+                                    }} />
+                            </div>
+                            {/* Expanded div */}
+                            <div id={'expanded-edit-text-' + currentId} className="hidden">
+                                <textarea rows="4" cols="20" maxLength="1000" className="editor-text-content editor-text-expanded" id={'input-edit-text-' + currentId} defaultValue={text} />
 
-                        {/* Save edited text to DB*/}
-                        <div className="edit-text-button btn-success" onClick={function () {
-                            saveEditedText(currentId);
-                        }}>Save</div>
+                                {/* Save edited text to DB*/}
+                                <div className="edit-text-button btn-success" onClick={function () {
+                                    saveEditedText(currentId);
+                                }}>Save</div>
 
-                        {/* Cancel editing text */}
-                        <div className="edit-text-button btn-danger" onClick={function () {
-                            collapseEditText(currentId);
-                        }}>Cancel</div>
-                    </div>
-                </li>
+                                {/* Cancel editing text */}
+                                <div className="edit-text-button btn-danger" onClick={function () {
+                                    collapseEditText(currentId);
+                                }}>Cancel</div>
+                            </div>
+                        </li>
+                    </ExistingBlock>
             </ul>
             );
         }
@@ -1279,7 +1305,6 @@ class EditPage extends React.Component {
                     </div>
                 </div>
                 <div className="half-width draggable-space">
-                    <button onClick={this.deleteBlock}>Trash Can</button>
                     <div>
                         {this.state.recursiveLayout === undefined &&
                             <h1>Loading...</h1>
@@ -1287,7 +1312,7 @@ class EditPage extends React.Component {
                         {this.state.recursiveLayout !== undefined &&
                             this.state.recursiveLayout
                         }
-                        <Trash handle={function (id) { that.deleteBlock(id) }}/>
+                        <Trash handle={that.deleteBlock }/>
                     </div>
                 </div>
 

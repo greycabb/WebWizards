@@ -2,24 +2,21 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { BlockTypes } from './BlockTypes';
 import { DropTarget } from 'react-dnd';
-import img from './img/trash.png';
-import './Trash.css';
 
 const target = {
     drop(props, monitor, component) {
-        const hasDroppedOnChild = monitor.didDrop()
-        if (!hasDroppedOnChild) {
-          props.handle();
-        }
-        else {
-          return;
-        }
-        component.setState({
-          hasDropped: true,
-          hasDroppedOnChild,
-        });
+      const hasDroppedOnChild = monitor.didDrop()
+      if (!hasDroppedOnChild) {
+        props.handle();
       }
-
+      else {
+        return;
+      }
+      component.setState({
+        hasDropped: true,
+        hasDroppedOnChild,
+      });
+    }
   };
 
 function collect(connect, monitor) {
@@ -30,7 +27,7 @@ function collect(connect, monitor) {
     };
   }
 
-class Trash extends Component {
+class ExistingDropSlot extends Component {
 
   constructor(props) {
 		super(props)
@@ -48,14 +45,14 @@ class Trash extends Component {
     return connectDropTarget(
       <div>
         {!isOverCurrent &&
-          <div className="trash-bin">
-              <img src={img} width="50px"/>
+          <div className="drop-slot">
+              {this.props.children}
           </div>
         }
         
         {isOverCurrent &&
-          <div className="trash-bin trash-bin-hover">
-            <img src={img} width="50px" />
+          <div className="drop-slot-hover">
+            {this.props.children}
           </div>
         }
       </div>
@@ -63,7 +60,7 @@ class Trash extends Component {
   }
 }
 
-Trash.propTypes = {
+ExistingDropSlot.propTypes = {
     connectDropTarget: PropTypes.func.isRequired,
     isOver: PropTypes.bool.isRequired,
     isOverCurrent: PropTypes.bool.isRequired,
@@ -71,4 +68,4 @@ Trash.propTypes = {
 		children: PropTypes.node,
 };
   
-export default DropTarget(BlockTypes.EXISTING, target, collect)(Trash);
+export default DropTarget(BlockTypes.EXISTING, target, collect)(ExistingDropSlot);

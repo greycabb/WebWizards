@@ -8,9 +8,9 @@ import { DragSource } from 'react-dnd'
 const blockSource = {
 
     beginDrag(props) {
-        props.handler(props.name)
+        props.handle(props.id)
 		return {
-			name: props.name,
+			id: props.id,
 		}
     }
     
@@ -47,4 +47,4 @@ Block.propTypes = {
     isDragging: PropTypes.bool.isRequired
   };
 
-export default DragSource(BlockTypes.BLOCK, blockSource, collect)(Block);
+export default DragSource(BlockTypes.EXISTING, blockSource, collect)(Block);
