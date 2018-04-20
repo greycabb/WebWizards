@@ -34,6 +34,7 @@ class EditPage extends React.Component {
             'userdata': ud, // first name, last name, etc., gotten from local storage
 
             'selectedBrick': undefined, // Which block on the left is selected (ID)
+            'selectedBlock': undefined, // Which block on the right is selected
 
             'projectData': undefined, // Data about the project
             'projectId': pid, // id of the project
@@ -626,8 +627,7 @@ class EditPage extends React.Component {
                                     {startTag}
                                     {(!['head', 'body', 'title', 'html'].includes(current.blocktype)) &&
                                         <span>
-                                            <span onClick={function () { that.deleteBlock(current.id) }} >[Delete]</span>
-                                            {/* <span onClick={function () { that.moveBlock(current.id, that.state.htmlBlockId, 2) }} >[Move]</span> */}
+                                            <span onClick={function () { that.pickupBlock(current.id) }} >[Grab]</span>
                                         </span>
                                     }
                                     {/*current.id !== undefined &&
@@ -988,14 +988,35 @@ class EditPage extends React.Component {
             });
     }
 
+    //____________________________________________________________________________
+    // Click a block on the right, to move it or delete it in trash can
+    pickupBlock(blockId) {
+        console.log('Picked up block ' + blockId);
+        if (blockId === undefined) {
+            console.log('Cancelled pickup');
+            this.setState({
+                'selectedBrick': undefined,
+                'selectedBlock': undefined
+            });
+            return;
+        }
+        this.setState({
+            'selectedBrick': undefined,
+            'selectedBlock': blockId
+        });
+    }
+
+
 
     //____________________________________________________________________________
     // Click a brick on the left
     pickup(brickName) {
+        this.setState({
+            'selectedBlock': undefined
+        });
 
         if (brickName === undefined || brickName === this.state.selectedBrick) {
             this.setState({
-                'status': '',
                 'selectedBrick': undefined
             });
             return;
@@ -1004,14 +1025,10 @@ class EditPage extends React.Component {
             if (this.state.bricksByName[brickName] !== undefined) {
                 console.log(brickName);
                 this.setState({
-                    'selectedBrick': brickName
+                    'selectedBrick': brickName,
+                    'selectedBlock': undefined
                 });
             }
-
-            // debug purposes
-            this.setState({
-                'status': brickName + ' -> '
-            });
         }
     }
 
@@ -1019,6 +1036,20 @@ class EditPage extends React.Component {
     // Place a block into the right, after picking up a brick on the left
     // The type of brick placed is determined by the brick that was picked up on the left, from state
     drop(parentId, index) {
+        if (this.state.selectedBrick === undefined) {
+            console.log('sb undefined');
+            if (this.state.selectedBlock !== undefined) {
+                console.log('move');
+                // If a block is selected, call moveBlock instead
+                this.moveBlock(parentId, index);
+            }
+            this.setState({
+                'selectedBrick': undefined,
+                'selectedBlock': undefined
+            });
+            
+            return;
+        }
 
         let brick = this.state.selectedBrick;
         console.log('Attempting to drop <' + brick + '> in ' + parentId + ' ' + index);
@@ -1113,8 +1144,14 @@ class EditPage extends React.Component {
     }
 
     // Deleting a block from the right layout
-    deleteBlock(blockId) {
+    deleteBlock() {
+        let blockId = this.state.selectedBlock;
+        this.setState({
+            'selectedBrick': undefined,
+            'selectedBlock': undefined
+        });
         if (blockId === undefined) {
+            console.log('Cancelled delete');
             return;
         }
         let that = this;
@@ -1135,11 +1172,22 @@ class EditPage extends React.Component {
     }
 
     // Move block
-    //oldParentId, oldIndex, newParentId, newIndex, e
-    moveBlock(blockId, newParentId, newIndex) {
+    moveBlock(newParentId, newIndex) {
+
+        console.log('Move block');
+
+        if (this.state.selectedBrick !== undefined || this.state.selectedBlock === undefined) {
+            console.log('Cancelled move');
+            this.setState({
+                'selectedBrick': undefined,
+                'selectedBlock': undefined
+            });
+            return;
+        }
+
         let that = this;
 
-        fetch('https://api.webwizards.me/v1/blocks?id=' + blockId, {
+        fetch('https://api.webwizards.me/v1/blocks?id=' + this.state.selectedBlock, {
             method: 'PATCH',
             headers: {
                 'Accept': 'application/json',
@@ -1231,6 +1279,7 @@ class EditPage extends React.Component {
                     </div>
                 </div>
                 <div className="half-width draggable-space">
+                    <button onClick={this.deleteBlock}>Trash Can</button>
                     <div>
                         {this.state.recursiveLayout === undefined &&
                             <h1>Loading...</h1>
