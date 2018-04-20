@@ -621,6 +621,12 @@ class EditPage extends React.Component {
                         <li className={blockclass}>
                             <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
                                 {startTag}
+                                {(!['head', 'body', 'title', 'html'].includes(current.blocktype)) &&
+                                <span>
+                                    <span onClick={function () { that.deleteBlock(current.parentid, current.index) }} >[Delete]</span>
+                                    <span onClick={function (e) { that.moveBlock() }} >[Move]</span>
+                                </span>
+                                }
                                 {/*current.id !== undefined &&
                                     <span className="yel">id: {current.id.substr(current.id.length - 3)}, index: {first} </span>
                                 */}
@@ -675,7 +681,7 @@ class EditPage extends React.Component {
                 // sanitize this?
                 collapseEditText(blockId, value);
 
-                
+
                 fetch('https://api.webwizards.me/v1/blocks?id=' + blockId, {
                     method: 'PATCH',
                     headers: {
@@ -931,6 +937,7 @@ class EditPage extends React.Component {
                             }
                         } else {
                             console.log(result);
+                            return result;
                         }
                     });
                 } else {
@@ -1012,7 +1019,7 @@ class EditPage extends React.Component {
         let brick = this.state.selectedBrick;
         console.log('Attempting to drop <' + brick + '> in ' + parentId + ' ' + index);
 
-        
+
         if (brick && parentId !== undefined && index !== undefined) {
             this.pickup(); // unselect the selected brick
             console.log('drop <' + brick + '> in ' + parentId + ' ' + index);
@@ -1105,10 +1112,67 @@ class EditPage extends React.Component {
     //      parentId: of the block to delete
     //      indexToDelete: # child of the parent to delete
     deleteBlock(parentId, indexToDelete) {
+        console.log('Beep');
+        console.log(parentId);
+        if (parentId === undefined || parentId === '' || parentId === null || indexToDelete === undefined) {
+            return;
+        }
+        console.log('Boop');
+        // Get parent block data
+        let that = this;
+        fetch('https://api.webwizards.me/v1/blocks?id=' + parentId, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('Authorization')
+            }
+        })
+            .then(function (response) {
+
+                if (response.ok) {
+                    response.json().then(function (result) {
+
+                        // Remove the index of the block from the parent
+                        let children = result.children;
+                        let len = children.length;
+                        children.splice(indexToDelete, 1);
+
+                        if (children.length !== len) {
+                            // Patch block
+                            fetch('https://api.webwizards.me/v1/blocks?id=' + parentId, {
+                                method: 'PATCH',
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'Content-Type': 'application/json',
+                                    'Authorization': localStorage.getItem('Authorization')
+                                },
+                                body: JSON.stringify({
+                                    'children': children,
+                                    'index': result.index // needed for now
+                                })
+                            })
+                                .then(function (response) {
+
+                                    console.log('Deleted block');
+                                    that.handleProjectUpdates();
+                                    that.setup_getProjectData();
+                                })
+                                .catch(err => {
+                                    console.log('ERROR: ', err);
+                                });
+                        }
+                    });
+                }
+            })
+            .catch(err => {
+                //console.log(locationInLayout);
+                console.log('ERROR: ', err);
+            });
 
     }
     // Move block
-    moveBlock(oldParentId, oldIndex, newParentId, newIndex) {
+    moveBlock(oldParentId, oldIndex, newParentId, newIndex, e) {
 
     }
 
@@ -1164,7 +1228,7 @@ class EditPage extends React.Component {
                     </div>
                     <div>
                         <Block name={"img"} handler={that.pickup} />
-                        <Block name={"text-content"} handler={that.pickup}> 
+                        <Block name={"text-content"} handler={that.pickup}>
                             <input type="text" name="lname" disabled value="text" className="short-text-box" />
                         </Block>
                         {/* <div className="brick secondary-brick disable-select" id="audio" onClick={function () { that.pickup('audio') }} >audio</div> */}
