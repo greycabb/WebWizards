@@ -615,6 +615,8 @@ class EditPage extends React.Component {
                 return;
             }
 
+            console.log(current);
+
             b = (
                 <DropSlot handle={function (e) { that.drop(current.id, (Object.keys(current.children)).length, e) }}>
                     <ul>
@@ -622,10 +624,10 @@ class EditPage extends React.Component {
                             <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
                                 {startTag}
                                 {(!['head', 'body', 'title', 'html'].includes(current.blocktype)) &&
-                                <span>
-                                    <span onClick={function () { that.deleteBlock(current.parentid, current.index) }} >[Delete]</span>
-                                    <span onClick={function (e) { that.moveBlock() }} >[Move]</span>
-                                </span>
+                                    <span>
+                                        <span onClick={function () { that.deleteBlock(current.id) }} >[Delete]</span>
+                                        <span onClick={function () { that.moveBlock(current.id, that.htmlBlockId, 2) }} >[Move]</span>
+                                    </span>
                                 }
                                 {/*current.id !== undefined &&
                                     <span className="yel">id: {current.id.substr(current.id.length - 3)}, index: {first} </span>
@@ -1108,20 +1110,14 @@ class EditPage extends React.Component {
             });
     }
 
-    // Delete block
-    //      parentId: of the block to delete
-    //      indexToDelete: # child of the parent to delete
-    deleteBlock(parentId, indexToDelete) {
-        console.log('Beep');
-        console.log(parentId);
-        if (parentId === undefined || parentId === '' || parentId === null || indexToDelete === undefined) {
+    // Deleting a block from the right layout
+    deleteBlock(blockId) {
+        if (blockId === undefined) {
             return;
         }
-        console.log('Boop');
-        // Get parent block data
         let that = this;
-        fetch('https://api.webwizards.me/v1/blocks?id=' + parentId, {
-            method: 'GET',
+        fetch('https://api.webwizards.me/v1/blocks?id=' + blockId, {
+            method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -1129,51 +1125,43 @@ class EditPage extends React.Component {
             }
         })
             .then(function (response) {
-
-                if (response.ok) {
-                    response.json().then(function (result) {
-
-                        // Remove the index of the block from the parent
-                        let children = result.children;
-                        let len = children.length;
-                        children.splice(indexToDelete, 1);
-
-                        if (children.length !== len) {
-                            // Patch block
-                            fetch('https://api.webwizards.me/v1/blocks?id=' + parentId, {
-                                method: 'PATCH',
-                                headers: {
-                                    'Accept': 'application/json',
-                                    'Content-Type': 'application/json',
-                                    'Authorization': localStorage.getItem('Authorization')
-                                },
-                                body: JSON.stringify({
-                                    'children': children,
-                                    'index': result.index // needed for now
-                                })
-                            })
-                                .then(function (response) {
-
-                                    console.log('Deleted block');
-                                    that.handleProjectUpdates();
-                                    that.setup_getProjectData();
-                                })
-                                .catch(err => {
-                                    console.log('ERROR: ', err);
-                                });
-                        }
-                    });
-                }
+                that.setup_getProjectData();
             })
             .catch(err => {
-                //console.log(locationInLayout);
                 console.log('ERROR: ', err);
             });
-
     }
-    // Move block
-    moveBlock(oldParentId, oldIndex, newParentId, newIndex, e) {
 
+    // Move block
+    //oldParentId, oldIndex, newParentId, newIndex, e
+    moveBlock(blockId, newParentId, newIndex) {
+        let that = this;
+        console.log(blockId);
+        console.log(newParentId);
+        console.log(newIndex);
+        fetch('https://api.webwizards.me/v1/blocks?id=' + blockId, {
+            method: 'PATCH',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('Authorization')
+            },
+            body: JSON.stringify({
+                'parentid': newParentId,
+                'index': newIndex
+            })
+        })
+            .then(function (response) {
+
+                console.log('_________');
+                console.log('VVVVVV');
+
+                that.handleProjectUpdates();
+                that.setup_getProjectData();
+            })
+            .catch(err => {
+                console.log('ERROR: ', err);
+            });
     }
 
     hoverDropSlot() {
