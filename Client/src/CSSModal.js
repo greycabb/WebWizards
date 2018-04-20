@@ -185,7 +185,7 @@ export default class CSSModal extends React.Component {
             },
             body: JSON.stringify({
                 'css': curr,
-                'index': this.props.currBlock.index
+                'index': -1//this.props.currBlock.index
             })
         })
             .then((response) => {

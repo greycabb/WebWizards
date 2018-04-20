@@ -691,7 +691,7 @@ class EditPage extends React.Component {
                     },
                     body: JSON.stringify({
                         'children': [value],
-                        'index': cIndex
+                        'index': -1//cIndex
                     })
                 })
                     .then(function (response) {
