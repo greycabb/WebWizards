@@ -1,0 +1,11 @@
+.trash-bin {
+    position: absolute; 
+    bottom: 10px;
+    right: 40px;
+}
+
+.trash-bin-hover {
+    -webkit-box-shadow: 4px 4px 5px 0px rgba(224,168,56,1);
+    -moz-box-shadow: 4px 4px 5px 0px rgba(224,168,56,1);
+    box-shadow: 4px 4px 5px 0px rgba(224,168,56,1);
+}

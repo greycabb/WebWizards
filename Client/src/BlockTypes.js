@@ -1,3 +1,4 @@
 export const BlockTypes = {
-    BLOCK: 'block'
+    BLOCK: 'block',
+    EXISTING: 'existingblock'
   };

@@ -7,6 +7,8 @@ import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import Block from './Block';
 import DropSlot from './DropSlot';
+import Trash from './Trash';
+import ExistingBlock from './ExistingBlock';
 
 class EditPage extends React.Component {
     constructor(props) {
@@ -618,24 +620,26 @@ class EditPage extends React.Component {
             b = (
                 <DropSlot handle={function (e) { that.drop(current.id, (Object.keys(current.children)).length, e) }}>
                     <ul>
-                        <li className={blockclass}>
-                            <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
-                                {startTag}
-                                {(!['head', 'body', 'title', 'html'].includes(current.blocktype)) &&
-                                    <span>
-                                        <span onClick={function () { that.deleteBlock(current.id) }} >[Delete]</span>
-                                        {/* <span onClick={function () { that.moveBlock(current.id, that.state.htmlBlockId, 2) }} >[Move]</span> */}
-                                    </span>
-                                }
-                                {/*current.id !== undefined &&
-                                    <span className="yel">id: {current.id.substr(current.id.length - 3)}, index: {first} </span>
-                                */}
-                            </div>
-                            {b}
-                            <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
-                                {endTag}
-                            </div>
-                        </li>
+                        <ExistingBlock id={current.id}>
+                            <li className={blockclass}>
+                                <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
+                                    {startTag}
+                                    {(!['head', 'body', 'title', 'html'].includes(current.blocktype)) &&
+                                        <span>
+                                            <span onClick={function () { that.deleteBlock(current.id) }} >[Delete]</span>
+                                            {/* <span onClick={function () { that.moveBlock(current.id, that.state.htmlBlockId, 2) }} >[Move]</span> */}
+                                        </span>
+                                    }
+                                    {/*current.id !== undefined &&
+                                        <span className="yel">id: {current.id.substr(current.id.length - 3)}, index: {first} </span>
+                                    */}
+                                </div>
+                                {b}
+                                <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
+                                    {endTag}
+                                </div>
+                            </li>
+                        </ExistingBlock>
                     </ul>
                 </DropSlot>
             );
@@ -1234,6 +1238,7 @@ class EditPage extends React.Component {
                         {this.state.recursiveLayout !== undefined &&
                             this.state.recursiveLayout
                         }
+                        <Trash handle={function (id) { that.deleteBlock(id) }}/>
                     </div>
                 </div>
 
