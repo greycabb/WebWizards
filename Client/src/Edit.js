@@ -519,74 +519,91 @@ class EditPage extends React.Component {
         if (blockname != undefined &&
             (blockname.type == 'wrapper' || blockname.type == 'textwrapper')) {
             let kids = Object.keys(current.children);
-            for (var i = 0; i < kids.length; i++) {
-                let child = current.children[kids[i]];
 
-                if (blockTypesToIgnore[child.blocktype] !== true) {
-                    // Place a dropspace before each child
-                    let index = i;
-                    /*b = (<span>
-                        {b}
-                        <DropSlot handle={function () { that.drop(current.id, index) }}>
-                            <div className="red">
-                                <span className="yellow">-> parent: {current.id.substr(current.id.length - 3)}, index: {index}</span>
+            // No children
+            if (kids.length === 0) {
+                b = (<span>
+                    {b}
+                    <ExistingDropSlot handle={function () { that.moveBlock(current.id, 0) }}>
+                        <DropSlot handle={function () { that.drop(current.id, 0) }}>
+                            <div className="drop-slot-space">
+                                &nbsp;
                             </div>
                         </DropSlot>
-                        {this.recursiveLayout(child, i)}
-                    </span>); */
-                    b = (<span>
-                        {b}
-                        <ExistingDropSlot handle={function () { that.moveBlock(current.id, index) }}>
+                    </ExistingDropSlot>
+                </span>);
+            } else {
+
+                // Has children
+                for (var i = 0; i < kids.length; i++) {
+                    let child = current.children[kids[i]];
+
+                    if (blockTypesToIgnore[child.blocktype] !== true) {
+                        // Place a dropspace before each child
+                        let index = i;
+                        /*b = (<span>
+                            {b}
                             <DropSlot handle={function () { that.drop(current.id, index) }}>
-                                <div className="drop-slot-space">
-                                    &nbsp;
+                                <div className="red">
+                                    <span className="yellow">-> parent: {current.id.substr(current.id.length - 3)}, index: {index}</span>
                                 </div>
                             </DropSlot>
-                        </ExistingDropSlot>
-                        {this.recursiveLayout(child, i)}
-                    </span>);
-                } else {
-                    b = (<span>{b}{this.recursiveLayout(child, i)}</span>);
-                }
-
-                if (i === kids.length - 1) {
-                    if (blockTypesToIgnore[child.blocktype] !== true) {
-                        // Place a dropspace after the last child
-                        let index = i + 1;
-                        /*
-                        b = (
-                            <span>
-                                {b}
-                                <DropSlot handle={function () { that.drop(current.id, index) }}>
-                                    <div className="red">
-                                        <span className="yellow">-> parent: {current.id.substr(current.id.length - 3)}, index: {index}</span>
-                                    </div>
-                                </DropSlot>
-                            </span>
-                        ); */
+                            {this.recursiveLayout(child, i)}
+                        </span>); */
                         b = (<span>
                             {b}
                             <ExistingDropSlot handle={function () { that.moveBlock(current.id, index) }}>
                                 <DropSlot handle={function () { that.drop(current.id, index) }}>
                                     <div className="drop-slot-space">
                                         &nbsp;
-                                    </div>
+                                </div>
                                 </DropSlot>
                             </ExistingDropSlot>
+                            {this.recursiveLayout(child, i)}
                         </span>);
+                    } else {
+                        b = (<span>{b}{this.recursiveLayout(child, i)}</span>);
+                    }
+
+                    if (i === kids.length - 1) {
+                        if (blockTypesToIgnore[child.blocktype] !== true) {
+                            // Place a dropspace after the last child
+                            let index = i + 1;
+                            /*
+                            b = (
+                                <span>
+                                    {b}
+                                    <DropSlot handle={function () { that.drop(current.id, index) }}>
+                                        <div className="red">
+                                            <span className="yellow">-> parent: {current.id.substr(current.id.length - 3)}, index: {index}</span>
+                                        </div>
+                                    </DropSlot>
+                                </span>
+                            ); */
+                            b = (<span>
+                                {b}
+                                <ExistingDropSlot handle={function () { that.moveBlock(current.id, index) }}>
+                                    <DropSlot handle={function () { that.drop(current.id, index) }}>
+                                        <div className="drop-slot-space">
+                                            &nbsp;
+                                    </div>
+                                    </DropSlot>
+                                </ExistingDropSlot>
+                            </span>);
+                        }
                     }
                 }
             }
-            if (blockTypesToIgnore[current.blocktype] !== true) {
-                b = (
-                    <span>
-                        {/* <li className="red">
-                            <span className="yellow">-> parent: {current.parentid.substr(current.parentid.length - 3)}, index: 0</span>
-                        </li> */}
-                        {b}
-                    </span>
-                );
-            }
+            // if (blockTypesToIgnore[current.blocktype] !== true) {
+            //     b = (
+            //         <span>
+            //             {/* <li className="red">
+            //                 <span className="yellow">-> parent: {current.parentid.substr(current.parentid.length - 3)}, index: 0</span>
+            //             </li> */}
+            //             {b}
+            //         </span>
+            //     );
+            // }
         }
 
         if (blockname !== undefined && blockname.type === "content") {
@@ -602,7 +619,7 @@ class EditPage extends React.Component {
 
         var blockclass;
         if (blockname !== undefined) {
-            console.log(blockname.type);
+            //console.log(blockname.type);
             if (blockname.type == 'wrapper') {
                 blockclass = 'primary-brick';
             }
@@ -615,6 +632,9 @@ class EditPage extends React.Component {
         }
         if (current.blocktype !== 'text-content') {
             let startTag = '<' + current.blocktype + '>';
+            if (current.id !== undefined) {
+                startTag = startTag + '     ' + current.id.slice(-2);
+            }
             let endTag = '</' + current.blocktype + '>';
             if (current.blocktype === undefined) {
                 setTimeout(function () {
@@ -624,66 +644,58 @@ class EditPage extends React.Component {
             }
 
             b = (
-                        <ul>
-                            {(['head', 'html'].includes(current.blocktype)) &&
-                                 <li className={blockclass}>
+                <ul>
+                    {(['head', 'html'].includes(current.blocktype)) &&
+                        <li className={blockclass}>
+                            <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
+                                {startTag}
+                                {/*current.id !== undefined &&
+                                            <span className="yel">id: {current.id.substr(current.id.length - 3)}, index: {first} </span>
+                                        */}
+                            </div>
+                            {b}
+                            <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
+                                {endTag}
+                            </div>
+                        </li>
+                    }
+                    {(['body', 'title'].includes(current.blocktype)) &&
+                        <ExistingDropSlot handle={function (e) { that.moveBlock(current.id, (Object.keys(current.children)).length, e) }}>
+                            <DropSlot handle={function (e) { that.drop(current.id, (Object.keys(current.children)).length, e) }}>
+                                <li className={blockclass}>
                                     <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
                                         {startTag}
                                         {/*current.id !== undefined &&
-                                            <span className="yel">id: {current.id.substr(current.id.length - 3)}, index: {first} </span>
-                                        */}
+                                                    <span className="yel">id: {current.id.substr(current.id.length - 3)}, index: {first} </span>
+                                                */}
                                     </div>
                                     {b}
                                     <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
                                         {endTag}
                                     </div>
                                 </li>
-                            }
-                            {(['body', 'title'].includes(current.blocktype)) &&
-                                <ExistingDropSlot handle={function (e) { that.moveBlock(current.id, (Object.keys(current.children)).length, e) }}>
-                                    <DropSlot handle={function (e) { that.drop(current.id, (Object.keys(current.children)).length, e) }}>
-                                        <li className={blockclass}>
-                                            <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
-                                                {startTag}
-                                                {/*current.id !== undefined &&
-                                                    <span className="yel">id: {current.id.substr(current.id.length - 3)}, index: {first} </span>
-                                                */}
-                                            </div>
-                                            {b}
-                                            <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
-                                                {endTag}
-                                            </div>
-                                        </li>
-                                    </DropSlot>
-                                </ExistingDropSlot>
-                            }
-                            {!(['head', 'body', 'title', 'html'].includes(current.blocktype)) &&
-                                <ExistingDropSlot handle={function (e) { that.moveBlock(current.id, (Object.keys(current.children)).length, e) }}>
-                                    <DropSlot handle={function (e) { that.drop(current.id, (Object.keys(current.children)).length, e) }}>
-                                        <ExistingBlock id={current.id} handle={function (id) { that.pickupBlock(id) }}>
-                                            <li className={blockclass}>
-                                                <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
-                                                    {startTag}
-                                                    {/*(!['head', 'body', 'title', 'html'].includes(current.blocktype)) &&
-                                                        <span>
-                                                            <span onClick={function () { that.pickupBlock(current.id) }} >[Grab]</span>
-                                                        </span>
-                                                    */}
-                                                    {/*current.id !== undefined &&
-                                                        <span className="yel">id: {current.id.substr(current.id.length - 3)}, index: {first} </span>
-                                                    */}
-                                                </div>
-                                                {b}
-                                                <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
-                                                    {endTag}
-                                                </div>
-                                            </li>
-                                        </ExistingBlock>
-                                    </DropSlot>
-                                </ExistingDropSlot>
+                            </DropSlot>
+                        </ExistingDropSlot>
+                    }
+                    {!(['head', 'body', 'title', 'html'].includes(current.blocktype)) &&
+                        <ExistingDropSlot handle={function (e) { that.moveBlock(current.id, (Object.keys(current.children)).length, e) }}>
+                            {/* <DropSlot handle={function (e) { that.drop(current.id, (Object.keys(current.children)).length, e) }}> */}
+                                <ExistingBlock id={current.id} handle={function (id) { that.pickupBlock(id, current.parentid, current.index) }}>
+                                    <li className={blockclass}>
+                                        <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
+                                            {startTag}
+                                        </div>
+                                        {b}
+                                        <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
+                                            {endTag}
+                                        </div>
+                                    </li>
+                                </ExistingBlock>
+                            {/* </DropSlot> */}
+                        </ExistingDropSlot>
 
-                            }
-                        </ul>
+                    }
+                </ul>
             );
 
             //b = ({b});
@@ -758,7 +770,7 @@ class EditPage extends React.Component {
 
             b = (
                 <ul>
-                    <ExistingBlock id={currentId} handle={function (id) { that.pickupBlock(id) }}>
+                    <ExistingBlock id={currentId} handle={function (id) { that.pickupBlock(id, current.parentid, current.index) }}>
                         <li className={blockclass}>
                             {b}
                             {/* Collapsed div */}
@@ -784,7 +796,7 @@ class EditPage extends React.Component {
                             </div>
                         </li>
                     </ExistingBlock>
-            </ul>
+                </ul>
             );
         }
         return b;
@@ -1035,7 +1047,7 @@ class EditPage extends React.Component {
 
     //____________________________________________________________________________
     // Click a block on the right, to move it or delete it in trash can
-    pickupBlock(blockId) {
+    pickupBlock(blockId, blockParentId, blockIndex) {
         console.log('Picked up block ' + blockId);
         if (blockId === undefined) {
             console.log('Cancelled pickup');
@@ -1047,7 +1059,9 @@ class EditPage extends React.Component {
         }
         this.setState({
             'selectedBrick': undefined,
-            'selectedBlock': blockId
+            'selectedBlock': blockId,
+            'block_originalParentId': blockParentId,
+            'block_originalIndex': blockIndex
         });
     }
 
@@ -1092,7 +1106,7 @@ class EditPage extends React.Component {
                 'selectedBrick': undefined,
                 'selectedBlock': undefined
             });
-            
+
             return;
         }
 
@@ -1219,7 +1233,25 @@ class EditPage extends React.Component {
     // Move block
     moveBlock(newParentId, newIndex) {
 
-        console.log('Move block');
+        console.log('_______________');
+            console.log('Move block: ');
+            console.log('Block id: ' + this.state.selectedBlock);
+            console.log('newParentId: ' + newParentId);
+            console.log('newIndex:' + newIndex);
+        console.log('_______________');
+
+        let originalParentId = this.state.block_originalParentId;
+        let originalIndex = this.state.block_originalIndex;
+
+        if (originalParentId === newParentId) {
+            if (newIndex > originalIndex) {
+                // Reduce index by 1 for correctness
+                newIndex -= 1;
+            } else if (newIndex === originalIndex) {
+                // Same parent, same index, so do nothing
+                return;
+            }
+        }
 
         if (this.state.selectedBrick !== undefined || this.state.selectedBlock === undefined) {
             console.log('Cancelled move');
@@ -1231,6 +1263,8 @@ class EditPage extends React.Component {
         }
 
         let that = this;
+
+        
 
         fetch('https://api.webwizards.me/v1/blocks?id=' + this.state.selectedBlock, {
             method: 'PATCH',
@@ -1331,7 +1365,7 @@ class EditPage extends React.Component {
                         {this.state.recursiveLayout !== undefined &&
                             this.state.recursiveLayout
                         }
-                        <Trash handle={that.deleteBlock }/>
+                        <Trash handle={that.deleteBlock} />
                     </div>
                 </div>
 
