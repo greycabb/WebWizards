@@ -619,7 +619,7 @@ class EditPage extends React.Component {
 
         var blockclass;
         if (blockname !== undefined) {
-            console.log(blockname.type);
+            //console.log(blockname.type);
             if (blockname.type == 'wrapper') {
                 blockclass = 'primary-brick';
             }
@@ -632,6 +632,9 @@ class EditPage extends React.Component {
         }
         if (current.blocktype !== 'text-content') {
             let startTag = '<' + current.blocktype + '>';
+            if (current.id !== undefined) {
+                startTag = startTag + '     ' + current.id.slice(-2);
+            }
             let endTag = '</' + current.blocktype + '>';
             if (current.blocktype === undefined) {
                 setTimeout(function () {
@@ -1230,7 +1233,12 @@ class EditPage extends React.Component {
     // Move block
     moveBlock(newParentId, newIndex) {
 
-        console.log('Move block');
+        console.log('_______________');
+            console.log('Move block: ');
+            console.log('Block id: ' + this.state.selectedBlock);
+            console.log('newParentId: ' + newParentId);
+            console.log('newIndex:' + newIndex);
+        console.log('_______________');
 
         let originalParentId = this.state.block_originalParentId;
         let originalIndex = this.state.block_originalIndex;

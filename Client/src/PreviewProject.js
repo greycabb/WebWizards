@@ -128,7 +128,7 @@ export default class PreviewProject extends React.Component {
                                                             let combinedString = blockTags[0];
                                                             combinedString += childTags.join("");
                                                             combinedString += blockTags[1];
-                                                            console.log(combinedString);
+                                                            //console.log(combinedString);
                                                             //Resolve with string
                                                             resolve(combinedString);
                                                         }
