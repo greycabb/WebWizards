@@ -632,9 +632,9 @@ class EditPage extends React.Component {
         }
         if (current.blocktype !== 'text-content') {
             let startTag = '<' + current.blocktype + '>';
-            if (current.id !== undefined) {
-                startTag = startTag + '     ' + current.id.slice(-2);
-            }
+            // if (current.id !== undefined) {
+            //     startTag = startTag + '     ' + current.id;//.slice(-2);
+            // }
             let endTag = '</' + current.blocktype + '>';
             if (current.blocktype === undefined) {
                 setTimeout(function () {
@@ -1263,6 +1263,11 @@ class EditPage extends React.Component {
         }
 
         let that = this;
+
+        if (!newParentId) {
+            console.log('No parent id!');
+            return;
+        }
 
         
 
