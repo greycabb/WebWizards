@@ -677,18 +677,10 @@ class EditPage extends React.Component {
                     {!(['head', 'body', 'title', 'html'].includes(current.blocktype)) &&
                         <ExistingDropSlot handle={function (e) { that.moveBlock(current.id, (Object.keys(current.children)).length, e) }}>
                             {/* <DropSlot handle={function (e) { that.drop(current.id, (Object.keys(current.children)).length, e) }}> */}
-                                <ExistingBlock id={current.id} handle={function (id) { that.pickupBlock(id) }}>
+                                <ExistingBlock id={current.id} handle={function (id) { that.pickupBlock(id, current.parentid, current.index) }}>
                                     <li className={blockclass}>
                                         <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
                                             {startTag}
-                                            {/*(!['head', 'body', 'title', 'html'].includes(current.blocktype)) &&
-                                                        <span>
-                                                            <span onClick={function () { that.pickupBlock(current.id) }} >[Grab]</span>
-                                                        </span>
-                                                    */}
-                                            {/*current.id !== undefined &&
-                                                        <span className="yel">id: {current.id.substr(current.id.length - 3)}, index: {first} </span>
-                                                    */}
                                         </div>
                                         {b}
                                         <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
@@ -775,7 +767,7 @@ class EditPage extends React.Component {
 
             b = (
                 <ul>
-                    <ExistingBlock id={currentId} handle={function (id) { that.pickupBlock(id) }}>
+                    <ExistingBlock id={currentId} handle={function (id) { that.pickupBlock(id, current.parentid, current.index) }}>
                         <li className={blockclass}>
                             {b}
                             {/* Collapsed div */}
@@ -1052,7 +1044,7 @@ class EditPage extends React.Component {
 
     //____________________________________________________________________________
     // Click a block on the right, to move it or delete it in trash can
-    pickupBlock(blockId) {
+    pickupBlock(blockId, blockParentId, blockIndex) {
         console.log('Picked up block ' + blockId);
         if (blockId === undefined) {
             console.log('Cancelled pickup');
@@ -1064,7 +1056,9 @@ class EditPage extends React.Component {
         }
         this.setState({
             'selectedBrick': undefined,
-            'selectedBlock': blockId
+            'selectedBlock': blockId,
+            'block_originalParentId': blockParentId,
+            'block_originalIndex': blockIndex
         });
     }
 
@@ -1238,6 +1232,19 @@ class EditPage extends React.Component {
 
         console.log('Move block');
 
+        let originalParentId = this.state.block_originalParentId;
+        let originalIndex = this.state.block_originalIndex;
+
+        if (originalParentId === newParentId) {
+            if (newIndex > originalIndex) {
+                // Reduce index by 1 for correctness
+                newIndex -= 1;
+            } else if (newIndex === originalIndex) {
+                // Same parent, same index, so do nothing
+                return;
+            }
+        }
+
         if (this.state.selectedBrick !== undefined || this.state.selectedBlock === undefined) {
             console.log('Cancelled move');
             this.setState({
@@ -1248,6 +1255,8 @@ class EditPage extends React.Component {
         }
 
         let that = this;
+
+        
 
         fetch('https://api.webwizards.me/v1/blocks?id=' + this.state.selectedBlock, {
             method: 'PATCH',
