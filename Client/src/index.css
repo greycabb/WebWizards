@@ -234,7 +234,9 @@ body > div > .login-page {
 }
 
 .draggable-space {
+  max-height: calc(100vh - 140px);
   background-color: #F4f4f4; 
+  overflow: scroll;
 }
 
 html, body{

@@ -315,6 +315,7 @@ func (ctx *HandlerContext) BlocksHandler(w http.ResponseWriter, r *http.Request)
 				http.Error(w, fmt.Sprintf("error finding block"), http.StatusBadRequest)
 				return
 			}
+			//Original parent block
 			parentHex := bson.ObjectIdHex(block.ParentID)
 			parentBlock, err := ctx.blockStore.GetByBlockID(parentHex)
 			if err != nil {
@@ -326,10 +327,19 @@ func (ctx *HandlerContext) BlocksHandler(w http.ResponseWriter, r *http.Request)
 			parentUpdates := &blocks.BlockUpdates{}
 			parentUpdates.Children = parentChildren
 			ctx.blockStore.UpdateBlock(parentHex, parentUpdates)
+			for i, v := range parentChildren {
+				if len(v) > 0 && bson.IsObjectIdHex(v) {
+					currUpdates := &blocks.BlockUpdates{}
+					currUpdates.Index = i
+					currHexed := bson.ObjectIdHex(v)
+					ctx.blockStore.UpdateBlock(currHexed, currUpdates)
+				}
+			}
 			//Add to new parent block
 			var newParentBlock *blocks.Block
 			var newParentHex bson.ObjectId
 			if len(updates.ParentID) > 0 {
+				// New parent
 				newParentHex = bson.ObjectIdHex(updates.ParentID)
 				newParentBlock, err = ctx.blockStore.GetByBlockID(newParentHex)
 				if err != nil {
@@ -337,6 +347,7 @@ func (ctx *HandlerContext) BlocksHandler(w http.ResponseWriter, r *http.Request)
 					return
 				}
 			} else {
+				// Current parent
 				newParentHex = parentHex
 				newParentBlock, err = ctx.blockStore.GetByBlockID(newParentHex)
 				if err != nil {
