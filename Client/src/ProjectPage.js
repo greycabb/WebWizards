@@ -190,7 +190,16 @@ export default class ProjectPage extends React.Component {
                                                     resolve("");
                                                 }
                                                 //Resolve with string
-                                                resolve(children[0]);
+                                                // Sanitize
+                                                let sanitizeHtml = require('sanitize-html');
+                                                
+                                                let sanitizedTextContent = sanitizeHtml(children[0], {
+                                                    allowedTags: ['b', 'i', 'em', 'strong'],
+                                                    allowedAttributes: {
+                                                        //'a': ['href']
+                                                    }
+                                                });
+                                                resolve(sanitizedTextContent);
                                             }
                                             else {
                                                 resolve(blockTags[0] + blockTags[1]);

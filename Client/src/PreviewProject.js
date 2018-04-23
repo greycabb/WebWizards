@@ -23,7 +23,7 @@ export default class PreviewProject extends React.Component {
             this.uploadScreenshot();
             this.blockToHtml(this.props.projectObject.content[0], false).then((string) => {
                 console.log(string);
-                this.setState({object: string});
+                this.setState({ object: string });
             });
         }
     }
@@ -31,7 +31,7 @@ export default class PreviewProject extends React.Component {
     componentDidMount() {
         this.blockToHtml(this.props.projectObject.content[0], false).then((string) => {
             console.log(string);
-            this.setState({object: string});
+            this.setState({ object: string });
         });
     }
 
@@ -46,7 +46,7 @@ export default class PreviewProject extends React.Component {
                 if (blockType == "body" || blockType == "html") {
                     cssString += "width: 100%; height: 100%;"
                 }
-                for (var i = 0; i < css.length; i ++) {
+                for (var i = 0; i < css.length; i++) {
                     cssString += (css[i].attribute + ": " + css[i].value + "; ");
                 }
                 cssString += '"';
@@ -56,7 +56,7 @@ export default class PreviewProject extends React.Component {
                     cssString += " style=\"width: 100%; height: 100%;\"";
                 }
             }
-            
+
             var startTag = "";
             var endTag = "";
 
@@ -106,7 +106,7 @@ export default class PreviewProject extends React.Component {
                                 .then((response) => {
 
                                     if (response.ok) {
-                                        
+
                                         let json = response.json().then((blockInfo) => {
 
                                             //Generate a string of this block
@@ -118,10 +118,10 @@ export default class PreviewProject extends React.Component {
                                             //Does not have children and is not a text content block
                                             let counter = 0;
                                             if (blockInfo.name != "text-content" && blockInfo.name != "title" && children != null && children.length > 0) {
-                                                for (let i = 0; i < children.length; i ++) {
+                                                for (let i = 0; i < children.length; i++) {
                                                     this.blockToHtml(children[i], false).then((result) => {
                                                         childTags[i] = result;
-                                                        counter ++;
+                                                        counter++;
                                                         //We have reached the end
                                                         if (counter == children.length) {
                                                             //Combine strings
@@ -141,7 +141,16 @@ export default class PreviewProject extends React.Component {
                                                     resolve("");
                                                 }
                                                 //Resolve with string
-                                                resolve(children[0]);
+                                                // Sanitize
+                                                let sanitizeHtml = require('sanitize-html');
+                                                
+                                                let sanitizedTextContent = sanitizeHtml(children[0], {
+                                                    allowedTags: ['b', 'i', 'em', 'strong'],//'a'
+                                                    allowedAttributes: {
+                                                        //'a': ['href']
+                                                    }
+                                                });
+                                                resolve(sanitizedTextContent);
                                             }
                                             else {
                                                 resolve(blockTags[0] + blockTags[1]);
@@ -161,37 +170,37 @@ export default class PreviewProject extends React.Component {
                 .catch(err => {
                     reject(err);
                 });
-            });
-        }
+        });
+    }
 
 
     uploadScreenshot() {
         var that = this;
-        html2canvas(this.refs.container, {width: 540, height: 360}).then((canvas) => {
+        html2canvas(this.refs.container, { width: 540, height: 360 }).then((canvas) => {
             var data = canvas.toDataURL('image/jpeg', 0.9);
             var src = encodeURI(data);
             var auth = localStorage.getItem('Authorization');
             fetch('https://api.webwizards.me/v1/projects?id=' + this.props.projectObject.id, {
-            method: 'PATCH',
-            headers: {
-                'Authorization': auth,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                'img': src
+                method: 'PATCH',
+                headers: {
+                    'Authorization': auth,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    'img': src
+                })
             })
-        })
-            .then((response) => {
+                .then((response) => {
 
-                if (response.ok) {
-                   console.log("screenshot saved");
-                } else {
-                    console.log(response.text());
-                }
-            })
-            .catch(err => {
-                console.log('caught it!', err);
-            });
+                    if (response.ok) {
+                        console.log("screenshot saved");
+                    } else {
+                        console.log(response.text());
+                    }
+                })
+                .catch(err => {
+                    console.log('caught it!', err);
+                });
         });
     }
 
