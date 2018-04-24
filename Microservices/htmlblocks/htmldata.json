@@ -142,7 +142,7 @@
 	{
 		"id": 16,
 		"name": "ol",
-		"translation": "unordered list",
+		"translation": "ordered list",
 		"description": "A list of things with a number for each thing",
 		"type": "wrapper",
 		"css_groups": [],
