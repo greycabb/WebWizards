@@ -171,6 +171,9 @@ export default class CSSModal extends React.Component {
             }
         }
 
+        console.log(attribute);
+        console.log(value);
+
         if (!exists) {
             curr.push({attribute: attribute, value: value});
         }
@@ -270,7 +273,7 @@ class CSSInputBox extends React.Component {
     constructor(props) {
         super(props);
 
-        var currentVal = "";
+        var currentVal = " ";
 
         if (!this.props.currentVal) {
             currentVal = this.props.object.default;
@@ -285,22 +288,25 @@ class CSSInputBox extends React.Component {
 
         console.log(this.props.object);
 
-        if (this.props.object.extra_options && 
-            (this.props.object.extra_options.pixels )) {
+        if (this.props.object.extra_options || this.props.name == "background-image") {
             //Need to parse value and determine unit type
-            if (currentVal.includes("px")) {
-                numValue = currentVal.substring(0, currentVal.length - 2);
+            if (this.props.object.units == 'px' || currentVal.includes("px")) {
+                if (currentVal.includes("px")) {
+                    numValue = currentVal.substring(0, currentVal.length - 2);
+                }
+                else {
+                    numValue = currentVal;
+                }
                 chosenUnit = "pixels";
             }
             if (currentVal.includes("%")) {
                 numValue = currentVal.substring(0, currentVal.length - 1);
                 chosenUnit = "percentage";
             }
-        }
-
-        if (currentVal.includes("url")) {
-            numValue = currentVal.substring(4, currentVal.length - 2);
-            console.log(numValue);
+            if (currentVal.includes("url")) {
+                numValue = currentVal.substring(4, currentVal.length - 2);
+                console.log(numValue);
+            }
         }
 
         this.state = {
@@ -347,6 +353,7 @@ class CSSInputBox extends React.Component {
         if (event.target.value == "percentage") {
             stringVal = "100%";
         }
+        this.props.handleChange(this.props.name, stringVal);
         this.setState({
             value: stringVal,
             chosenUnit: event.target.value
@@ -356,7 +363,9 @@ class CSSInputBox extends React.Component {
     multiValHandler(event) {
         var stringVal = event.target.value;
         if (this.state.chosenUnit == "pixels") {
+            console.log(stringVal);
             stringVal += "px";
+            console.log(stringVal);
         }
         if (this.state.chosenUnit == "percentage") {
             stringVal += "%";
@@ -394,7 +403,7 @@ class CSSInputBox extends React.Component {
                     }
                     {this.props.object.units == 'EO_choices' && this.props.object.extra_options.range &&
                         <span className="css-input-selections">
-                            {this.state.value} pixels
+                            {this.state.numValue} pixels
                             <input type="range" min={this.props.object.extra_options.range[0]} max={this.props.object.extra_options.range[1]} value={this.state.value}  onChange={this.valHandler} className="slider" id="myRange"/>
                         </span>
                     }
@@ -414,7 +423,7 @@ class CSSInputBox extends React.Component {
                     }
                     {this.props.object.units == 'px' &&
                         <span className="css-input-selections">
-                            {this.state.value} pixels
+                            {this.state.numValue} pixels
                             <input type="range" min={this.props.object.extra_options.range[0]} max={this.props.object.extra_options.range[1]} value={this.state.numValue}  onChange={this.multiValHandler} className="slider" id="myRange"/>
                         </span>
                     }
