@@ -957,6 +957,7 @@ class EditPage extends React.Component {
                             location.blocktype = that.state.bricksById[result.blocktype].name;
                             location.blocktypeid = result.blocktype
                             location.css = result.css;
+                            location.attributes = result.attributes;
                             location.parentid = result.parentid;
                             location.index = result.index;
                             location.children = {}; // Filled out later from stack
