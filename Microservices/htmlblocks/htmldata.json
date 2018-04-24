@@ -156,6 +156,6 @@
 		"type": "wrapper",
 		"css_groups": ["font", "background", "border", "size"],
 		"unallowed_children": ["html", "head", "title", "body", "li"]
-	},
+	}
 
 ]

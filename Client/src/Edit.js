@@ -260,7 +260,7 @@ class EditPage extends React.Component {
 
                 if (response.ok) {
                     response.json().then(function (result) {
-                        //console.log(result);
+                        console.log(result);
 
                         let brickContainer = {};
 
