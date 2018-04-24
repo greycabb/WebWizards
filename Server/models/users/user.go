@@ -19,6 +19,8 @@ type User struct {
 	UserName   string        `json:"userName"`
 	FirstName  string        `json:"firstName"`
 	LastName   string        `json:"lastName"`
+	Avatar     string        `json:"avatar"`
+	Points     int           `json:"points"`
 	DateJoined time.Time     `json:"dateJoined,string"`
 }
 
@@ -42,6 +44,8 @@ type NewUser struct {
 type Updates struct {
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
+	Avatar    string `json:"avatar"`
+	Points    int    `json:"points"`
 }
 
 //Validate validates the new user and returns an error if
@@ -77,6 +81,8 @@ func (nu *NewUser) ToUser() (*User, error) {
 	err := user.SetPassword(nu.Password)
 	//Setting User Structure's Time field
 	user.DateJoined = time.Now()
+	user.Points = 0
+	user.Avatar = "https://webwizards.me/Avatars/Lizard.png"
 	return user, err
 }
 
@@ -113,13 +119,17 @@ func (u *User) Authenticate(password string) error {
 //ApplyUpdates applies the updates to the user. An error
 //is returned if the updates are invalid
 func (u *User) ApplyUpdates(updates *Updates) error {
-	if len(updates.FirstName) == 0 {
-		return ErrFirstNameLen
+	if len(updates.FirstName) > 0 {
+		u.FirstName = updates.FirstName
 	}
-	if len(updates.LastName) == 0 {
-		return ErrLastNameLen
+	if len(updates.LastName) > 0 {
+		u.LastName = updates.LastName
 	}
-	u.FirstName = updates.FirstName
-	u.LastName = updates.LastName
+	if len(updates.Avatar) > 0 {
+		u.Avatar = updates.Avatar
+	}
+	if updates.Points > -1 {
+		u.Points = updates.Points
+	}
 	return nil
 }
