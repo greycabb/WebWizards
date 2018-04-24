@@ -12,12 +12,14 @@ import (
 
 //HTMLBlock defines structure of an HTML element block
 type HTMLBlock struct {
-	ID          int      `json:"id"`
-	Name        string   `json:"name"`
-	Translation string   `json:"translation"`
-	Description string   `json:"description"`
-	Type        string   `json:"type"`
-	CSSGroups   []string `json:"css_groups"`
+	ID                int      `json:"id"`
+	Name              string   `json:"name"`
+	Translation       string   `json:"translation"`
+	Description       string   `json:"description"`
+	Type              string   `json:"type"`
+	CSSGroups         []string `json:"css_groups"`
+	UnallowedChildren []string `json:"unallowed_children"`
+	Attributes        []string `json:"attributes"`
 }
 
 //CSSGroup defines a group of CSS attributes

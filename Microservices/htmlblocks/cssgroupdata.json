@@ -7,7 +7,7 @@
     {
         "name": "background",
         "description": "These styles change the background styles of an element",
-        "attributes": ["background-color", "background-image", "background-repeat", "background-position", "background-attachment"]
+        "attributes": ["background-color", "background-image", "background-repeat", "background-attachment"]
     },
     {
         "name": "border",

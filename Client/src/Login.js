@@ -5,29 +5,56 @@ import Signup from './Signup';
 import OutsideAlerter from './OutsideAlerter';
 import WelcomeBanner from './WelcomeBanner';
 import FeaturedProjects from './FeaturedProjects';
+import img from './img/ProfilePictures/Cow.png';
 
 export default class LoginPage extends React.Component {
     constructor(props) {
         super(props);
 
+        var mobileView = false;
+
+        if (window.innerWidth < 801) {
+            console.log(window.innerWidth);
+            mobileView = true;
+        }
+
         this.state = {
             'username': undefined,
             'password': undefined,
-            'error': undefined
+            'error': undefined,
+            'mobileView': mobileView
         };
+
+        localStorage.clear();
 
         let auth = localStorage.getItem('Authorization');
 
-        if (auth) {
-            hashHistory.push('/main');
-        }
+        fetch('https://api.webwizards.me/v1/users/me', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': auth
+            }
+        })
+            .then(function (response) {
+
+                if (response.ok) {
+                    hashHistory.push('/main');
+                } else {
+                    response.text().then(text => {
+                       console.log("signed out: " + text);
+                    });
+
+                }
+            })
+            .catch(err => {
+                console.log('caught it!', err);
+            })
 
         //function binding
         this.handleChange = this.handleChange.bind(this);
         this.handleLogin = this.handleLogin.bind(this);
         this.handleSignup = this.handleSignup.bind(this);
-
-        localStorage.clear();
     }
 
     componentDidMount() {
@@ -46,13 +73,15 @@ export default class LoginPage extends React.Component {
 
     handleLogin() {
         this.setState({
-            loginClicked: !this.state.loginClicked
+            loginClicked: !this.state.loginClicked,
+            error: ''
         });
     }
 
     handleSignup() {
         this.setState({
-            signupClicked: !this.state.signupClicked
+            signupClicked: !this.state.signupClicked,
+            error: ''
         });
     }
 
@@ -82,16 +111,29 @@ export default class LoginPage extends React.Component {
 
                 if (response.ok) {
                     console.log('Success');
-                    let auth = response.headers.get('Authorization');
-                    let userdata = JSON.stringify({
-                        'username': that.state.username
+
+                    response.json().then(function (result) {
+                        console.log(result);
+
+                        let userdata = JSON.stringify({
+                            'username': result.userName,
+                            'firstName': result.firstName,
+                            'lastName': result.lastName,
+                            'id': result.id,
+                            'email': result.email
+                        });
+
+                        let auth = response.headers.get('Authorization');
+                    
+
+                        // Local storage Data setting
+                        localStorage.setItem('Authorization', auth);
+                        localStorage.setItem('USERDATA', userdata);
+                        //
+                        hashHistory.push('/main');
                     });
 
-                    // Local storage Data setting
-                    localStorage.setItem('Authorization', auth);
-                    localStorage.setItem('USERDATA', userdata);
-                    //
-                    hashHistory.push('/main');
+                   
                 } else {
                     response.text().then(text => {
                         that.setState({
@@ -162,41 +204,51 @@ export default class LoginPage extends React.Component {
         var signInEnabled = (usernameErrors.isValid && passwordErrors.isValid);
 
         return (
-            <div className="login-page">
-                <Nav login={true} handleLogin={this.handleLogin} handleSignup={this.handleSignup}/>
-                {this.state.loginClicked &&
-                    <OutsideAlerter handler={this.handleLogin}>
-                    <div className="arrow_box welcomebox">
-                        <form>
-                            <div>
-                                <ValidatedInput field="username" type="username" maxLength="15" label="Username" tabIndex={1} changeCallback={this.handleChange} errors={usernameErrors} />
-                            </div>
-                            <div>
-                                <ValidatedInput field="password" type="password" maxLength="30" label="Password" tabIndex={2} changeCallback={this.handleChange} errors={passwordErrors} />
-                            </div>
-                            <div className="form-group">
-                                <br />
-                                <button className="btn yellow-button" disabled={!signInEnabled} onClick={(e) => this.signIn(e)}>Login</button>
-                            </div>
-                            <div id="postError" className="help-block error">{this.state.error}</div>
+            <div>
+                {!this.state.mobileView &&
+                    <div className="login-page">
+                        <Nav login={true} handleLogin={this.handleLogin} handleSignup={this.handleSignup}/>
+                        {this.state.loginClicked &&
+                            <OutsideAlerter handler={this.handleLogin}>
+                            <div className="arrow_box welcomebox">
+                                <form>
+                                    <div>
+                                        <ValidatedInput field="username" type="username" maxLength="15" label="Username" tabIndex={1} changeCallback={this.handleChange} errors={usernameErrors} />
+                                    </div>
+                                    <div>
+                                        <ValidatedInput field="password" type="password" maxLength="30" label="Password" tabIndex={2} changeCallback={this.handleChange} errors={passwordErrors} />
+                                    </div>
+                                    <div className="form-group login-group">
+                                        <br />
+                                        <button className="btn yellow-button" disabled={!signInEnabled} onClick={(e) => this.signIn(e)}>Login</button>
+                                        <div id="postError" className="help-block error">{this.state.error}</div>
+                                    </div>
 
-                        </form>
-                        {/*<div className="box-link"><Link to="/signup">Don't have an account? Sign up!</Link></div>
-                        <div className="black-link">Forgot Username or Password</div> */}
-                    </div>
-                    </ OutsideAlerter>
-                }
-                {this.state.signupClicked &&
-                    <div className="modal-container">
-                        <div className="modal-background">
-                            <OutsideAlerter handler={this.handleSignup}>
-                                <Signup />
-                            </ OutsideAlerter>
+                                </form>
+                                {/*<div className="box-link"><Link to="/signup">Don't have an account? Sign up!</Link></div>
+                                <div className="black-link">Forgot Username or Password</div> */}
                         </div>
+                        </ OutsideAlerter>
+                    }
+                    {this.state.signupClicked &&
+                        <div className="modal-container">
+                            <div className="modal-background">
+                                <OutsideAlerter handler={this.handleSignup}>
+                                    <Signup />
+                                </ OutsideAlerter>
+                            </div>
+                        </div>
+                    }
+                    <WelcomeBanner />
+                    <FeaturedProjects />
+                </div>
+                }
+                {this.state.mobileView &&
+                    <div id="mobile-view">
+                        <img src={img} width="400px"/><br />
+                        Oops! Web Wizards only works on a computer!
                     </div>
                 }
-                <WelcomeBanner />
-                <FeaturedProjects />
             </div>
         );
     }

@@ -1,14 +1,15 @@
 import React from 'react';
-import { Link, hashHistory } from 'react-router';
+import { hashHistory } from 'react-router';
 import './CreateModal.css';
 import OutsideAlerter from './OutsideAlerter';
 
-export default class CreateBanner extends React.Component {
+export default class CreateModal extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             shared: false,
-            name: ''
+            name: '',
+            error: false
         }
         this.handleName = this.handleName.bind(this);
         this.handleCheck = this.handleCheck.bind(this);
@@ -28,13 +29,26 @@ export default class CreateBanner extends React.Component {
     }
 
     create() {
-        var privacy = 'y';
+        let privacy = 'y';
         if (this.state.shared) {
             privacy = 'n';
         }
+
+        if (this.state.name.trim() === '') {
+            this.setState({
+                error: 'Please enter a name for your project'
+            });
+            return;
+        } else {
+            this.setState({
+                error: false
+            });
+        }
+
         fetch('https://api.webwizards.me/v1/projects', {
             method: 'POST',
             headers: {
+                'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 'Authorization': localStorage.getItem('Authorization')
             },
@@ -46,9 +60,12 @@ export default class CreateBanner extends React.Component {
             .then(function (response) {
 
                 if (response.ok) {
-                    console.log(response.json());
+                    response.json().then(function (result) {
+                        console.log(result);
+                        hashHistory.push('/edit?project=' + result.id); //redirect to whatever new path it is with query parameter
+                    });
 
-                    //hashHistory.push('/main'); //redirect to whatever new path it is
+
                 } else {
                     response.text().then(text => {
                         console.log(text);
@@ -75,7 +92,7 @@ export default class CreateBanner extends React.Component {
                             </div>
                             <div className="share-box">
                                 <input type="checkbox" id="share-checkbox" className="css-checkbox" name="share-proj" value="share" onClick={this.handleCheck}/>
-                                <label for="share-checkbox" className="css-label">Share with others</label>
+                                <label htmlFor="share-checkbox" className="css-label">Share with others</label>
                             </div>
                             <center>
                                 <button className="btn yellow-button" onClick={(e) => this.props.toggle(e)}>Cancel</button>
@@ -84,7 +101,7 @@ export default class CreateBanner extends React.Component {
                         </div>
                     </OutsideAlerter>
                 </div>
-                
+
             </div>
         );
     }

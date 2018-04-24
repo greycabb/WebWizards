@@ -1,0 +1,98 @@
+.css-input {
+    vertical-align: center;
+    margin: 0;
+    display: table;
+    width: 300px;
+    height: 70px;
+    border: 3px solid #F3F3F3;
+    background-color: #ececec;
+    padding: 5px;
+}
+
+.css-modal-popup {
+    height: auto !important;
+    width: 350px !important;
+    background-color: #F3F3F3 !important; 
+    color: black !important;
+}
+
+.css-modal-button {
+    font-size: 20px !important;
+    width: 130px;
+    height: 60px;
+    margin: 10px 10px 0px 0px;
+    padding: 0px;
+    color: white;
+    background-color: #E0A738;
+}
+
+.css-modal-top-bar {
+    display: inline;
+}
+
+#css-modal-back-button {
+    cursor: pointer;
+    padding-left: 20px;
+    text-align: center;
+    width: min-content;
+    font-size: 30px !important;
+    display: inline-block !important;
+}
+
+.css-modal-category-header {
+    text-align: center;
+    display: inline-block;
+    width: 240px;
+}
+
+.modal-buttons-container {
+    text-align: center;
+}
+
+.css-input-title {
+    font-size: 20px;
+    margin-right: 10px;
+}
+
+.css-select {
+    color: black;
+    margin-left: 10px;
+}
+
+.css-input-selections {
+    float: right;
+}
+
+.slidecontainer {
+    width: 100%; /* Width of the outside container */
+}
+
+.slider {
+    margin-top: 7px;
+    -webkit-appearance: none;
+    width: 100%;
+    height: 15px;
+    border-radius: 5px;   
+    background: #d3d3d3;
+    outline: none;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%; 
+    background: #30B04C;
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #30B04C;
+    cursor: pointer;
+}

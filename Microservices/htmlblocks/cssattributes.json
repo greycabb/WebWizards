@@ -17,10 +17,10 @@
 	"font-size": {
 		"translation": "Text size",
 		"description": "Changes the size of the text",
-		"units": "pt",
-		"default": "12pt",
+		"units": "px",
+		"default": "12px",
 		"extra_options": {
-			"range": ["1","100"]
+			"range": [1, 100]
 		}
 	},
 	"text-align": {
@@ -56,7 +56,7 @@
 	"background-position": {
 		"translation": "Background image position",
 		"description": "Edit where a background image shows up",
-		"units": "EO_choices",
+		"units": "EO_many_choices",
 		"default": "top left",
 		"extra_options": {
 			"horizontal": ["left", "center", "top"],
@@ -84,10 +84,10 @@
 	"border-width": {
 		"translation": "Border Width",
 		"description": "Change border width",
-		"units": "EO_choices",
-		"default": "0",
+		"units": "px",
+		"default": "0px",
 		"extra_options": {
-			"range": ["0", "20"]
+			"range": [0, 20]
 		}
 	},
 	"border-color": {
@@ -99,23 +99,23 @@
 	"width": {
 		"translation": "Width",
 		"description": "Change width of element",
-		"units": "EO_choices",
+		"units": "EO_many_choices",
 		"default": "auto",
 		"extra_options": {
 			"choices": ["auto", "pixels", "percentage"],
-			"pixels": ["0", "2000"],
-			"percentage": ["0", "100"]
+			"pixels": [0, 2000],
+			"percentage": [0, 100]
 		}
 	},
 	"height": {
 		"translation": "Height",
 		"description": "Change height of element",
-		"units": "EO_choices",
+		"units": "EO_many_choices",
 		"default": "auto",
 		"extra_options": {
 			"choices": ["auto", "pixels", "percentage"],
-			"pixels": ["0", "2000"],
-			"percentage": ["0", "100"]
+			"pixels": [0, 2000],
+			"percentage": [0, 100]
 		}
 	}
 }

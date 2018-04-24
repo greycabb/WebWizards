@@ -33,24 +33,15 @@ body {
   padding: 20px;
   color: white;
   width: 350px;
-  height: 225px;
+  height: 230px;
   margin: 0;
   position: absolute;
   top: 130px;
   right: 58px;
 }
 
-.welcomebox {
-  background-color: #196AB5;
-  border-radius: 5%;
-  padding: 20px;
-  color: white;
-  width: 350px;
-  height: 225px;
-  margin: 0;
-  position: absolute;
-  top: 130px;
-  right: 58px;
+.login-group {
+  display: inline-block;
 }
 
 .signupbox {
@@ -92,7 +83,7 @@ h1 {
   font-size: 20px;
   background-color: #F07E2B;
   border-radius: 15%;
-  margin: 0px 20px 0px 20px;
+  margin: 5px;
   padding: 10px 20px 10px 20px;
   color: white;
   border: 0;
@@ -108,11 +99,22 @@ h1 {
   border: 0;
   outline: 0 !important;
 }
+.red-button {
+  font-size: 20px;
+  background-color: #ED3B3B;
+  border-radius: 15%;
+  margin: 5px 10px;
+  padding: 10px 20px 10px 20px;
+  color: white;
+  border: 0;
+  outline: 0 !important;
+}
 input {
   color: black;
 }
 
 .error {
+  display: inline-block;
   font-size: 16pt;
   color: #E0A738;
 }
@@ -189,12 +191,15 @@ body > div > .login-page {
 
 .projects-list {
   background-color: rgb(241, 240, 240);
-  height: 170px;
+  height: 200px;
   border-radius: 10px;
   border: 1px solid rgb(182, 182, 182);
   padding-top: 10px;
   padding-left: 30px;
   padding-right: 30px;
+
+  overflow: auto;
+    white-space: nowrap;
 }
 
 .project-in-list {
@@ -203,6 +208,10 @@ body > div > .login-page {
   
   display: inline-block;
   margin-right: 40px;
+  cursor: pointer;
+}
+.project-in-list:hover {
+  text-decoration: underline;
 }
 
 .project-square {
@@ -214,4 +223,177 @@ body > div > .login-page {
 .project-title {
   color:#F07E2B;
   text-align: center;
+}
+
+.half-width {
+  width: 46%;
+  height: min-content;
+  margin-left: 2%;
+  margin-right: 2%;
+  float: left;
+}
+
+.draggable-space {
+  max-height: calc(100vh - 140px);
+  background-color: #F4f4f4; 
+  overflow: scroll;
+}
+
+html, body{
+  height:100%;
+}
+
+/* The boxes on left side, span, div, etc. */
+.brick {
+  padding: 0px 12px 0px 12px;
+  border: 1px solid rgba(0,0,0,0.2);
+  color: white;
+  font-size: 16pt;
+  background-color: grey;
+  display: inline-block;
+  margin: 8px;
+  cursor: pointer;
+  border-radius: 15px;
+}
+
+.brick:hover {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.primary-brick {
+  background-color: #196AB5;
+}
+
+.secondary-brick {
+  background-color: #30B04C;
+}
+
+.third-brick {
+  background-color: #B44CD9;
+}
+
+
+/* bootstrap's dark red looks bad on our blue theme, hard to read */
+.text-danger {
+  color: red;
+}
+
+
+
+/*Change this to some other class*/
+ul {
+  list-style-type: none;
+  margin-left: -10px;
+  font-size: 14pt;
+  cursor: pointer;
+  width: min-content;
+}
+
+li {
+  font-size: 16px;
+  color: white;
+  -webkit-box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.75);
+  box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.75);
+  padding: 10px 0px 10px 10px;
+  border-radius: 10px;
+  width: 200px;
+}
+
+.editor-project-style {
+  display: inline;
+}
+
+.editor-text-content {
+  border-radius: 5px;
+} 
+
+#mobile-view {
+  text-align: center;
+  font-size: 33px;
+  font-family: 'Roboto Condensed', sans-serif;
+  color: #196AB5;
+  margin: 0px;
+  margin-top: 30px;
+  overflow: hidden;
+}
+
+
+/*For testing layout builder*/
+.red {
+    background-color: darkred;
+    opacity: 0.8;
+    margin-left: 30px;
+}
+.purp {
+  background-color: purple;
+  opacity: 0.8;
+  margin-left: 30px;
+}
+.yel {
+  color: yellow;
+}
+.pressed-brick {
+  color: orange;
+  outline: 3px solid orange;
+}
+
+.tag-block-span {
+  width: 190px;
+}
+
+
+.short-text-box {
+  width: 50px;
+  color: black;
+  margin: 2px;
+  text-align: center;
+}
+.short-text-box:hover {
+  outline: 3px solid yellow;
+}
+
+.editor-text-expanded {
+  overflow-y: scroll;
+  height: 100px;
+}
+
+.hidden {
+  display: none;
+}
+textarea {
+  color: black;
+}
+.edit-text-button {
+  border-radius: 5px;
+  width: 50px;
+  padding: 3px;
+  text-align: center;
+  margin: auto;
+  margin-bottom: 10px;
+}
+
+.drop-slot {
+  min-height: 10px;
+  border-radius: 10px;
+}
+
+.drop-slot-hover {
+  margin-left: 28px;
+  min-height: 30px;
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.1);;
+  -webkit-box-shadow: 0px 0px 7px 3px rgba(255,255,255,1);
+  -moz-box-shadow: 0px 0px 7px 3px rgba(255,255,255,1);
+  box-shadow: 0px 0px 7px 3px rgba(255,255,255,1);
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.drop-slot-space {
+  line-height: 5px;
+}
+
+.has-error .help-block, .has-error .control-label, .has-error .radio, .has-error .checkbox, .has-error .radio-inline, .has-error .checkbox-inline, .has-error.radio label, .has-error.checkbox label, .has-error.radio-inline label, .has-error.checkbox-inline label {
+  color: #E0A738;
 }

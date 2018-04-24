@@ -21,6 +21,7 @@ type Project struct {
 	ID      bson.ObjectId `json:"id" bson:"_id"`
 	UserID  bson.ObjectId `json:"userid"`
 	Name    string        `json:"name"`
+	Img string `json:"img"`
 	Content []string      `json:"content"`
 	Created time.Time     `json:"created,string"`
 	Edited  time.Time     `json:"edited,string"`
@@ -30,6 +31,7 @@ type Project struct {
 //ProjectUpdates represents possible project updates
 type ProjectUpdates struct {
 	Name    string    `json:"name"`
+	Img string `json:"img"`
 	Content []string  `json:"content"`
 	Edited  time.Time `json:"edited,string"`
 	Private string    `json:"private"`
@@ -50,16 +52,17 @@ func (np *NewProject) ToProject() *Project {
 //ApplyProjectUpdates applies the updates to the project
 func (p *Project) ApplyProjectUpdates(updates *ProjectUpdates) (*Project, error) {
 	//Need to add error handling
-	if len(p.Name) > 2 {
+	if len(updates.Name) > 2 {
 		p.Name = updates.Name
-	} else {
-		return nil, ErrNameLength
 	}
 	if len(updates.Content) > 0 {
 		p.Content = updates.Content
 	}
 	if len(updates.Private) > 0 {
 		p.Private = updates.Private
+	}
+	if len(updates.Img) > 0 {
+		p.Img = updates.Img
 	}
 	p.Edited = time.Now()
 	return p, nil

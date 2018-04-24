@@ -12,17 +12,20 @@ type NewBlock struct {
 	BlockType int           `json:"blocktype"`
 	ParentID  string        `json:"parentid"`
 	Index     int           `json:"index"`
+	ProjectID string        `json:"projectid"`
 }
 
 //Block represents one html block in the database
 type Block struct {
-	ID        bson.ObjectId `json:"id" bson:"_id"`
-	UserID    bson.ObjectId `json:"userid"`
-	BlockType int           `json:"blocktype"`
-	CSS       []*CSS        `json:"css"`
-	ParentID  string        `json:"parentid"`
-	Index     int           `json:"index"`
-	Children  []string      `json:"children"`
+	ID         bson.ObjectId `json:"id" bson:"_id"`
+	UserID     bson.ObjectId `json:"userid"`
+	BlockType  int           `json:"blocktype"`
+	CSS        []*CSS        `json:"css"`
+	ParentID   string        `json:"parentid"`
+	Index      int           `json:"index"`
+	Children   []string      `json:"children"`
+	ProjectID  string        `json:"projectid"`
+	Attributes []string      `json:"attributes"`
 }
 
 //CSS represents one css configuration
@@ -33,10 +36,11 @@ type CSS struct {
 
 //BlockUpdates represents possible updates to a block
 type BlockUpdates struct {
-	CSS      []*CSS   `json:"css"`
-	ParentID string   `json:"parentid"`
-	Index    int      `json:"index"`
-	Children []string `json:"children"`
+	CSS        []*CSS   `json:"css"`
+	ParentID   string   `json:"parentid"`
+	Index      int      `json:"index"`
+	Children   []string `json:"children"`
+	Attributes []string `json:"attributes"`
 }
 
 //ToBlock converts the NewBlock to a Block
@@ -49,6 +53,8 @@ func (np *NewBlock) ToBlock() *Block {
 	block.ParentID = np.ParentID
 	block.Index = np.Index
 	block.Children = []string{}
+	block.ProjectID = np.ProjectID
+	block.Attributes = []string{}
 	return block
 }
 
@@ -59,6 +65,9 @@ func (b *Block) UpdateBlock(updates *BlockUpdates) *Block {
 	}
 	if len(updates.ParentID) > 0 {
 		b.ParentID = updates.ParentID
+	}
+	if updates.Attributes != nil {
+		b.Attributes = updates.Attributes
 	}
 	if updates.Children != nil {
 		b.Children = updates.Children

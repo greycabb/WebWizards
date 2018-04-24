@@ -15,7 +15,18 @@
             "https://webwizards.me/img/Dogs/puppy3.jpeg",
             "https://webwizards.me/img/Frogs/frog1.jpg",
             "https://webwizards.me/img/Frogs/frog2.jpeg",
-            "https://webwizards.me/img/Frogs/frog3.jpeg"
+            "https://webwizards.me/img/Frogs/frog3.jpeg",
+            "https://webwizards.me/img/SeaCreatures/SeaCreatures1.jpeg",
+            "https://webwizards.me/img/SeaCreatures/SeaCreatures2.jpeg",
+            "https://webwizards.me/img/SeaCreatures/SeaCreatures3.jpeg",
+            "https://webwizards.me/img/SeaCreatures/SeaCreatures4.jpeg",
+            "https://webwizards.me/img/WildAnimals/WildAnimals1.jpeg",
+            "https://webwizards.me/img/WildAnimals/WildAnimals2.jpeg",
+            "https://webwizards.me/img/WildAnimals/WildAnimals3.jpeg",
+            "https://webwizards.me/img/WildAnimals/WildAnimals4.jpeg",
+            "https://webwizards.me/img/WildAnimals/WildAnimals5.jpeg",
+            "https://webwizards.me/img/WildAnimals/WildAnimals6.jpeg"
+
         ]
     },
 
@@ -41,7 +52,15 @@
            "https://webwizards.me/img/Earth/earth3.jpeg",
            "https://webwizards.me/img/Ocean/ocean1.jpg",
            "https://webwizards.me/img/Ocean/ocean2.jpeg",
-           "https://webwizards.me/img/Ocean/ocean3.jpeg"
+           "https://webwizards.me/img/Ocean/ocean3.jpeg",
+           "https://webwizards.me/img/Mountains/Mountains1.jpg",
+           "https://webwizards.me/img/Mountains/Mountains2.jpeg",
+           "https://webwizards.me/img/Mountains/Mountains3.jpeg",
+           "https://webwizards.me/img/Mountains/Mountains4.jpg",
+           "https://webwizards.me/img/Moon/Moon1.jpeg",
+           "https://webwizards.me/img/Moon/Moon2.jpeg",
+           "https://webwizards.me/img/Moon/Moon3.jpeg",
+           "https://webwizards.me/img/Moon/Moon4.png"
         ]
     },
 
@@ -56,9 +75,37 @@
            "https://webwizards.me/img/Weather/weather1.jpeg",
            "https://webwizards.me/img/Weather/weather2.jpeg",
            "https://webwizards.me/img/Weather/weather3.jpeg",
+           "https://webwizards.me/img/Houses/Houses1.jpeg",
+           "https://webwizards.me/img/Houses/Houses2.jpeg",
+           "https://webwizards.me/img/Houses/Houses3.jpeg",
+           "https://webwizards.me/img/Plants/Plants1.jpeg",
+           "https://webwizards.me/img/Plants/Plants2.jpeg",
+           "https://webwizards.me/img/Plants/Plants3.jpeg",
+           "https://webwizards.me/img/Coding/Coding1.jpeg",
+           "https://webwizards.me/img/Coding/Coding2.png",
+           "https://webwizards.me/img/Coding/Coding3.jpeg",
+           "https://webwizards.me/img/Laptops/Laptops1.jpeg",
+           "https://webwizards.me/img/Laptops/Laptops2.jpeg",
+           "https://webwizards.me/img/Laptops/Laptops3.jpg",
+           "https://webwizards.me/img/Coffee/Coffee1.jpg",
+           "https://webwizards.me/img/Coffee/Coffee2.jpeg",
+           "https://webwizards.me/img/Coffee/Coffee3.jpeg",
+           "https://webwizards.me/img/Art/Art1.jpeg",
+           "https://webwizards.me/img/Art/Art2.jpeg",
+           "https://webwizards.me/img/Art/Art3.jpeg",
            "https://webwizards.me/img/Fruit/fruit1.jpeg",
            "https://webwizards.me/img/Fruit/fruit2.jpeg",
            "https://webwizards.me/img/Fruit/fruit3.jpeg"
+        ]
+    },
+
+    "Web Wizards": {
+        "images": [
+           "https://webwizards.me/img/Web_Wizards/Web_Wizards1.png",
+           "https://webwizards.me/img/Web_Wizards/Web_Wizards2.png",
+           "https://webwizards.me/img/Web_Wizards/Web_Wizards3.png",
+           "https://webwizards.me/img/Web_Wizards/Web_Wizards4.png",
+           "https://webwizards.me/img/Web_Wizards/Web_Wizards5.png"
         ]
     }
 }

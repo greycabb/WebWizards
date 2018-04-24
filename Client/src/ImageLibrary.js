@@ -1,5 +1,6 @@
 import React from 'react';
 import './ImageLibrary.css';
+import OutsideAlerter from './OutsideAlerter';
 
 export default class ImageLibrary extends React.Component {
     constructor(props) {
@@ -8,11 +9,16 @@ export default class ImageLibrary extends React.Component {
             object: {},
             categories: [],
             viewingCategory: false,
-            currentCategory: ''
+            currentCategory: '',
+            hidden: true,
+            image: this.props.currentImg
         }
-        this.componentWillMount = this.componentWillMount.bind(this);
         this.handle = this.handle.bind(this);
         this.goBack = this.goBack.bind(this);
+        this.clicked = this.clicked.bind(this);
+        this.closed = this.closed.bind(this);
+        this.handleImageChoice = this.handleImageChoice.bind(this);
+
     }
 
     componentWillMount() {
@@ -30,6 +36,10 @@ export default class ImageLibrary extends React.Component {
             })
     }
 
+    componentDidMount() {
+        this.refs.imageInput.scrollLeft = this.refs.imageInput.scrollWidth;
+    }
+
     handle(cat) {
         this.setState({
             viewingCategory: true,
@@ -45,7 +55,21 @@ export default class ImageLibrary extends React.Component {
     }
 
     handleImageChoice(url) {
-        console.log(url);
+        this.props.handleChange(url);
+        this.setState({
+            image: url
+        }, 
+        () => {
+            this.refs.imageInput.scrollLeft = this.refs.imageInput.scrollWidth;
+        });
+    }
+
+    clicked() {
+        this.setState({hidden: false});
+    }
+
+    closed() {
+        this.setState({hidden: true});
     }
 
     render() {
@@ -67,27 +91,35 @@ export default class ImageLibrary extends React.Component {
         }
 
         return (
-            <div id="image-library-container">
-                {!this.state.viewingCategory &&
-                    <div>
-                        <h2>Images</h2>
-                        <div className="library-buttons-container">
-                            {buttons}
+            <div>
+            <input type="text" name="image" ref="imageInput" className="image-input" readOnly spellCheck="false" value={this.state.image} onClick={this.clicked}/>
+                {!this.state.hidden &&
+                    <OutsideAlerter handler={this.closed}>
+                        <div id="image-library-container">
+                            {!this.state.viewingCategory &&
+                                <div>
+                                    <h2>Images</h2>
+                                    <div className="library-buttons-container">
+                                        {buttons}
+                                    </div>
+                                </div>
+                            }
+                            {this.state.viewingCategory &&
+                                <div>
+                                    <div className="library-top-bar">
+                                        <div id="library-back-button" className="disable-select" onClick={this.goBack}>&#x276e;</div>
+                                        <h2 className="library-category-header">{this.state.currentCategory}</h2>
+                                    </div>
+                                    <div className="library-images-container">
+                                        {images}
+                                    </div>
+                                </div>
+                            }
                         </div>
-                    </div>
-                }
-                {this.state.viewingCategory &&
-                    <div>
-                        <div className="library-top-bar">
-                            <div id="library-back-button" className="disable-select" onClick={this.goBack}>&#x276e;</div>
-                            <h2 className="library-category-header">{this.state.currentCategory}</h2>
-                        </div>
-                        <div className="library-images-container">
-                            {images}
-                        </div>
-                    </div>
+                    </OutsideAlerter>
                 }
             </div>
+            
         );
     }
 }
