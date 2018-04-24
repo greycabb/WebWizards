@@ -25,7 +25,7 @@ type Block struct {
 	Index      int           `json:"index"`
 	Children   []string      `json:"children"`
 	ProjectID  string        `json:"projectid"`
-	Attributes string        `json:"attributes"`
+	Attributes []string      `json:"attributes"`
 }
 
 //CSS represents one css configuration
@@ -40,7 +40,7 @@ type BlockUpdates struct {
 	ParentID   string   `json:"parentid"`
 	Index      int      `json:"index"`
 	Children   []string `json:"children"`
-	Attributes string   `json:"attributes"`
+	Attributes []string `json:"attributes"`
 }
 
 //ToBlock converts the NewBlock to a Block
@@ -54,7 +54,7 @@ func (np *NewBlock) ToBlock() *Block {
 	block.Index = np.Index
 	block.Children = []string{}
 	block.ProjectID = np.ProjectID
-	block.Attributes = ""
+	block.Attributes = []string{}
 	return block
 }
 
@@ -66,7 +66,7 @@ func (b *Block) UpdateBlock(updates *BlockUpdates) *Block {
 	if len(updates.ParentID) > 0 {
 		b.ParentID = updates.ParentID
 	}
-	if (updates.Attributes) != (b.Attributes) && (len(updates.Attributes) > 0) {
+	if updates.Attributes != nil {
 		b.Attributes = updates.Attributes
 	}
 	if updates.Children != nil {

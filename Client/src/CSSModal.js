@@ -13,16 +13,19 @@ export default class CSSModal extends React.Component {
         this.state = {
             cssGroups: [],
             currAppliedCss: this.props.currBlock.css,
+            currAppliedAttributes: this.props.currBlock.attributes,
             viewingCategory: false,
             hidden: true,
             allCssGroupData: [],
-            buttons: []
+            buttons: [],
+            attributes: []
         };
 
         this.handle = this.handle.bind(this);
         this.goBack = this.goBack.bind(this);
         this.populateInputBoxes = this.populateInputBoxes.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
+        this.attributeHandler = this.attributeHandler.bind(this);
     }
 
     componentWillMount() {
@@ -36,6 +39,7 @@ export default class CSSModal extends React.Component {
                     response.json().then(function (result) {
                         var cssGroups = result.css_groups;
                         var allCssGroupData;
+                        var attributes = result.attributes;
                         if (cssGroups) {
                             fetch('https://api.webwizards.me/v1/cssgroups', {
                                 method: 'GET',
@@ -52,10 +56,35 @@ export default class CSSModal extends React.Component {
                                                 buttons.push(<CSSModalButton key={current} category={current} handle={that.handle}/>);
                                             }
 
+                                            var attributesBoxes = [];
+                                            if (attributes) {
+                                                // Add attribute input boxes here
+                                                for (var i = 0; i < attributes.length; i ++) {
+                                                    var current = attributes[i];
+                                                    // Check to see if this attribute currently exists
+                                                    var existing = "";
+                                                    for (var j = 0; j < that.state.currAppliedAttributes.length; j ++) {
+                                                        if (that.state.currAppliedAttributes[j].includes(current)) {
+                                                            existing = that.state.currAppliedAttributes[j];
+                                                            // only want value
+                                                            // "alt='a value'" ==> "a value"
+                                                            existing = existing.substring(current.length + 2, existing.length - 1);
+                                                            break;
+                                                        }
+                                                    }
+                                                    var useImagePicker = false;
+                                                    if (current == "src") {
+                                                        useImagePicker = true;
+                                                    }
+                                                    attributesBoxes.push(<AttributeInputBox useImagePicker={useImagePicker} key={current} attributeName={current} val={existing} handle={that.attributeHandler} />);
+                                                }
+                                            }
+
                                             that.setState({
                                                 buttons: buttons,
                                                 cssGroups: cssGroups,
-                                                allCssGroupData: result2
+                                                allCssGroupData: result2,
+                                                attributes: attributesBoxes
                                             });
                                         });
 
@@ -83,6 +112,67 @@ export default class CSSModal extends React.Component {
             })
             .catch(err => {
                 console.log('caught it!', err);
+            });
+    }
+
+    attributeHandler(name, value) {
+
+        var that = this;
+        
+        console.log(name);
+        console.log(value);
+
+        var found = false;
+
+        var currAttributes = that.state.currAppliedAttributes;
+
+        if (!currAttributes) {
+            currAttributes = [];
+        }
+
+        for (let j = 0; j < currAttributes.length; j ++) {
+            console.log(currAttributes[j]);
+            if (currAttributes[j].includes(name)) {
+                currAttributes[j] = name + "=\"" + value + "\"";
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            currAttributes.push(name + "=\"" + value + "\"");
+        }
+
+        //Patch to API
+        fetch('https://api.webwizards.me/v1/blocks?id=' + this.props.currBlock.id, {
+            method: 'PATCH',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('Authorization')
+            },
+            body: JSON.stringify({
+                'attributes': currAttributes,
+                'index': -1//this.props.currBlock.index
+            })
+        })
+            .then((response) => {
+
+                if (response.ok) {
+                    response.json().then((result) => {
+                        this.props.handleChange(result);
+                        this.setState({
+                            currAppliedAttributes: currAttributes
+                        });
+                    });
+                } else {
+                    response.text().then(text => {
+                        console.log(text);
+                    });
+
+                }
+            })
+            .catch(err => {
+                console.log('ERROR: ', err);
             });
     }
 
@@ -171,6 +261,9 @@ export default class CSSModal extends React.Component {
             }
         }
 
+        console.log(attribute);
+        console.log(value);
+
         if (!exists) {
             curr.push({attribute: attribute, value: value});
         }
@@ -221,6 +314,7 @@ export default class CSSModal extends React.Component {
                             {!this.state.viewingCategory &&
                                 <div className="modal-buttons-container">
                                     <h2>Editing &lt;{this.props.currBlock.blocktype}&gt;</h2>
+                                    {this.state.attributes}
                                     {this.state.buttons}
                                 </div>
                             }
@@ -237,6 +331,54 @@ export default class CSSModal extends React.Component {
                     </OutsideAlerter>
                 </div>
 
+            </div>
+        );
+    }
+}
+
+class AttributeInputBox extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            val: this.props.val
+        }
+        this.handle = this.handle.bind(this);
+        this.handleImg = this.handleImg.bind(this);
+    }
+
+    handleImg(img) {
+        this.props.handle(this.props.attributeName, img);
+        this.setState({
+            val: img
+        });
+    }
+
+    handle(e) {
+        this.props.handle(this.props.attributeName, e.target.value);
+        this.setState({
+            val: e.target.value
+        });
+    }
+
+    /*
+        <AttributeInputBox attributeName={} val={} handle={this.attributeHandler(name, value)} />
+    */
+
+    render() {
+
+        return (
+            <div className="css-input">
+                <span className="css-input-title">
+                    {this.props.attributeName}
+                </span>
+                <span className="css-input-selections">
+                    {this.props.useImagePicker &&
+                        <ImageLibrary currentImg={this.state.val} handleChange={this.handleImg} />
+                    }
+                    {!this.props.useImagePicker &&
+                        <input type="text" value={this.state.val} onChange={this.handle}/>
+                    }
+                </span>
             </div>
         );
     }
@@ -282,11 +424,18 @@ class CSSInputBox extends React.Component {
         // Sizing options
         var chosenUnit;
         var numValue;
-        if (this.props.object.extra_options && 
-            (this.props.object.extra_options.pixels || this.props.name == "background-image")) {
+
+        console.log(this.props.object);
+
+        if (this.props.object.extra_options || this.props.name == "background-image") {
             //Need to parse value and determine unit type
-            if (currentVal.includes("px")) {
-                numValue = currentVal.substring(0, currentVal.length - 2);
+            if (this.props.object.units == 'px' || currentVal.includes("px")) {
+                if (currentVal.includes("px")) {
+                    numValue = currentVal.substring(0, currentVal.length - 2);
+                }
+                else {
+                    numValue = currentVal;
+                }
                 chosenUnit = "pixels";
             }
             if (currentVal.includes("%")) {
@@ -295,6 +444,7 @@ class CSSInputBox extends React.Component {
             }
             if (currentVal.includes("url")) {
                 numValue = currentVal.substring(4, currentVal.length - 2);
+                console.log(numValue);
             }
         }
 
@@ -303,6 +453,9 @@ class CSSInputBox extends React.Component {
             numValue: numValue,
             chosenUnit: chosenUnit
         }
+
+        console.log(numValue);
+        console.log(currentVal);
 
         this.colorImgHandler = this.colorImgHandler.bind(this);
         this.valHandler = this.valHandler.bind(this);
@@ -339,6 +492,7 @@ class CSSInputBox extends React.Component {
         if (event.target.value == "percentage") {
             stringVal = "100%";
         }
+        this.props.handleChange(this.props.name, stringVal);
         this.setState({
             value: stringVal,
             chosenUnit: event.target.value
@@ -348,7 +502,9 @@ class CSSInputBox extends React.Component {
     multiValHandler(event) {
         var stringVal = event.target.value;
         if (this.state.chosenUnit == "pixels") {
+            console.log(stringVal);
             stringVal += "px";
+            console.log(stringVal);
         }
         if (this.state.chosenUnit == "percentage") {
             stringVal += "%";
@@ -386,7 +542,7 @@ class CSSInputBox extends React.Component {
                     }
                     {this.props.object.units == 'EO_choices' && this.props.object.extra_options.range &&
                         <span className="css-input-selections">
-                            {this.state.value} pixels
+                            {this.state.numValue} pixels
                             <input type="range" min={this.props.object.extra_options.range[0]} max={this.props.object.extra_options.range[1]} value={this.state.value}  onChange={this.valHandler} className="slider" id="myRange"/>
                         </span>
                     }
@@ -406,7 +562,7 @@ class CSSInputBox extends React.Component {
                     }
                     {this.props.object.units == 'px' &&
                         <span className="css-input-selections">
-                            {this.state.value} pixels
+                            {this.state.numValue} pixels
                             <input type="range" min={this.props.object.extra_options.range[0]} max={this.props.object.extra_options.range[1]} value={this.state.numValue}  onChange={this.multiValHandler} className="slider" id="myRange"/>
                         </span>
                     }

@@ -53,10 +53,14 @@
            "https://webwizards.me/img/Ocean/ocean1.jpg",
            "https://webwizards.me/img/Ocean/ocean2.jpeg",
            "https://webwizards.me/img/Ocean/ocean3.jpeg",
-           "https://webwizards.me/img/Mountains/Mountains1.jpg",
-           "https://webwizards.me/img/Mountains/Mountains2.jpeg",
-           "https://webwizards.me/img/Mountains/Mountains3.jpeg",
-           "https://webwizards.me/img/Mountains/Mountains4.jpg"
+           "https://webwizards.me/img/Mountians/Mountians1.jpg",
+           "https://webwizards.me/img/Mountians/Mountains2.jpeg",
+           "https://webwizards.me/img/Mountians/Mountians3.jpeg",
+           "https://webwizards.me/img/Mountians/Mountians4.jpeg",
+           "https://webwizards.me/img/Moon/Moon1.jpeg",
+           "https://webwizards.me/img/Moon/Moon2.jpeg",
+           "https://webwizards.me/img/Moon/Moon3.jpeg",
+           "https://webwizards.me/img/Moon/Moon4.jpeg"
         ]
     },
 
@@ -92,6 +96,16 @@
            "https://webwizards.me/img/Fruit/fruit1.jpeg",
            "https://webwizards.me/img/Fruit/fruit2.jpeg",
            "https://webwizards.me/img/Fruit/fruit3.jpeg"
+        ]
+    },
+
+    "Web Wizards": {
+        "images": [
+           "https://webwizards.me/img/Web_Wizards/Web_Wizards1.png",
+           "https://webwizards.me/img/Web_Wizards/Web_Wizards2.png",
+           "https://webwizards.me/img/Web_Wizards/Web_Wizards3.png",
+           "https://webwizards.me/img/Web_Wizards/Web_Wizards4.png",
+           "https://webwizards.me/img/Web_Wizards/Web_Wizards5.png"
         ]
     }
 }
