@@ -367,14 +367,18 @@ class AttributeInputBox extends React.Component {
     render() {
 
         return (
-            <div>
-                {this.props.attributeName}
-                {this.props.useImagePicker &&
-                    <ImageLibrary currentImg={this.state.val} handleChange={this.handleImg} />
-                }
-                {!this.props.useImagePicker &&
-                    <input type="text" value={this.state.val} onChange={this.handle}/>
-                }
+            <div className="css-input">
+                <span className="css-input-title">
+                    {this.props.attributeName}
+                </span>
+                <span className="css-input-selections">
+                    {this.props.useImagePicker &&
+                        <ImageLibrary currentImg={this.state.val} handleChange={this.handleImg} />
+                    }
+                    {!this.props.useImagePicker &&
+                        <input type="text" value={this.state.val} onChange={this.handle}/>
+                    }
+                </span>
             </div>
         );
     }

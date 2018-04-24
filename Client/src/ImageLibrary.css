@@ -66,5 +66,5 @@ img.library-preview:active {
 }
 
 .image-input {
-    width: 120px;
+    min-width: 120px;
 }
