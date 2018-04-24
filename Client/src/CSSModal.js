@@ -63,7 +63,7 @@ export default class CSSModal extends React.Component {
                                                     var current = attributes[i];
                                                     // Check to see if this attribute currently exists
                                                     var existing = "";
-                                                    for (var j = 0; j < that.state.currAppliedAttributes; j ++) {
+                                                    for (var j = 0; j < that.state.currAppliedAttributes.length; j ++) {
                                                         if (that.state.currAppliedAttributes[j].includes(current)) {
                                                             existing = that.state.currAppliedAttributes[j];
                                                             // only want value
@@ -130,7 +130,7 @@ export default class CSSModal extends React.Component {
             currAttributes = [];
         }
 
-        for (let j = 0; j < currAttributes; j ++) {
+        for (let j = 0; j < currAttributes.length; j ++) {
             console.log(currAttributes[j]);
             if (currAttributes[j].includes(name)) {
                 currAttributes[j] = name + "=\"" + value + "\"";
