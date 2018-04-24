@@ -38,7 +38,7 @@
         "name": "p",
 		"translation": "paragraph",
 		"description": "A 'p' block defines a paragraph",
-		"type": "wrapper",
+		"type": "textwrapper",
 		"css_groups": ["font", "background", "border", "size"],
 		"unallowed_children": ["html", "head", "title", "body", "li"],
 		"attributes": ["title"]
