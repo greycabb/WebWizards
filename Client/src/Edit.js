@@ -645,7 +645,7 @@ class EditPage extends React.Component {
 
             b = (
                 <ul>
-                    {(['head', 'html'].includes(current.blocktype)) &&
+                    {(['head', 'html', 'body', 'title'].includes(current.blocktype)) &&
                         <li className={blockclass}>
                             <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
                                 {startTag}
@@ -659,24 +659,7 @@ class EditPage extends React.Component {
                             </div>
                         </li>
                     }
-                    {(['body', 'title'].includes(current.blocktype)) &&
-                        <ExistingDropSlot handle={function (e) { that.moveBlock(current.id, (Object.keys(current.children)).length, e) }}>
-                            <DropSlot handle={function (e) { that.drop(current.id, (Object.keys(current.children)).length, e) }}>
-                                <li className={blockclass}>
-                                    <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
-                                        {startTag}
-                                        {/*current.id !== undefined &&
-                                                    <span className="yel">id: {current.id.substr(current.id.length - 3)}, index: {first} </span>
-                                                */}
-                                    </div>
-                                    {b}
-                                    <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
-                                        {endTag}
-                                    </div>
-                                </li>
-                            </DropSlot>
-                        </ExistingDropSlot>
-                    }
+                    
                     {!(['head', 'body', 'title', 'html'].includes(current.blocktype)) &&
                         <ExistingDropSlot handle={function (e) { that.moveBlock(current.id, (Object.keys(current.children)).length, e) }}>
                             {/* <DropSlot handle={function (e) { that.drop(current.id, (Object.keys(current.children)).length, e) }}> */}
