@@ -40,12 +40,8 @@
 		"description": "A 'p' block defines a paragraph",
 		"type": "wrapper",
 		"css_groups": ["font", "background", "border", "size"],
-<<<<<<< HEAD
-		"unallowed_children": ["html", "head", "title", "body", "li"]
-=======
-		"unallowed_children": ["html", "head", "title", "body"],
+		"unallowed_children": ["html", "head", "title", "body", "li"],
 		"attributes": ["title"]
->>>>>>> 1b452b01f53441388fbdd94a52d2eae8dc319491
     },
 	{
         "id": 5,
@@ -54,12 +50,8 @@
 		"description": "A 'div' is a section that is a block element. Block elements appear on a new row.",
 		"type": "wrapper",
 		"css_groups": ["font", "background", "border", "size"],
-<<<<<<< HEAD
-		"unallowed_children": ["html", "head", "title", "body", "li"]
-=======
-		"unallowed_children": ["html", "head", "title", "body"],
+		"unallowed_children": ["html", "head", "title", "body", "li"],
 		"attributes": ["title"]
->>>>>>> 1b452b01f53441388fbdd94a52d2eae8dc319491
 	},
 	{
         "id": 6,
@@ -76,12 +68,8 @@
 		"description": "Largest heading",
 		"type": "textwrapper",
 		"css_groups": ["font", "background", "border", "size"],
-<<<<<<< HEAD
-		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "img", "li", "ul", "ol"]
-=======
-		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "img"],
+		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "img", "li", "ul", "ol"],
 		"attributes": ["title"]
->>>>>>> 1b452b01f53441388fbdd94a52d2eae8dc319491
 	},
 	{
         "id": 8,
@@ -90,12 +78,8 @@
 		"description": "Second largest heading",
 		"type": "textwrapper",
 		"css_groups": ["font", "background", "border", "size"],
-<<<<<<< HEAD
-		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "img", "li", "ul", "ol"]
-=======
-		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "img"],
+		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "img", "li", "ul", "ol"],
 		"attributes": ["title"]
->>>>>>> 1b452b01f53441388fbdd94a52d2eae8dc319491
 	},
 	{
         "id": 9,
@@ -104,12 +88,8 @@
 		"description": "Third largest heading",
 		"type": "textwrapper",
 		"css_groups": ["font", "background", "border", "size"],
-<<<<<<< HEAD
-		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "img", "li", "ul", "ol"]
-=======
-		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "img"],
+		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "img", "li", "ul", "ol"],
 		"attributes": ["title"]
->>>>>>> 1b452b01f53441388fbdd94a52d2eae8dc319491
 	},
 	{
         "id": 10,
@@ -118,12 +98,8 @@
 		"description": "Fourth largest heading",
 		"type": "textwrapper",
 		"css_groups": ["font", "background", "border", "size"],
-<<<<<<< HEAD
-		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "img", "li", "ul", "ol"]
-=======
-		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "img"],
+		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "img", "li", "ul", "ol"],
 		"attributes": ["title"]
->>>>>>> 1b452b01f53441388fbdd94a52d2eae8dc319491
 	},
 	{
         "id": 11,
@@ -148,13 +124,9 @@
 		"description": "An image",
 		"type": "image",
 		"css_groups": ["border", "size"],
-<<<<<<< HEAD
 		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "strong", "em", "img", "text-content", "li", "ul", "ol"],
-		"self_closing": true
-=======
-		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "strong", "em", "img", "text-content"],
+		"self_closing": true,
 		"attributes": ["src", "alt", "title"]
->>>>>>> 1b452b01f53441388fbdd94a52d2eae8dc319491
 	},
 	{
 		"id": 14,
@@ -192,5 +164,4 @@
 		"css_groups": ["font", "background", "border", "size"],
 		"unallowed_children": ["html", "head", "title", "body", "li"]
 	}
-
 ]
