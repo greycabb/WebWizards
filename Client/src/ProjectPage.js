@@ -66,16 +66,24 @@ export default class ProjectPage extends React.Component {
     
     //Should return an array with start tag and end tag
     //Ex: ["<div>", "</div>"]
-    generateHtmlString(blockType, css) {
+    generateHtmlString(blockType, css, attributes) {
         if (blockType != "text-content" && blockType != "title") {
-            //Generate css string first
+
+            //Generate attributes string
+            var attributeString = "";
+            if (attributes != null && attributes.length > 0) {
+                attributeString += " ";
+                attributeString += attributes.join(" ");
+            }
+
+            //Generate css string
             var cssString = "";
             if (css != null && css.length > 0) {
                 cssString = ' style="';
                 if (blockType == "body" || blockType == "html") {
                     cssString += "width: 100%; height: 100%;"
                 }
-                for (var i = 0; i < css.length; i ++) {
+                for (var i = 0; i < css.length; i++) {
                     cssString += (css[i].attribute + ": " + css[i].value + "; ");
                 }
                 cssString += '"';
@@ -85,7 +93,7 @@ export default class ProjectPage extends React.Component {
                     cssString += " style=\"width: 100%; height: 100%;\"";
                 }
             }
-            
+
             var startTag = "";
             var endTag = "";
 
@@ -94,8 +102,12 @@ export default class ProjectPage extends React.Component {
                 startTag = "<div" + cssString + ">";
                 endTag = "</div>";
             }
+            else if (blockType == "img") {
+                startTag = "<" + blockType + attributeString + cssString + "/>";
+                endTag = "";
+            }
             else {
-                startTag = "<" + blockType + cssString + ">";
+                startTag = "<" + blockType + attributeString + cssString + ">";
                 endTag = "</" + blockType + ">";
             }
             return [startTag, endTag];
@@ -123,6 +135,7 @@ export default class ProjectPage extends React.Component {
                             let type = json.blocktype;
                             let css = json.css;
                             let children = json.children;
+                            let attributes = json.attributes;
 
                             //Need to grab information on current block type
                             fetch('https://api.webwizards.me/v1/htmlblocks?id=' + type, {
@@ -139,7 +152,7 @@ export default class ProjectPage extends React.Component {
                                         let json = response.json().then((blockInfo) => {
 
                                             //Generate a string of this block
-                                            let blockTags = this.generateHtmlString(blockInfo.name, css);
+                                            let blockTags = this.generateHtmlString(blockInfo.name, css, attributes);
 
                                             // An array of child tags 
                                             let childTags = Array(children.length);
