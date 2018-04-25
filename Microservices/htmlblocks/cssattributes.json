@@ -117,5 +117,23 @@
 			"pixels": [0, 2000],
 			"percentage": [0, 100]
 		}
+	},
+	"margin": {
+		"translation": "Margin",
+		"description": "Change border width",
+		"units": "px",
+		"default": "0px",
+		"extra_options": {
+			"range": [0, 300]
+		}
+	},
+	"padding": {
+		"translation": "Margin",
+		"description": "Change border width",
+		"units": "px",
+		"default": "0px",
+		"extra_options": {
+			"range": [0, 300]
+		}
 	}
 }
