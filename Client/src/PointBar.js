@@ -36,9 +36,9 @@ export default class PointBar extends React.Component {
 
     }
 
-    hoveringToggle() {
+    hoveringToggle(bool) {
         this.setState({
-            hovering: !this.state.hovering
+            hovering: bool
         });
     }
 
@@ -55,7 +55,7 @@ export default class PointBar extends React.Component {
                         
                     </div>
                 </div>
-                <div className="point-tooltip-container" onMouseEnter={this.hoveringToggle} onMouseLeave={this.hoveringToggle}>
+                <div className="point-tooltip-container" onMouseEnter={()=> {this.hoveringToggle(true)}} onMouseLeave={()=> {this.hoveringToggle(false)}}>
                     What can you do next?
                 </div>
                 {this.state.hovering &&
