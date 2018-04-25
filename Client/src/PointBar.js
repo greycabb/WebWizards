@@ -28,16 +28,23 @@ export default class PointBar extends React.Component {
 
         this.state = {
             tier: tier,
-            max: max
+            max: max,
+            hovering: false
         }
 
+        this.hoveringToggle = this.hoveringToggle.bind(this);
+
+    }
+
+    hoveringToggle() {
+        this.setState({
+            hovering: !this.state.hovering
+        });
     }
 
     render() {
 
         var fillWidth = (this.props.points / this.state.max * 100) + "%";
-
-        console.log(fillWidth);
 
         return (
             <div>
@@ -48,9 +55,14 @@ export default class PointBar extends React.Component {
                         
                     </div>
                 </div>
-                <div className="point-tooltip-container">
+                <div className="point-tooltip-container" onMouseEnter={this.hoveringToggle} onMouseLeave={this.hoveringToggle}>
                     What can you do next?
                 </div>
+                {this.state.hovering &&
+                    <div id="point-tooltip">
+                        Earn points by making and designing websites! When you level up, you will unlock new avatars.
+                    </div>
+                }
             </div>
         );
     }
