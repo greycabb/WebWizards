@@ -28,7 +28,7 @@ export default class AvatarModal extends React.Component {
 
         var ud = JSON.parse(localStorage.getItem('USERDATA'));
 
-        if (ud.points > 50) {
+        if (ud.points > 49) {
             availableImgs.push(<img src={specialAvatarUrls.apprentice} key={"apprentice"} width="100px" onClick={() => this.handleImgChange(specialAvatarUrls.apprentice)} className="avatar-img-preview"/>);
         }
 
