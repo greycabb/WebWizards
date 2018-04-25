@@ -120,7 +120,9 @@ export default class LoginPage extends React.Component {
                             'firstName': result.firstName,
                             'lastName': result.lastName,
                             'id': result.id,
-                            'email': result.email
+                            'email': result.email,
+                            'points': result.points,
+                            'avatar': result.avatar
                         });
 
                         let auth = response.headers.get('Authorization');

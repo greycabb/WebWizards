@@ -3,6 +3,7 @@ import { hashHistory } from 'react-router';
 import Nav from './Nav';
 import CreateBanner from './CreateBanner';
 import img from './img/ProfilePictures/Cow.png';
+import AvatarDisplay from './AvatarDisplay';
 
 export default class MainPage extends React.Component {
     constructor(props) {
@@ -133,7 +134,7 @@ export default class MainPage extends React.Component {
                         <div className="main-content">
                             <CreateBanner />
                             <div id="profileAndAwards" className="profile-and-awards">
-                                <div className="profile-picture"></div>
+                                <AvatarDisplay />
                                 <div className="profile-name">
                                     <div>My Awards</div>
                                 </div>
