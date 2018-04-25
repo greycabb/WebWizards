@@ -23,9 +23,9 @@ export default class AvatarDisplay extends React.Component {
         }));
     }
 
-    handleHover(){
+    handleHover(bool){
         this.setState({
-            isHovered: !this.state.isHovered
+            isHovered: bool
         });
     }
 
@@ -43,8 +43,8 @@ export default class AvatarDisplay extends React.Component {
             <div>
                 <div className="profile-picture" 
                     style={{backgroundImage: image}} 
-                    onMouseEnter={this.handleHover}  
-                    onMouseLeave={this.handleHover}
+                    onMouseEnter={()=> {this.handleHover(true)}}  
+                    onMouseLeave={()=> {this.handleHover(false)}}
                     onClick={this.toggle}>
                 {this.state.isHovered &&
                     <div className="profile-picture-hover">
