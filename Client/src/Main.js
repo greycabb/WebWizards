@@ -137,7 +137,7 @@ export default class MainPage extends React.Component {
                             <div className="profile-and-awards">
                                 <AvatarDisplay />
                                 <div className="profile-name">
-                                    <PointBar points={75}/>
+                                    <PointBar points={this.state.userdata.points}/>
                                 </div>
                             </div>
                             <div id="yourProjects" className="your-projects">

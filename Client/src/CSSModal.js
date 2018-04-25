@@ -160,6 +160,7 @@ export default class CSSModal extends React.Component {
                 if (response.ok) {
                     response.json().then((result) => {
                         this.props.handleChange(result);
+                        this.props.increasePointsBy(2);
                         this.setState({
                             currAppliedAttributes: currAttributes
                         });
@@ -260,6 +261,8 @@ export default class CSSModal extends React.Component {
                 curr[i].value = value;
             }
         }
+
+        this.props.increasePointsBy(1);
 
         console.log(attribute);
         console.log(value);

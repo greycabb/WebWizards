@@ -35,7 +35,9 @@ export default class PointBar extends React.Component {
 
     render() {
 
-        var fillWidth = (this.props.points / this.state.max) + "%";
+        var fillWidth = (this.props.points / this.state.max * 100) + "%";
+
+        console.log(fillWidth);
 
         return (
             <div>
