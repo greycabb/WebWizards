@@ -2,6 +2,7 @@ import React from 'react';
 import { hashHistory } from 'react-router';
 import './AvatarModal.css';
 import OutsideAlerter from './OutsideAlerter';
+import './CreateModal.css';
 
 const basicAvatarUrls = [
     "https://webwizards.me/img/Avatars/Bunny.png",

@@ -173,6 +173,7 @@ body > div > .login-page {
   background-position: center;
   background-repeat: no-repeat;
   cursor: pointer;
+  margin: 0;
 }
 
 .profile-picture-hover {
@@ -195,13 +196,17 @@ body > div > .login-page {
 
 .profile-and-awards > div {
   float: left;
-  display: inline-block;
 }
+
 .profile-and-awards {
   height: 200px;
+  margin-left: 30px;
+  margin-bottom: 30px;
+  margin-right: 0px;
 }
 
 .profile-name {
+  display: inline-block;
   padding-left: 40px;
 }
 

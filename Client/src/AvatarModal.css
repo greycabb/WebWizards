@@ -10,3 +10,7 @@
     margin: 5px 5px 15px 5px;
     border: 1px solid gray;
 }
+
+.avatar-img-preview:hover {
+    filter: brightness(130%);
+}
