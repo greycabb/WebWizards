@@ -525,7 +525,7 @@ class EditPage extends React.Component {
             console.log(current.blocktype);
             if (that.state.bricksByName[parentTagName].unallowed_children.includes(current.blocktype)) {
                 badStyleClass = 'bad-style-block';
-                badStyleMessage = 'Oh no! "' + current.blocktype + '"' + ' should not be placed inside ' + '"' + parentTagName + '"!';
+                badStyleMessage = 'Oh no! "' + current.blocktype + '"' + " shouldn't be placed inside " + '"' + parentTagName + '"!';
             }
         }
 
