@@ -260,7 +260,7 @@ class EditPage extends React.Component {
 
                 if (response.ok) {
                     response.json().then(function (result) {
-                        //console.log(result);
+                        console.log(result);
 
                         let brickContainer = {};
 
@@ -271,10 +271,11 @@ class EditPage extends React.Component {
                                 'id': i,
                                 'translation': current.translation,
                                 'description': current.description,
-                                'type': current.type
+                                'type': current.type,
+                                'unallowed_children': current.unallowed_children
                             }
                         }
-                        //console.log(brickContainer);
+                        console.log(brickContainer);
                         that.setState({
                             'bricksById': result,
                             'bricksByName': brickContainer
@@ -489,7 +490,7 @@ class EditPage extends React.Component {
 
     //____________________________________________________________________________
     // Recursively build the display on the right
-    recursiveLayout(current, first) {
+    recursiveLayout(current, first, parentTagName) {
 
         if (!current) {
             return;
@@ -516,12 +517,26 @@ class EditPage extends React.Component {
 
         let that = this;
 
+        // If the current child's block type is an unallowed child of the parent's block type
+        let badStyleClass = '';
+        let badStyleMessage = '';
+        if (parentTagName !== undefined) {
+            console.log(that.state.bricksByName[parentTagName].unallowed_children);
+            console.log(current.blocktype);
+            if (that.state.bricksByName[parentTagName].unallowed_children.includes(current.blocktype)) {
+                badStyleClass = 'bad-style-block';
+                badStyleMessage = 'Oh no! "' + current.blocktype + '"' + ' should not be placed inside ' + '"' + parentTagName + '"!';
+            }
+        }
+
         if (blockname != undefined &&
             (blockname.type == 'wrapper' || blockname.type == 'textwrapper')) {
             let kids = Object.keys(current.children);
 
             // No children
             if (kids.length === 0) {
+
+
                 b = (<span>
                     {b}
                     <ExistingDropSlot handle={function () { that.moveBlock(current.id, 0) }}>
@@ -541,15 +556,6 @@ class EditPage extends React.Component {
                     if (blockTypesToIgnore[child.blocktype] !== true) {
                         // Place a dropspace before each child
                         let index = i;
-                        /*b = (<span>
-                            {b}
-                            <DropSlot handle={function () { that.drop(current.id, index) }}>
-                                <div className="red">
-                                    <span className="yellow">-> parent: {current.id.substr(current.id.length - 3)}, index: {index}</span>
-                                </div>
-                            </DropSlot>
-                            {this.recursiveLayout(child, i)}
-                        </span>); */
                         b = (<span>
                             {b}
                             <ExistingDropSlot handle={function () { that.moveBlock(current.id, index) }}>
@@ -559,10 +565,10 @@ class EditPage extends React.Component {
                                 </div>
                                 </DropSlot>
                             </ExistingDropSlot>
-                            {this.recursiveLayout(child, i)}
+                            {this.recursiveLayout(child, i, current.blocktype)}
                         </span>);
                     } else {
-                        b = (<span>{b}{this.recursiveLayout(child, i)}</span>);
+                        b = (<span>{b}{this.recursiveLayout(child, i, current.blocktype)}</span>);
                     }
 
                     if (i === kids.length - 1) {
@@ -646,8 +652,9 @@ class EditPage extends React.Component {
             b = (
                 <ul>
                     {(['head', 'html', 'body', 'title'].includes(current.blocktype)) &&
-                        <li className={blockclass}>
+                        <li className={blockclass + ' ' + badStyleClass}>
                             <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
+                                <div className="bad-style">{badStyleMessage}</div>
                                 {startTag}
                                 {/*current.id !== undefined &&
                                             <span className="yel">id: {current.id.substr(current.id.length - 3)}, index: {first} </span>
@@ -659,21 +666,22 @@ class EditPage extends React.Component {
                             </div>
                         </li>
                     }
-                    
+
                     {!(['head', 'body', 'title', 'html'].includes(current.blocktype)) &&
                         <ExistingDropSlot handle={function (e) { that.moveBlock(current.id, (Object.keys(current.children)).length, e) }}>
                             {/* <DropSlot handle={function (e) { that.drop(current.id, (Object.keys(current.children)).length, e) }}> */}
-                                <ExistingBlock id={current.id} handle={function (id) { that.pickupBlock(id, current.parentid, current.index) }}>
-                                    <li className={blockclass}>
-                                        <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
-                                            {startTag}
-                                        </div>
-                                        {b}
-                                        <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
-                                            {endTag}
-                                        </div>
-                                    </li>
-                                </ExistingBlock>
+                            <ExistingBlock id={current.id} handle={function (id) { that.pickupBlock(id, current.parentid, current.index) }}>
+                                <li className={blockclass + ' ' + badStyleClass}>
+                                    <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
+                                        <div className="bad-style">{badStyleMessage}</div>
+                                        {startTag}
+                                    </div>
+                                    {b}
+                                    <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
+                                        {endTag}
+                                    </div>
+                                </li>
+                            </ExistingBlock>
                             {/* </DropSlot> */}
                         </ExistingDropSlot>
 
@@ -1218,10 +1226,10 @@ class EditPage extends React.Component {
     moveBlock(newParentId, newIndex) {
 
         console.log('_______________');
-            console.log('Move block: ');
-            console.log('Block id: ' + this.state.selectedBlock);
-            console.log('newParentId: ' + newParentId);
-            console.log('newIndex:' + newIndex);
+        console.log('Move block: ');
+        console.log('Block id: ' + this.state.selectedBlock);
+        console.log('newParentId: ' + newParentId);
+        console.log('newIndex:' + newIndex);
         console.log('_______________');
 
         let originalParentId = this.state.block_originalParentId;
@@ -1253,7 +1261,7 @@ class EditPage extends React.Component {
             return;
         }
 
-        
+
 
         fetch('https://api.webwizards.me/v1/blocks?id=' + this.state.selectedBlock, {
             method: 'PATCH',

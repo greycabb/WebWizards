@@ -397,3 +397,15 @@ textarea {
 .has-error .help-block, .has-error .control-label, .has-error .radio, .has-error .checkbox, .has-error .radio-inline, .has-error .checkbox-inline, .has-error.radio label, .has-error.checkbox label, .has-error.radio-inline label, .has-error.checkbox-inline label {
   color: #E0A738;
 }
+
+.bad-style {
+  background-color: yellow;
+  color: black;
+  border-radius: 5px;
+  padding-left: 4px;
+  margin-right: 8px;
+}
+.bad-style-block {
+  border: 2px double red;
+  background-color: darkred;
+}
