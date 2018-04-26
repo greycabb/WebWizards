@@ -60,7 +60,7 @@ class Block extends React.Component {
         const { connectDragSource, isDragging } = this.props;
 
         return connectDragSource(
-            <div className={this.state.classes} id={this.props.name} >
+            <div className={this.state.classes} id={this.props.name} title={this.props.title}>
                 {this.props.name != "text-content" &&
                     <div>
                         {this.props.name}

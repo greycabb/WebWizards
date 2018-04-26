@@ -740,13 +740,10 @@ class EditPage extends React.Component {
                     },
                     body: JSON.stringify({
                         'children': [value],
-                        'index': -1//cIndex
+                        'index': -1 // don't change index
                     })
                 })
                     .then(function (response) {
-
-                        console.log('_________');
-                        console.log('VVVVVV');
                         //that.getBlock(blockId);
                         //that.setup_getProjectData();
                         //that.updateProject(that.state.htmlBlockId);
@@ -1329,42 +1326,38 @@ class EditPage extends React.Component {
                         <PreviewProject projectObject={this.state.projectData} />
                     }
 
-                    {/* Can make each line and the function get generated from 3 arrays instead... primary, secondary, third arrays of each name */}
-                    <div>
-                        {/* <div className="brick primary-brick disable-select" id="head" onClick={function () { that.pickup('head') }} >head</div> */}
-                        {/* <div className="brick primary-brick disable-select" id="title" onClick={function () { that.pickup('title') }} >title</div> */}
-                        {/* <div className="brick primary-brick disable-select" id="body" onClick={function () { that.pickup('body') }} >body</div> */}
-                        <Block name={"div"} handler={that.pickup} />
-                        {/* <div className="brick primary-brick disable-select" id="span" onClick={function () { that.pickup('span') }} >span</div> */}
-                        <Block name={"p"} handler={that.pickup} />
-                    </div>
-                    <div>
-                        <Block name={"img"} handler={that.pickup} />
-                        <Block name={"text-content"} handler={that.pickup}>
-                            <input type="text" name="lname" disabled value="text" className="short-text-box" />
-                        </Block>
-                        {/* <div className="brick secondary-brick disable-select" id="audio" onClick={function () { that.pickup('audio') }} >audio</div> */}
-                    </div>
-                    <div>
-                        <Block name={"h1"} handler={that.pickup} />
-                        <Block name={"h2"} handler={that.pickup} />
-                        <Block name={"h3"} handler={that.pickup} />
-                        <Block name={"h4"} handler={that.pickup} />
-                        {/* <div className="brick third-brick disable-select" id="h5" onClick={function () { that.pickup('h5') }} >h5</div> */}
-                        {/* <div className="brick third-brick disable-select" id="h6" onClick={function () { that.pickup('h6') }} >h6</div> */}
-                    </div>
-                    <div>
-                        <ul>
-                            <li>
-                                <Block name={"ul"} handler={that.pickup} />
-                                <Block name={"ol"} handler={that.pickup} />
+                    {this.state.bricksByName !== undefined &&
+                        <div>
+                            <div>
+                                <Block name={"div"} handler={that.pickup} title={this.state.bricksByName['div'].description}/>
+                                <Block name={"p"} handler={that.pickup} title={this.state.bricksByName['p'].description}/>
+                            </div>
+                            <div>
+                                <Block name={"img"} handler={that.pickup} title={this.state.bricksByName['img'].description}/>
+                                <Block name={"text-content"} handler={that.pickup} title={this.state.bricksByName['text-content'].description}>
+                                    <input type="text" name="lname" disabled value="text" className="short-text-box" />
+                                </Block>
+                            </div>
+                            <div>
+                                <Block name={"h1"} handler={that.pickup} title={this.state.bricksByName['h1'].description}/>
+                                <Block name={"h2"} handler={that.pickup} title={this.state.bricksByName['h2'].description}/>
+                                <Block name={"h3"} handler={that.pickup} title={this.state.bricksByName['h3'].description}/>
+                                <Block name={"h4"} handler={that.pickup} title={this.state.bricksByName['h4'].description}/>
+                            </div>
+                            <div>
                                 <ul>
-                                    <li><Block name={"li"} handler={that.pickup} /></li>
+                                    <li>
+                                        <Block name={"ul"} handler={that.pickup} title={this.state.bricksByName['ul'].description}/>
+                                        <Block name={"ol"} handler={that.pickup} title={this.state.bricksByName['ol'].description}/>
+                                        <ul>
+                                            <li><Block name={"li"} handler={that.pickup} title={this.state.bricksByName['li'].description}/></li>
+                                        </ul>
+                                    </li>
+                                    
                                 </ul>
-                            </li>
-                            
-                        </ul>
+                            </div>
                     </div>
+                    }
                 </div>
                 <div className="half-width draggable-space">
                     <div>
