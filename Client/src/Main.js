@@ -3,6 +3,8 @@ import { hashHistory } from 'react-router';
 import Nav from './Nav';
 import CreateBanner from './CreateBanner';
 import img from './img/ProfilePictures/Cow.png';
+import AvatarDisplay from './AvatarDisplay';
+import PointBar from './PointBar';
 
 export default class MainPage extends React.Component {
     constructor(props) {
@@ -132,10 +134,10 @@ export default class MainPage extends React.Component {
                         <Nav username={this.state.userdata.username} />
                         <div className="main-content">
                             <CreateBanner />
-                            <div id="profileAndAwards" className="profile-and-awards">
-                                <div className="profile-picture"></div>
+                            <div className="profile-and-awards">
+                                <AvatarDisplay />
                                 <div className="profile-name">
-                                    <div>My Awards</div>
+                                    <PointBar points={this.state.userdata.points}/>
                                 </div>
                             </div>
                             <div id="yourProjects" className="your-projects">

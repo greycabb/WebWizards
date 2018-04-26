@@ -125,6 +125,8 @@ class EditPage extends React.Component {
         this.deleteBlock = this.deleteBlock.bind(this);
         this.moveBlock = this.moveBlock.bind(this);
 
+        this.increasePointsBy = this.increasePointsBy.bind(this);
+
         console.log('______________________');
         this.setup_getProjectData();
     }
@@ -1099,6 +1101,9 @@ class EditPage extends React.Component {
             return;
         }
 
+
+        this.increasePointsBy(1);
+
         let brick = this.state.selectedBrick;
         console.log('Attempting to drop <' + brick + '> in ' + parentId + ' ' + index);
 
@@ -1285,8 +1290,42 @@ class EditPage extends React.Component {
             });
     }
 
-    hoverDropSlot() {
-        console.log("hovering");
+    increasePointsBy(points) {
+
+        var that = this;
+
+        var newPoints = this.state.userdata.points + points;
+
+        fetch('https://api.webwizards.me/v1/users/me', {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('Authorization')
+            },
+            body: JSON.stringify({
+                'points': newPoints
+            })
+        })
+            .then(function (response) {
+
+                if (response.ok) {
+                    response.json().then(function (result) {
+                        var ud = that.state.userdata;
+                        ud.points = newPoints;
+                        localStorage.setItem('USERDATA', JSON.stringify(ud));
+                    });
+
+
+                } else {
+                    response.text().then(text => {
+                        console.log(text);
+                    });
+
+                }
+            })
+            .catch(err => {
+                console.log('caught it!', err);
+            })
     }
 
 
@@ -1373,7 +1412,7 @@ class EditPage extends React.Component {
 
                 {this.state.styleToggled &&
                     <div>
-                        <CSSModal currBlock={this.state.styleToggledBlock} toggle={this.cssModalToggleOff} handleChange={this.handleProjectUpdates} />
+                        <CSSModal increasePointsBy={this.increasePointsBy} currBlock={this.state.styleToggledBlock} toggle={this.cssModalToggleOff} handleChange={this.handleProjectUpdates} />
                     </div>
                 }
 

@@ -165,10 +165,27 @@ body > div > .login-page {
 }
 
 .profile-picture {
-  border: 1px solid lightgrey;
-  width: 210px;
-  height: 160px;
-  background-image: url('img/lizard.png')
+  border-radius: 100px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  width: 175px;
+  height: 175px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  margin: 0;
+}
+
+.profile-picture-hover {
+  color: white;
+  font-size: 20px;
+  vertical-align: middle;
+  line-height: 175px;
+  text-align: center;
+  background-color: rgba(0,0,0,0.50);
+  width: 100%;
+  height: 100%;
+  border-radius: 100px;
 }
 
 .main-content {
@@ -179,13 +196,17 @@ body > div > .login-page {
 
 .profile-and-awards > div {
   float: left;
-  display: inline-block;
 }
+
 .profile-and-awards {
   height: 200px;
+  margin-left: 30px;
+  margin-bottom: 30px;
+  margin-right: 0px;
 }
 
 .profile-name {
+  display: inline-block;
   padding-left: 40px;
 }
 
@@ -205,7 +226,6 @@ body > div > .login-page {
 .project-in-list {
   height: 100%;
   width: 180px;
-  
   display: inline-block;
   margin-right: 40px;
   cursor: pointer;
