@@ -6,7 +6,7 @@
 		"description": "A 'html' block defines a HTML document",
 		"type": "wrapper",
 		"css_groups": ["font", "background", "border", "size"],
-		"unallowed_children": ["html", "title", "p", "div", "text", "h1", "h2", "h3", "h4", "strong", "em", "img", "text-content"]
+		"unallowed_children": ["html", "title", "p", "div", "text", "h1", "h2", "h3", "h4", "strong", "em", "img", "text-content", "li"]
 	},
 	{
         "id": 1,
@@ -14,7 +14,7 @@
 		"translation": "head",
 		"description": "A 'head' block defines information about HTML document",
 		"type": "wrapper",
-		"unallowed_children": ["html", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "strong", "em", "img", "text-content"]
+		"unallowed_children": ["html", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "strong", "em", "img", "text-content", "li"]
 	},
 	{
         "id": 2,
@@ -31,16 +31,17 @@
 		"description": "A 'body' block defines the page body",
 		"type": "wrapper",
 		"css_groups": ["font", "background", "border", "size"],
-		"unallowed_children": ["html", "head", "title"]
+		"unallowed_children": ["html", "head", "title", "li"]
 	},
 	{
         "id": 4,
         "name": "p",
 		"translation": "paragraph",
 		"description": "A 'p' block defines a paragraph",
-		"type": "wrapper",
+		"type": "textwrapper",
 		"css_groups": ["font", "background", "border", "size"],
-		"unallowed_children": ["html", "head", "title", "body"]
+		"unallowed_children": ["html", "head", "title", "body", "li"],
+		"attributes": ["title"]
     },
 	{
         "id": 5,
@@ -49,7 +50,8 @@
 		"description": "A 'div' is a section that is a block element. Block elements appear on a new row.",
 		"type": "wrapper",
 		"css_groups": ["font", "background", "border", "size"],
-		"unallowed_children": ["html", "head", "title", "body"]
+		"unallowed_children": ["html", "head", "title", "body", "li"],
+		"attributes": ["title"]
 	},
 	{
         "id": 6,
@@ -57,7 +59,7 @@
 		"translation": "text",
 		"description": "A 'text' block allows you to add text",
 		"type": "content",
-		"unallowed_children": ["html", "head", "title", "body"]
+		"unallowed_children": ["html", "head", "title", "body", "li", "ul", "ol"]
 	},
 	{
         "id": 7,
@@ -66,7 +68,8 @@
 		"description": "Largest heading",
 		"type": "textwrapper",
 		"css_groups": ["font", "background", "border", "size"],
-		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "img"]
+		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "img", "li", "ul", "ol"],
+		"attributes": ["title"]
 	},
 	{
         "id": 8,
@@ -75,7 +78,8 @@
 		"description": "Second largest heading",
 		"type": "textwrapper",
 		"css_groups": ["font", "background", "border", "size"],
-		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "img"]
+		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "img", "li", "ul", "ol"],
+		"attributes": ["title"]
 	},
 	{
         "id": 9,
@@ -84,7 +88,8 @@
 		"description": "Third largest heading",
 		"type": "textwrapper",
 		"css_groups": ["font", "background", "border", "size"],
-		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "img"]
+		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "img", "li", "ul", "ol"],
+		"attributes": ["title"]
 	},
 	{
         "id": 10,
@@ -93,7 +98,8 @@
 		"description": "Fourth largest heading",
 		"type": "textwrapper",
 		"css_groups": ["font", "background", "border", "size"],
-		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "img"]
+		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "img", "li", "ul", "ol"],
+		"attributes": ["title"]
 	},
 	{
         "id": 11,
@@ -101,7 +107,7 @@
 		"translation": "strong",
 		"description": "Bolded text",
 		"type": "textwrapper",
-		"unallowed_children": ["html", "head", "title", "body"]
+		"unallowed_children": ["html", "head", "title", "body", "li", "ul", "ol"]
 	},
 	{
         "id": 12,
@@ -109,7 +115,7 @@
 		"translation": "emphasized",
 		"description": "Bolded text",
 		"type": "textwrapper",
-		"unallowed_children": ["html", "head", "title", "body"]
+		"unallowed_children": ["html", "head", "title", "body", "li", "ul", "ol"]
 	},
 	{
 		"id": 13,
@@ -118,7 +124,9 @@
 		"description": "An image",
 		"type": "image",
 		"css_groups": ["border", "size"],
-		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "strong", "em", "img", "text-content"]
+		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "strong", "em", "img", "text-content", "li", "ul", "ol"],
+		"self_closing": true,
+		"attributes": ["src", "alt", "title"]
 	},
 	{
 		"id": 14,
@@ -127,6 +135,33 @@
 		"description": "A place to put text",
 		"type": "text-content",
 		"css_groups": [],
-		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "strong", "em", "img", "text-content"]
+		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "strong", "em", "img", "text-content", "li", "ul", "ol"]
+	},
+	{
+		"id": 15,
+		"name": "ul",
+		"translation": "unordered list",
+		"description": "A list of things with bullets (no numbers)",
+		"type": "wrapper",
+		"css_groups": [],
+		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "strong", "em", "img", "text-content", "ol", "ul"]
+	},
+	{
+		"id": 16,
+		"name": "ol",
+		"translation": "ordered list",
+		"description": "A list of things with a number for each thing",
+		"type": "wrapper",
+		"css_groups": [],
+		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "strong", "em", "img", "text-content", "ol", "ul"]
+	},
+	{
+        "id": 17,
+        "name": "li",
+		"translation": "list line",
+		"description": "A line in a list. Must be inside an <ol> (Ordered list) or <ul> (Unordered list) ",
+		"type": "wrapper",
+		"css_groups": ["font", "background", "border", "size"],
+		"unallowed_children": ["html", "head", "title", "body", "li"]
 	}
 ]

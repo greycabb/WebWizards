@@ -18,7 +18,7 @@
 		"translation": "Text size",
 		"description": "Changes the size of the text",
 		"units": "px",
-		"default": 12,
+		"default": "12px",
 		"extra_options": {
 			"range": [1, 100]
 		}
@@ -84,8 +84,8 @@
 	"border-width": {
 		"translation": "Border Width",
 		"description": "Change border width",
-		"units": "EO_choices",
-		"default": 0,
+		"units": "px",
+		"default": "0px",
 		"extra_options": {
 			"range": [0, 20]
 		}
