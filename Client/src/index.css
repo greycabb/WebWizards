@@ -281,7 +281,8 @@ html, body{
 
 
 /*Change this to some other class*/
-ul {
+/*Change this to some other class*/
+ul.layout-block {
   list-style-type: none;
   margin-left: -10px;
   font-size: 14pt;
@@ -289,7 +290,7 @@ ul {
   width: min-content;
 }
 
-li {
+li.layout-block  {
   font-size: 16px;
   color: white;
   -webkit-box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.75);
