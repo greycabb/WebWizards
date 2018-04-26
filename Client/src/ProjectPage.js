@@ -196,22 +196,33 @@ export default class ProjectPage extends React.Component {
                                                 }
                                             }
                                             else if (blockInfo.name == "text-content") {
-                                                if (isTitle) {
-                                                    console.log("reached title");
-                                                    console.log(children[0]);
-                                                    document.title = children[0];
-                                                    resolve("");
-                                                }
+
                                                 //Resolve with string
                                                 // Sanitize
                                                 let sanitizeHtml = require('sanitize-html');
                                                 
-                                                let sanitizedTextContent = sanitizeHtml(children[0], {
-                                                    allowedTags: ['b', 'i', 'em', 'strong'],
-                                                    allowedAttributes: {
-                                                        //'a': ['href']
+                                                let sanitizedTextContent;
+                                                if (children[0] === undefined) {
+                                                    sanitizedTextContent = '';
+                                                } else {
+                                                    sanitizedTextContent = sanitizeHtml(children[0], {
+                                                        allowedTags: ['b', 'i', 'em', 'strong'],//'a'
+                                                        allowedAttributes: {
+                                                            //'a': ['href']
+                                                        }
+                                                    });
+                                                }
+
+                                                if (isTitle) {
+                                                    console.log("reached title");
+                                                    console.log(sanitizedTextContent);
+                                                    if (sanitizedTextContent === '') {
+                                                        sanitizedTextContent = 'Untitled';
                                                     }
-                                                });
+                                                    document.title = sanitizedTextContent;
+                                                    resolve("");
+                                                }
+                                                
                                                 resolve(sanitizedTextContent);
                                             }
                                             else {

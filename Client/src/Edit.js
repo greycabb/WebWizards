@@ -849,7 +849,13 @@ class EditPage extends React.Component {
                     response.json().then(function (result) {
                         console.log('New block: ' + slot);
                         console.log(result);
-                        that.updateProject(that.state.htmlBlockId);
+                        
+                        let delay = 0;
+                        if (that.state.bricksByName[slot].type === 'textwrapper') {
+                            that.createBlock('text-content', result.id, 0);
+                        } else {
+                                that.updateProject(that.state.htmlBlockId);
+                        }
                     });
                 } else {
                     response.text().then(text => {

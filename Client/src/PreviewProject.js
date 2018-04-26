@@ -149,20 +149,28 @@ export default class PreviewProject extends React.Component {
                                                 }
                                             }
                                             else if (blockInfo.name == "text-content") {
-                                                if (isTitle) {
-                                                    document.title = children[0];
-                                                    resolve("");
-                                                }
+
                                                 //Resolve with string
                                                 // Sanitize
                                                 let sanitizeHtml = require('sanitize-html');
                                                 
-                                                let sanitizedTextContent = sanitizeHtml(children[0], {
-                                                    allowedTags: ['b', 'i', 'em', 'strong'],//'a'
-                                                    allowedAttributes: {
-                                                        //'a': ['href']
-                                                    }
-                                                });
+                                                let sanitizedTextContent;
+                                                if (children[0] === undefined) {
+                                                    sanitizedTextContent = '';
+                                                } else {
+                                                    sanitizedTextContent = sanitizeHtml(children[0], {
+                                                        allowedTags: ['b', 'i', 'em', 'strong'],//'a'
+                                                        allowedAttributes: {
+                                                            //'a': ['href']
+                                                        }
+                                                    });
+                                                }
+
+                                                if (isTitle) {
+                                                    document.title = sanitizedTextContent;//children[0];
+                                                    resolve("");
+                                                }
+                                                
                                                 resolve(sanitizedTextContent);
                                             }
                                             else {
