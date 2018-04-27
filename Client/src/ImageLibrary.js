@@ -81,6 +81,9 @@ export default class ImageLibrary extends React.Component {
                 var current = categories[i];
                 buttons.push(<ImageLibraryButton key={current} category={current} handle={this.handle}/>);
             }
+            buttons.push(<button className="btn library-button clear-button" onClick={() => this.handleImageChoice("")}>
+                No Image
+            </button>);
         }
         if (this.state.viewingCategory) {
             var imagesObj = this.state.object[this.state.currentCategory].images;
