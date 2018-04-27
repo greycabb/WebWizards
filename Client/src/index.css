@@ -69,6 +69,12 @@ h1 {
   filter: brightness(90%);
 }
 
+.black-text {
+  color: rgb(40,40,40);
+  margin-top: 5px;
+  font-style: italic;
+}
+
 .green-button {
   font-size: 20px;
   background-color: #30B04C;
@@ -390,7 +396,7 @@ textarea {
 }
 .edit-text-button {
   border-radius: 5px;
-  width: 50px;
+  width: 60px;
   padding: 3px;
   text-align: center;
   margin: auto;
