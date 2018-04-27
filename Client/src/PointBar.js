@@ -13,11 +13,11 @@ export default class PointBar extends React.Component {
             tier = "Beginner";
             max = 50;
         }
-        if (points > 49 && points < 800) {
+        if (points > 49 && points < 799) {
             tier = "Apprentice";
             max = 800;
         }
-        if (points > 799 && points < 5000) {
+        if (points > 799 && points < 4999) {
             tier = "Expert";
             max = 5000;
         }
