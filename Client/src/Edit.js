@@ -683,24 +683,24 @@ class EditPage extends React.Component {
 
 
                     {!(['head', 'body', 'title', 'html'].includes(current.blocktype)) &&
-                            <ExistingBlock id={current.id} handle={function (id) { that.pickupBlock(id, current.parentid, current.index, locationInLayout) }}>
-                                <li className={blockclass + ' ' + badStyleClass}>
-                                    <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
-                                        <div className="bad-style">{badStyleMessage}</div>
-                                        {startTag}
-                                    </div>
-                                    {Object.keys(current.children).length === 0 && (current.blocktype === 'li' || that.state.bricksByName[current.blocktype].type === 'textwrapper') &&
-                                        <button className="black-text" onClick={function(e) {e.stopPropagation(); that.createBlock('text-content', current.id, 0); }}>Write...</button>
-                                    }
-                                    {b}
-                                    {(current.blocktype === 'ul' || current.blocktype === 'ol') &&
-                                        <button className="black-text" onClick={function(e) {e.stopPropagation(); that.createBlock('li', current.id, Object.keys(current.children).length); }}>Add &lt;li&gt;</button>
-                                    }
-                                    <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
-                                        {endTag}
-                                    </div>
-                                </li>
-                            </ExistingBlock>
+                       <ExistingBlock id={current.id} handle={function (id) { that.pickupBlock(id, current.parentid, current.index, locationInLayout) }}>
+                            <li className={blockclass + ' ' + badStyleClass}>
+                                <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
+                                    <div className="bad-style">{badStyleMessage}</div>
+                                    {startTag}
+                                </div>
+                                {Object.keys(current.children).length === 0 && (current.blocktype === 'li' || that.state.bricksByName[current.blocktype].type === 'textwrapper') &&
+                                    <button className="black-text" onClick={function(e) {e.stopPropagation(); that.createBlock('text-content', current.id, 0); }}>Write...</button>
+                                }
+                                {b}
+                                {(current.blocktype === 'ul' || current.blocktype === 'ol') &&
+                                    <button className="black-text" onClick={function(e) {e.stopPropagation(); that.createBlock('li', current.id, Object.keys(current.children).length); }}>Add &lt;li&gt;</button>
+                                }
+                                <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
+                                    {endTag}
+                                </div>
+                            </li>
+                        </ExistingBlock>
 
                     }
                 </ul>
@@ -774,7 +774,6 @@ class EditPage extends React.Component {
             let currentId = current.id;
 
             b = (
-                
 
                 <div>
                     <ul className="layout-block">
@@ -816,6 +815,7 @@ class EditPage extends React.Component {
 
                     </div>
                 </div>
+
 
             );
         }
