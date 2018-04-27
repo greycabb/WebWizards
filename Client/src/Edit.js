@@ -269,7 +269,6 @@ class EditPage extends React.Component {
                         // rotate the result so that it's a dictionary with names as keys
                         for (var i = 0; i < result.length; i++) {
                             let current = result[i];
-                            console.log(current);
                             brickContainer[current.name] = {
                                 'id': i,
                                 'translation': current.translation,
@@ -499,6 +498,7 @@ class EditPage extends React.Component {
         if (!current) {
             return;
         }
+        let locationInLayout = current.locationInLayout;
 
         const blockTypesToIgnore = {
             'html': true,
@@ -525,8 +525,8 @@ class EditPage extends React.Component {
         let badStyleClass = '';
         let badStyleMessage = '';
         if (parentTagName !== undefined) {
-            console.log(that.state.bricksByName[parentTagName].unallowed_children);
-            console.log(current.blocktype);
+            //console.log(that.state.bricksByName[parentTagName].unallowed_children);
+            //console.log(current.blocktype);
             if (that.state.bricksByName[parentTagName].unallowed_children.includes(current.blocktype)) {
                 badStyleClass = 'bad-style-block';
                 badStyleMessage = 'Oh no! "' + current.blocktype + '"' + " shouldn't be placed inside " + '"' + parentTagName + '"!';
@@ -543,8 +543,8 @@ class EditPage extends React.Component {
 
                 b = (<span>
                     {b}
-                    <ExistingDropSlot handle={function () { that.moveBlock(current.id, 0) }}>
-                        <DropSlot handle={function () { that.drop(current.id, 0) }}>
+                    <ExistingDropSlot handle={function () { that.moveBlock(current.id, 0, locationInLayout.toString()) }}>
+                        <DropSlot handle={function () { that.drop(current.id, 0, locationInLayout.toString()) }}>
                             <div className="drop-slot-space">
                                 &nbsp;
                             </div>
@@ -562,8 +562,8 @@ class EditPage extends React.Component {
                         let index = i;
                         b = (<span>
                             {b}
-                            <ExistingDropSlot handle={function () { that.moveBlock(current.id, index) }}>
-                                <DropSlot handle={function () { that.drop(current.id, index) }}>
+                            <ExistingDropSlot handle={function () { that.moveBlock(current.id, index, locationInLayout.toString()) }}>
+                                <DropSlot handle={function () { that.drop(current.id, index, locationInLayout.toString()) }}>
                                     <div className="drop-slot-space">
                                         &nbsp;
                                 </div>
@@ -592,8 +592,8 @@ class EditPage extends React.Component {
                             ); */
                             b = (<span>
                                 {b}
-                                <ExistingDropSlot handle={function () { that.moveBlock(current.id, index) }}>
-                                    <DropSlot handle={function () { that.drop(current.id, index) }}>
+                                <ExistingDropSlot handle={function () { that.moveBlock(current.id, index, locationInLayout.toString()) }}>
+                                    <DropSlot handle={function () { that.drop(current.id, index, locationInLayout.toString()) }}>
                                         <div className="drop-slot-space">
                                             &nbsp;
                                     </div>
@@ -679,9 +679,9 @@ class EditPage extends React.Component {
                     }
 
                     {!(['head', 'body', 'title', 'html'].includes(current.blocktype)) &&
-                        <ExistingDropSlot handle={function (e) { that.moveBlock(current.id, (Object.keys(current.children)).length, e) }}>
+                        <ExistingDropSlot handle={function (e) { that.moveBlock(current.id, (Object.keys(current.children)).length, locationInLayout.toString()) }}>
                             {/* <DropSlot handle={function (e) { that.drop(current.id, (Object.keys(current.children)).length, e) }}> */}
-                            <ExistingBlock id={current.id} handle={function (id) { that.pickupBlock(id, current.parentid, current.index) }}>
+                            <ExistingBlock id={current.id} handle={function (id) { that.pickupBlock(id, current.parentid, current.index, locationInLayout.toString()) }}>
                                 <li className={blockclass + ' ' + badStyleClass}>
                                     <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
                                         <div className="bad-style">{badStyleMessage}</div>
@@ -769,7 +769,7 @@ class EditPage extends React.Component {
 
             b = (
                 <ul className="layout-block">
-                    <ExistingBlock id={currentId} handle={function (id) { that.pickupBlock(id, current.parentid, current.index) }}>
+                    <ExistingBlock id={currentId} handle={function (id) { that.pickupBlock(id, current.parentid, current.index, locationInLayout.toString()) }}>
                         <li className={blockclass}>
                             {b}
                             {/* Collapsed div */}
@@ -860,7 +860,7 @@ class EditPage extends React.Component {
                         console.log(result);
 
                         if (that.state.bricksByName[slot].type === 'textwrapper') {
-                            setTimeout(function() {
+                            setTimeout(function () {
                                 that.createBlock('text-content', result.id, 0);
                             }, 600);
                         } else {
@@ -983,6 +983,7 @@ class EditPage extends React.Component {
                             location.attributes = result.attributes;
                             location.parentid = result.parentid;
                             location.index = result.index;
+                            location.locationInLayout = locationInLayout.toString();
                             location.children = {}; // Filled out later from stack
 
                             if (textContent != null) {
@@ -1054,7 +1055,7 @@ class EditPage extends React.Component {
 
     //____________________________________________________________________________
     // Click a block on the right, to move it or delete it in trash can
-    pickupBlock(blockId, blockParentId, blockIndex) {
+    pickupBlock(blockId, blockParentId, blockIndex, locationInLayout) {
         console.log('Picked up block ' + blockId);
         if (blockId === undefined) {
             console.log('Cancelled pickup');
@@ -1068,7 +1069,8 @@ class EditPage extends React.Component {
             'selectedBrick': undefined,
             'selectedBlock': blockId,
             'block_originalParentId': blockParentId,
-            'block_originalIndex': blockIndex
+            'block_originalIndex': blockIndex,
+            'selectedBlockLocation': locationInLayout
         });
     }
 
@@ -1101,13 +1103,11 @@ class EditPage extends React.Component {
     //____________________________________________________________________________
     // Place a block into the right, after picking up a brick on the left
     // The type of brick placed is determined by the brick that was picked up on the left, from state
-    drop(parentId, index) {
+    drop(parentId, index, locationInLayout) {
         if (this.state.selectedBrick === undefined) {
             console.log('sb undefined');
             if (this.state.selectedBlock !== undefined) {
-                console.log('move');
-                // If a block is selected, call move block instead
-                this.moveBlock(parentId, index);
+                this.moveBlock(parentId, index, locationInLayout.toString());
             }
             this.setState({
                 'selectedBrick': undefined,
@@ -1241,7 +1241,7 @@ class EditPage extends React.Component {
     }
 
     // Move block
-    moveBlock(newParentId, newIndex) {
+    moveBlock(newParentId, newIndex, locationInLayout) {
 
         console.log('_______________');
         console.log('Move block: ');
@@ -1249,6 +1249,22 @@ class EditPage extends React.Component {
         console.log('newParentId: ' + newParentId);
         console.log('newIndex:' + newIndex);
         console.log('_______________');
+
+        console.log('move');
+        // If a block is selected, call move block instead
+        if (this.state.selectedBlockLocation !== undefined && locationInLayout !== undefined) {
+
+            if (locationInLayout.startsWith(this.state.selectedBlockLocation)) {
+                console.log("Block can't be moved there!");
+                // alert("That block can't be moved there!")
+                // let slots = document.querySelectorAll('.drop-slot-hover');
+
+                // for (let i = 0; i < slots.length; i++) {
+                //     slots[i].classList.add('.drop-slot-warning');
+                // }
+                return;
+            }
+        }
 
         let originalParentId = this.state.block_originalParentId;
         let originalIndex = this.state.block_originalIndex;
