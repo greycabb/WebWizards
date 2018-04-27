@@ -104,7 +104,12 @@ func (ctx *HandlerContext) UsersMeHandler(w http.ResponseWriter, r *http.Request
 	switch r.Method {
 	case "GET":
 		// Respond with encoded user information from state
-		respond(w, user)
+		info, err := ctx.usersStore.GetByID(state.Authenticated.ID)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("error getting user"), http.StatusUnauthorized)
+			return
+		}
+		respond(w, info)
 	case "PATCH":
 		// Get updates
 		update := &users.Updates{}

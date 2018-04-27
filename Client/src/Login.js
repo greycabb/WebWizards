@@ -116,7 +116,7 @@ export default class LoginPage extends React.Component {
                         console.log(result);
 
                         let userdata = JSON.stringify({
-                            'username': result.userName,
+                            'userName': result.userName,
                             'firstName': result.firstName,
                             'lastName': result.lastName,
                             'id': result.id,

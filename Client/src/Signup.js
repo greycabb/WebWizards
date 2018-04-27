@@ -53,7 +53,7 @@ export default class SignupPage extends React.Component {
                 'email': email,
                 'password': this.state.password,
                 'passwordConf': this.state.password,
-                'username': this.state.username,
+                'userName': this.state.username,
                 'firstName': '',
                 'lastName': ''
             })
@@ -67,7 +67,7 @@ export default class SignupPage extends React.Component {
                         console.log(result);
 
                         let userdata = JSON.stringify({
-                            'username': result.userName,
+                            'userName': result.userName,
                             'firstName': result.firstName,
                             'lastName': result.lastName,
                             'id': result.id,

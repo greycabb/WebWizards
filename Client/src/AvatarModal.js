@@ -51,7 +51,8 @@ export default class AvatarModal extends React.Component {
                 'Authorization': localStorage.getItem('Authorization')
             },
             body: JSON.stringify({
-                'avatar': url
+                'avatar': url,
+                'points': -1
             })
         })
             .then(function (response) {

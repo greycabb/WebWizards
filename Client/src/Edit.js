@@ -1352,8 +1352,8 @@ class EditPage extends React.Component {
 
         return (
             <div>
-                {this.state.userdata !== null && this.state.userdata.username !== undefined &&
-                    <Nav username={this.state.userdata.username} />
+                {this.state.userdata !== null && this.state.userdata.userName !== undefined &&
+                    <Nav username={this.state.userdata.userName} />
                 }
                 <div className="half-width">
                     <div className="edit-bar">
