@@ -16,11 +16,11 @@ import (
 //UserProjectHandler handles requests to get user projects
 func (ctx *HandlerContext) UserProjectHandler(w http.ResponseWriter, r *http.Request) {
 	//Check for authentication
-	_, err := sessions.GetSessionID(r, ctx.SigningKey)
+	/*_, err := sessions.GetSessionID(r, ctx.SigningKey)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("error getting sessionID"), http.StatusUnauthorized)
 		return
-	}
+	} */
 	id := r.URL.Query().Get("id")
 	if len(id) == 0 {
 		http.Error(w, "Please provide a correct user id", http.StatusBadRequest)

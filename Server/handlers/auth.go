@@ -19,16 +19,25 @@ func (ctx *HandlerContext) UsersHandler(w http.ResponseWriter, r *http.Request) 
 	case "GET":
 		//user := state.Authenticated
 		id := r.URL.Query().Get("id")
-		if id == "" {
-			respond(w, make([]struct{}, 0))
+		if len(id) > 0 {
+			user, err := ctx.usersStore.GetByID(bson.ObjectIdHex(id))
+			if err != nil {
+				http.Error(w, fmt.Sprintf("error getting user: %v", err), http.StatusInternalServerError)
+				return
+			}
+			respond(w, user)
+		}
+		name := r.URL.Query().Get("name")
+		if len(name) > 0 {
+			user, err := ctx.usersStore.GetByUserName(name)
+			if err != nil {
+				http.Error(w, fmt.Sprintf("error getting user: %v", err), http.StatusInternalServerError)
+				return
+			}
+			respond(w, user)
 		}
 		//users, err := ctx.usersStore.IdsToUsers(ctx.trie.Get(q, 20))
-		user, err := ctx.usersStore.GetByID(bson.ObjectIdHex(id))
-		if err != nil {
-			http.Error(w, fmt.Sprintf("error getting user: %v", err), http.StatusInternalServerError)
-			return
-		}
-		respond(w, user)
+
 	case "POST":
 		//Decode request body into users.NewUser struct
 		newUser := &users.NewUser{}
