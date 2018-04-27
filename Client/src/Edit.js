@@ -695,9 +695,9 @@ class EditPage extends React.Component {
                                         <button className="black-text" onClick={function(e) {e.stopPropagation(); that.createBlock('text-content', current.id, 0); }}>Write...</button>
                                     }
                                     {b}
-                                    {/* {(current.blocktype === 'ul' || current.blocktype === 'ol') &&
-                                        <button className="black-text" onClick={function(e) {e.stopPropagation(); that.createBlock('li', current.id, Object.keys(current.children).length); }}>Add line</button>
-                                    } */}
+                                    {(current.blocktype === 'ul' || current.blocktype === 'ol') &&
+                                        <button className="black-text" onClick={function(e) {e.stopPropagation(); that.createBlock('li', current.id, Object.keys(current.children).length); }}>Add &lt;li&gt;</button>
+                                    }
                                     <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
                                         {endTag}
                                     </div>
