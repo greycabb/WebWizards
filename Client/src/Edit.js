@@ -541,8 +541,8 @@ class EditPage extends React.Component {
 
                 b = (<span>
                     {b}
-                    <ExistingDropSlot handle={function () { that.moveBlock(current.id, 0) } }>
-                        <DropSlot handle={function () { that.drop(current.id, 0) } }>
+                    <ExistingDropSlot handle={function () { that.moveBlock(current.id, 0) }}>
+                        <DropSlot handle={function () { that.drop(current.id, 0) }}>
                             <div className="drop-slot-space">
                                 &nbsp;
                             </div>
@@ -560,8 +560,8 @@ class EditPage extends React.Component {
                         let index = i;
                         b = (<span>
                             {b}
-                            <ExistingDropSlot handle={function () { that.moveBlock(current.id, index) } }>
-                                <DropSlot handle={function () { that.drop(current.id, index) } }>
+                            <ExistingDropSlot handle={function () { that.moveBlock(current.id, index) }}>
+                                <DropSlot handle={function () { that.drop(current.id, index) }}>
                                     <div className="drop-slot-space">
                                         &nbsp;
                                 </div>
@@ -590,8 +590,8 @@ class EditPage extends React.Component {
                             ); */
                             b = (<span>
                                 {b}
-                                <ExistingDropSlot handle={function () { that.moveBlock(current.id, index) } }>
-                                    <DropSlot handle={function () { that.drop(current.id, index) } }>
+                                <ExistingDropSlot handle={function () { that.moveBlock(current.id, index) }}>
+                                    <DropSlot handle={function () { that.drop(current.id, index) }}>
                                         <div className="drop-slot-space">
                                             &nbsp;
                                     </div>
@@ -655,7 +655,7 @@ class EditPage extends React.Component {
                 <ul className="layout-block">
                     {(['head', 'html', 'body', 'title'].includes(current.blocktype)) &&
                         <li className={blockclass + ' ' + badStyleClass}>
-                            <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) } }>
+                            <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
                                 <div className="bad-style">{badStyleMessage}</div>
                                 {startTag}
                                 {/*current.id !== undefined &&
@@ -663,23 +663,23 @@ class EditPage extends React.Component {
                                         */}
                             </div>
                             {b}
-                            <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) } }>
+                            <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
                                 {endTag}
                             </div>
                         </li>
                     }
 
                     {!(['head', 'body', 'title', 'html'].includes(current.blocktype)) &&
-                        <ExistingDropSlot handle={function (e) { that.moveBlock(current.id, (Object.keys(current.children)).length, e) } }>
+                        <ExistingDropSlot handle={function (e) { that.moveBlock(current.id, (Object.keys(current.children)).length, e) }}>
                             {/* <DropSlot handle={function (e) { that.drop(current.id, (Object.keys(current.children)).length, e) }}> */}
-                            <ExistingBlock id={current.id} handle={function (id) { that.pickupBlock(id, current.parentid, current.index) } }>
+                            <ExistingBlock id={current.id} handle={function (id) { that.pickupBlock(id, current.parentid, current.index) }}>
                                 <li className={blockclass + ' ' + badStyleClass}>
-                                    <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) } }>
+                                    <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
                                         <div className="bad-style">{badStyleMessage}</div>
                                         {startTag}
                                     </div>
                                     {b}
-                                    <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) } }>
+                                    <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
                                         {endTag}
                                     </div>
                                 </li>
@@ -760,7 +760,7 @@ class EditPage extends React.Component {
 
             b = (
                 <ul className="layout-block">
-                    <ExistingBlock id={currentId} handle={function (id) { that.pickupBlock(id, current.parentid, current.index) } }>
+                    <ExistingBlock id={currentId} handle={function (id) { that.pickupBlock(id, current.parentid, current.index) }}>
                         <li className={blockclass}>
                             {b}
                             {/* Collapsed div */}
@@ -768,7 +768,7 @@ class EditPage extends React.Component {
                                 <input type="text" id={'input-preview-edit-text-' + currentId} readOnly value={text} title="Click to change text" className="editor-text-content"
                                     onClick={function () {
                                         expandEditText(currentId);
-                                    } } />
+                                    }} />
                             </div>
                             {/* Expanded div */}
                             <div id={'expanded-edit-text-' + currentId} className="hidden">
@@ -777,12 +777,12 @@ class EditPage extends React.Component {
                                 {/* Save edited text to DB*/}
                                 <div className="edit-text-button btn-success" onClick={function () {
                                     saveEditedText(currentId);
-                                } }>Save</div>
+                                }}>Save</div>
 
                                 {/* Cancel editing text */}
                                 <div className="edit-text-button btn-danger" onClick={function () {
                                     collapseEditText(currentId);
-                                } }>Cancel</div>
+                                }}>Cancel</div>
                             </div>
                         </li>
                     </ExistingBlock>
@@ -849,12 +849,12 @@ class EditPage extends React.Component {
                     response.json().then(function (result) {
                         console.log('New block: ' + slot);
                         console.log(result);
-                        
+
                         let delay = 0;
                         if (that.state.bricksByName[slot].type === 'textwrapper') {
                             that.createBlock('text-content', result.id, 0);
                         } else {
-                                that.updateProject(that.state.htmlBlockId);
+                            that.updateProject(that.state.htmlBlockId);
                         }
                     });
                 } else {
@@ -1153,8 +1153,8 @@ class EditPage extends React.Component {
                 'Authorization': localStorage.getItem('Authorization')
             },
             body:
-            JSON.stringify({
-            })
+                JSON.stringify({
+                })
         })
             .then(function (response) {
 
@@ -1247,8 +1247,10 @@ class EditPage extends React.Component {
             if (newIndex > originalIndex) {
                 // Reduce index by 1 for correctness
                 newIndex -= 1;
-            } else if (newIndex === originalIndex) {
+            }
+            if (newIndex === originalIndex) {
                 // Same parent, same index, so do nothing
+                console.log('Same parent, do nothing')
                 return;
             }
         }
@@ -1372,36 +1374,35 @@ class EditPage extends React.Component {
                     }
 
                     {this.state.bricksByName !== undefined &&
-                        <div>
+                        <div className="bricks-panel">
+                            {/* <h3>Click and drag one of these blocks into the right!</h3> */}
                             <div>
-                                <Block name={"div"} handler={that.pickup} title={this.state.bricksByName['div'].description}/>
-                                <Block name={"p"} handler={that.pickup} title={this.state.bricksByName['p'].description}/>
+                                <Block name={"div"} handler={that.pickup} title={this.state.bricksByName['div'].description} />
+
                             </div>
                             <div>
-                                <Block name={"img"} handler={that.pickup} title={this.state.bricksByName['img'].description}/>
+                                <Block name={"img"} handler={that.pickup} title={this.state.bricksByName['img'].description} />
                                 <Block name={"text-content"} handler={that.pickup} title={this.state.bricksByName['text-content'].description}>
                                     <input type="text" name="lname" disabled value="text" className="short-text-box" />
                                 </Block>
                             </div>
                             <div>
-                                <Block name={"h1"} handler={that.pickup} title={this.state.bricksByName['h1'].description}/>
-                                <Block name={"h2"} handler={that.pickup} title={this.state.bricksByName['h2'].description}/>
-                                <Block name={"h3"} handler={that.pickup} title={this.state.bricksByName['h3'].description}/>
-                                <Block name={"h4"} handler={that.pickup} title={this.state.bricksByName['h4'].description}/>
+                                <div>
+                                    <Block name={"p"} handler={that.pickup} title={this.state.bricksByName['p'].description} />
+                                </div>
+                                <Block name={"h1"} handler={that.pickup} title={this.state.bricksByName['h1'].description} />
+                                <Block name={"h2"} handler={that.pickup} title={this.state.bricksByName['h2'].description} />
+                                <Block name={"h3"} handler={that.pickup} title={this.state.bricksByName['h3'].description} />
+                                <Block name={"h4"} handler={that.pickup} title={this.state.bricksByName['h4'].description} />
                             </div>
                             <div>
+                                <Block name={"ul"} handler={that.pickup} title={this.state.bricksByName['ul'].description} />
+                                <Block name={"ol"} handler={that.pickup} title={this.state.bricksByName['ol'].description} />
                                 <ul>
-                                    <li>
-                                        <Block name={"ul"} handler={that.pickup} title={this.state.bricksByName['ul'].description}/>
-                                        <Block name={"ol"} handler={that.pickup} title={this.state.bricksByName['ol'].description}/>
-                                        <ul>
-                                            <li><Block name={"li"} handler={that.pickup} title={this.state.bricksByName['li'].description}/></li>
-                                        </ul>
-                                    </li>
-                                    
+                                    <li><Block name={"li"} handler={that.pickup} title={this.state.bricksByName['li'].description} /></li>
                                 </ul>
                             </div>
-                    </div>
+                        </div>
                     }
                 </div>
                 <div className="half-width draggable-space">

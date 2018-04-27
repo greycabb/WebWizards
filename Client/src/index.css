@@ -430,3 +430,7 @@ textarea {
   border: 2px double red;
   background-color: darkred;
 }
+.bricks-panel {
+  margin-left: 60%;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+}

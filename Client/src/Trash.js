@@ -50,13 +50,13 @@ class Trash extends Component {
       <div>
         {!isOverCurrent &&
           <div className="trash-bin">
-              <img src={img} width="50px"/>
+              <img src={img} width="100px"/>
           </div>
         }
         
         {isOverCurrent &&
           <div className="trash-bin trash-bin-hover">
-            <img src={img2} width="50px" />
+            <img src={img2} width="100px" />
           </div>
         }
       </div>
