@@ -683,28 +683,24 @@ class EditPage extends React.Component {
 
 
                     {!(['head', 'body', 'title', 'html'].includes(current.blocktype)) &&
-                        <ExistingDropSlot handle={function (e) { that.moveBlock(current.id, current.index, locationInLayout) }}>
-                            {/* <DropSlot handle={function (e) { that.drop(current.id, (Object.keys(current.children)).length, e) }}> */}
-                            <ExistingBlock id={current.id} handle={function (id) { that.pickupBlock(id, current.parentid, current.index, locationInLayout) }}>
-                                <li className={blockclass + ' ' + badStyleClass}>
-                                    <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
-                                        <div className="bad-style">{badStyleMessage}</div>
-                                        {startTag}
-                                    </div>
-                                    {Object.keys(current.children).length === 0 && (current.blocktype === 'li' || that.state.bricksByName[current.blocktype].type === 'textwrapper') &&
-                                        <button className="black-text" onClick={function(e) {e.stopPropagation(); that.createBlock('text-content', current.id, 0); }}>Write...</button>
-                                    }
-                                    {b}
-                                    {(current.blocktype === 'ul' || current.blocktype === 'ol') &&
-                                        <button className="black-text" onClick={function(e) {e.stopPropagation(); that.createBlock('li', current.id, Object.keys(current.children).length); }}>Add &lt;li&gt;</button>
-                                    }
-                                    <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
-                                        {endTag}
-                                    </div>
-                                </li>
-                            </ExistingBlock>
-                            {/* </DropSlot> */}
-                        </ExistingDropSlot>
+                       <ExistingBlock id={current.id} handle={function (id) { that.pickupBlock(id, current.parentid, current.index, locationInLayout) }}>
+                            <li className={blockclass + ' ' + badStyleClass}>
+                                <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
+                                    <div className="bad-style">{badStyleMessage}</div>
+                                    {startTag}
+                                </div>
+                                {Object.keys(current.children).length === 0 && (current.blocktype === 'li' || that.state.bricksByName[current.blocktype].type === 'textwrapper') &&
+                                    <button className="black-text" onClick={function(e) {e.stopPropagation(); that.createBlock('text-content', current.id, 0); }}>Write...</button>
+                                }
+                                {b}
+                                {(current.blocktype === 'ul' || current.blocktype === 'ol') &&
+                                    <button className="black-text" onClick={function(e) {e.stopPropagation(); that.createBlock('li', current.id, Object.keys(current.children).length); }}>Add &lt;li&gt;</button>
+                                }
+                                <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
+                                    {endTag}
+                                </div>
+                            </li>
+                        </ExistingBlock>
 
                     }
                 </ul>
@@ -778,34 +774,49 @@ class EditPage extends React.Component {
             let currentId = current.id;
 
             b = (
-                <ul className="layout-block">
-                    <ExistingBlock id={currentId} handle={function (id) { that.pickupBlock(id, current.parentid, current.index, locationInLayout) }}>
-                        <li className={blockclass}>
-                            {b}
-                            {/* Collapsed div */}
-                            <div id={'collapsed-edit-text-' + currentId}>
-                                <input type="text" id={'input-preview-edit-text-' + currentId} readOnly value={text} title="Click to change text" className="editor-text-content"
-                                    onClick={function () {
-                                        expandEditText(currentId);
-                                    }} />
-                            </div>
-                        </li>
-                        {/* Expanded div */}
-                        <div id={'expanded-edit-text-' + currentId} className="hidden">
-                            <textarea rows="4" cols="20" maxLength="1000" className="editor-text-content editor-text-expanded" id={'input-edit-text-' + currentId} defaultValue={text} />
 
-                            {/* Save edited text to DB*/}
-                            <div className="edit-text-button btn-success" onClick={function () {
-                                saveEditedText(currentId);
-                            }}>Save</div>
+                <div>
+                    <ul className="layout-block">
+                        <ExistingBlock id={currentId} handle={function (id) { that.pickupBlock(id, current.parentid, current.index, locationInLayout) }}>
+                            <li className={blockclass}>
+                                {b}
+                                {/* Collapsed div */}
+                                <div id={'collapsed-edit-text-' + currentId}>
+                                    <input type="text" id={'input-preview-edit-text-' + currentId} readOnly value={text} title="Click to change text" className="editor-text-content"
+                                        onClick={function () {
+                                            expandEditText(currentId);
+                                            that.setState({
+                                                forbidDrag: true
+                                            });
+                                        }} />
+                                </div>
+                            </li>
+                        </ExistingBlock>
+                    </ul>
+                    {/* Expanded div */}
+                    <div id={'expanded-edit-text-' + currentId} className="hidden text-expanded-container">
+                        <textarea rows="4" cols="20" maxLength="1000" className="editor-text-content editor-text-expanded" id={'input-edit-text-' + currentId} defaultValue={text} />
 
-                            {/* Cancel editing text */}
-                            <div className="edit-text-button btn-danger" onClick={function () {
-                                collapseEditText(currentId);
-                            }}>Cancel</div>
-                        </div>
-                    </ExistingBlock>
-                </ul>
+                        {/* Save edited text to DB*/}
+                        <div className="edit-text-button btn-success" onClick={function () {
+                            saveEditedText(currentId);
+                            that.setState({
+                                forbidDrag: false
+                            });
+                        }}>Save</div>
+
+                        {/* Cancel editing text */}
+                        <div className="edit-text-button btn-danger" onClick={function () {
+                            collapseEditText(currentId);
+                            that.setState({
+                                forbidDrag: false
+                            });
+                        }}>Cancel</div>
+
+                    </div>
+                </div>
+
+
             );
         }
         return b;
@@ -1402,8 +1413,6 @@ class EditPage extends React.Component {
 
 
         let that = this;
-
-
 
         var urlstring = "#/project/" + this.state.projectId;
 

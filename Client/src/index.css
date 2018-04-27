@@ -71,6 +71,8 @@ h1 {
 
 .black-text {
   color: rgb(40,40,40);
+  margin-top: 5px;
+  font-style: italic;
 }
 
 .green-button {
@@ -394,7 +396,7 @@ textarea {
 }
 .edit-text-button {
   border-radius: 5px;
-  width: 50px;
+  width: 60px;
   padding: 3px;
   text-align: center;
   margin: auto;
