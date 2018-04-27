@@ -10,6 +10,7 @@ import DropSlot from './DropSlot';
 import Trash from './Trash';
 import ExistingBlock from './ExistingBlock';
 import ExistingDropSlot from './ExistingDropSlot';
+import SettingsModal from './SettingsModal';
 
 class EditPage extends React.Component {
     constructor(props) {
@@ -26,6 +27,8 @@ class EditPage extends React.Component {
         let pid = this.props.location.query.project;
 
         this.state = {
+
+            settingsToggled: false,
 
             styleToggled: false,
 
@@ -120,6 +123,8 @@ class EditPage extends React.Component {
 
         this.cssModalToggleOn = this.cssModalToggleOn.bind(this);
         this.cssModalToggleOff = this.cssModalToggleOff.bind(this);
+        this.settingToggle = this.settingToggle.bind(this);
+        this.settingsHandler = this.settingsHandler.bind(this);
         this.handleProjectUpdates = this.handleProjectUpdates.bind(this);
 
         this.deleteBlock = this.deleteBlock.bind(this);
@@ -642,9 +647,6 @@ class EditPage extends React.Component {
         }
         if (current.blocktype !== 'text-content') {
             let startTag = '<' + current.blocktype + '>';
-            // if (current.id !== undefined) {
-            //     startTag = startTag + '     ' + current.id;//.slice(-2);
-            // }
             let endTag = '</' + current.blocktype + '>';
 
             if (current.blocktype === 'img' || that.state.bricksByName[current.blocktype] !== undefined && that.state.bricksByName[current.blocktype].self_closing === true) {
@@ -678,7 +680,7 @@ class EditPage extends React.Component {
                             </div>
                         </li>
                     }
-                    
+
 
                     {!(['head', 'body', 'title', 'html'].includes(current.blocktype)) &&
                         <ExistingDropSlot handle={function (e) { that.moveBlock(current.id, current.index, locationInLayout) }}>
@@ -689,7 +691,13 @@ class EditPage extends React.Component {
                                         <div className="bad-style">{badStyleMessage}</div>
                                         {startTag}
                                     </div>
+                                    {Object.keys(current.children).length === 0 && (current.blocktype === 'li' || that.state.bricksByName[current.blocktype].type === 'textwrapper') &&
+                                        <button className="black-text" onClick={function(e) {e.stopPropagation(); that.createBlock('text-content', current.id, 0); }}>Write...</button>
+                                    }
                                     {b}
+                                    {/* {(current.blocktype === 'ul' || current.blocktype === 'ol') &&
+                                        <button className="black-text" onClick={function(e) {e.stopPropagation(); that.createBlock('li', current.id, Object.keys(current.children).length); }}>Add line</button>
+                                    } */}
                                     <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
                                         {endTag}
                                     </div>
@@ -715,7 +723,7 @@ class EditPage extends React.Component {
             function expandEditText(blockId, newText) {
                 let blockShow = document.getElementById('expanded-edit-text-' + blockId);
                 let blockHide = document.getElementById('collapsed-edit-text-' + blockId);
-                blockHide.classList.add('hidden')
+                //blockHide.classList.add('hidden')
                 blockShow.classList.remove('hidden');
             }
             // Collapse text to be what it was before
@@ -781,21 +789,21 @@ class EditPage extends React.Component {
                                         expandEditText(currentId);
                                     }} />
                             </div>
-                            {/* Expanded div */}
-                            <div id={'expanded-edit-text-' + currentId} className="hidden">
-                                <textarea rows="4" cols="20" maxLength="1000" className="editor-text-content editor-text-expanded" id={'input-edit-text-' + currentId} defaultValue={text} />
-
-                                {/* Save edited text to DB*/}
-                                <div className="edit-text-button btn-success" onClick={function () {
-                                    saveEditedText(currentId);
-                                }}>Save</div>
-
-                                {/* Cancel editing text */}
-                                <div className="edit-text-button btn-danger" onClick={function () {
-                                    collapseEditText(currentId);
-                                }}>Cancel</div>
-                            </div>
                         </li>
+                        {/* Expanded div */}
+                        <div id={'expanded-edit-text-' + currentId} className="hidden">
+                            <textarea rows="4" cols="20" maxLength="1000" className="editor-text-content editor-text-expanded" id={'input-edit-text-' + currentId} defaultValue={text} />
+
+                            {/* Save edited text to DB*/}
+                            <div className="edit-text-button btn-success" onClick={function () {
+                                saveEditedText(currentId);
+                            }}>Save</div>
+
+                            {/* Cancel editing text */}
+                            <div className="edit-text-button btn-danger" onClick={function () {
+                                collapseEditText(currentId);
+                            }}>Cancel</div>
+                        </div>
                     </ExistingBlock>
                 </ul>
             );
@@ -861,11 +869,9 @@ class EditPage extends React.Component {
                         console.log('New block: ' + slot);
                         console.log(result);
 
-                        if (that.state.bricksByName[slot].type === 'textwrapper') {
+                        if (slot === 'title') {//that.state.bricksByName[slot].type === 'textwrapper') {
                             that.updateProject(that.state.htmlBlockId);
-                            setTimeout(function () {
-                                that.createBlock('text-content', result.id, 0);
-                            }, 600);
+                            that.createBlock('text-content', result.id, 0);
                         } else {
                             that.updateProject(that.state.htmlBlockId);
                         }
@@ -1373,6 +1379,18 @@ class EditPage extends React.Component {
             })
     }
 
+    settingToggle() {
+        this.setState({
+            settingsToggled: !this.state.settingsToggled
+        })
+    }
+
+    settingsHandler(result) {
+        this.setState({
+            projectData: result
+        });
+    }
+
 
 
     //____________________________________________________________________________
@@ -1401,7 +1419,7 @@ class EditPage extends React.Component {
                         {this.state.projectId != undefined && this.state.projectData != undefined &&
                             <span>
                                 <a href={urlstring} target="_blank"><button className="btn yellow-button">View Page</button></a>
-                                <button className="btn yellow-button">Settings</button>
+                                <button className="btn yellow-button" onClick={this.settingToggle}>Settings</button>
                                 <h2 className="editor-project-title">{this.state.projectData.name}</h2>
                             </span>
                         }
@@ -1411,35 +1429,32 @@ class EditPage extends React.Component {
                     }
 
                     {this.state.bricksByName !== undefined &&
-                        <div>
+                        <table>
                             {/* <h3>Click and drag one of these blocks into the right!</h3> */}
-                            <div>
+                            <td className="block-choices-category-column">
                                 <Block name={"div"} handler={that.pickup} title={this.state.bricksByName['div'].description} />
-
-                            </div>
-                            <div>
-                                <Block name={"img"} handler={that.pickup} title={this.state.bricksByName['img'].description} />
-                                <Block name={"text-content"} handler={that.pickup} title={this.state.bricksByName['text-content'].description}>
-                                    <input type="text" name="lname" disabled value="text" className="short-text-box" />
-                                </Block>
-                            </div>
-                            <div>
-                                <div>
-                                    <Block name={"p"} handler={that.pickup} title={this.state.bricksByName['p'].description} />
-                                </div>
-                                <Block name={"h1"} handler={that.pickup} title={this.state.bricksByName['h1'].description} />
-                                <Block name={"h2"} handler={that.pickup} title={this.state.bricksByName['h2'].description} />
-                                <Block name={"h3"} handler={that.pickup} title={this.state.bricksByName['h3'].description} />
-                                <Block name={"h4"} handler={that.pickup} title={this.state.bricksByName['h4'].description} />
-                            </div>
-                            <div>
+                                <br />
                                 <Block name={"ul"} handler={that.pickup} title={this.state.bricksByName['ul'].description} />
                                 <Block name={"ol"} handler={that.pickup} title={this.state.bricksByName['ol'].description} />
                                 <ul>
                                     <li><Block name={"li"} handler={that.pickup} title={this.state.bricksByName['li'].description} /></li>
                                 </ul>
-                            </div>
-                        </div>
+                            </td>
+                            <td>
+                                <Block name={"img"} handler={that.pickup} title={this.state.bricksByName['img'].description} />
+                                <Block name={"text-content"} handler={that.pickup} title={this.state.bricksByName['text-content'].description}>
+                                    <input type="text" name="lname" disabled value="text" className="short-text-box" />
+                                </Block>
+                            </td>
+                            <td>
+                                <Block name={"p"} handler={that.pickup} title={this.state.bricksByName['p'].description} />
+                                <br />
+                                <Block name={"h1"} handler={that.pickup} title={this.state.bricksByName['h1'].description} />
+                                <Block name={"h2"} handler={that.pickup} title={this.state.bricksByName['h2'].description} />
+                                <Block name={"h3"} handler={that.pickup} title={this.state.bricksByName['h3'].description} />
+                                <Block name={"h4"} handler={that.pickup} title={this.state.bricksByName['h4'].description} />
+                            </td>
+                        </table>
                     }
                 </div>
                 <div className="half-width draggable-space">
@@ -1458,6 +1473,9 @@ class EditPage extends React.Component {
                     <div>
                         <CSSModal increasePointsBy={this.increasePointsBy} currBlock={this.state.styleToggledBlock} toggle={this.cssModalToggleOff} handleChange={this.handleProjectUpdates} />
                     </div>
+                }
+                {this.state.settingsToggled &&
+                    <SettingsModal handle={this.settingsHandler} toggle={this.settingToggle} private={this.state.projectData.private} name={this.state.projectData.name} id={this.state.projectId} />
                 }
 
             </div>

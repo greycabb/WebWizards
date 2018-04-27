@@ -7,14 +7,24 @@ export default class AvatarDisplay extends React.Component {
 
         console.log(localStorage.getItem("USERDATA"));
         super(props);
+
         this.state = {
             toggle: false,
             isHovered: false,
-            currImage: JSON.parse(localStorage.getItem("USERDATA")).avatar
+            currImage: this.props.avatar
         }
         this.toggle = this.toggle.bind(this);
         this.handleHover = this.handleHover.bind(this);
         this.handleNewImage = this.handleNewImage.bind(this);
+    }
+
+    isJsonString(str) {
+        try {
+            JSON.parse(str);
+        } catch (e) {
+            return false;
+        }
+        return true;
     }
 
     toggle(event) {
@@ -46,13 +56,13 @@ export default class AvatarDisplay extends React.Component {
                     onMouseEnter={()=> {this.handleHover(true)}}  
                     onMouseLeave={()=> {this.handleHover(false)}}
                     onClick={this.toggle}>
-                {this.state.isHovered &&
+                {this.state.isHovered && !this.props.isProfilePage &&
                     <div className="profile-picture-hover">
                         Change Avatar
                     </div>
                 }              
                 </div>
-                {this.state.toggle &&
+                {this.state.toggle && !this.props.isProfilePage &&
                 <AvatarModal toggle={this.toggle} newImage={this.handleNewImage}/>
                 }
             </div>

@@ -208,7 +208,7 @@ export default class MainPage extends React.Component {
                         <div className="main-content">
                             <CreateBanner />
                             <div className="profile-and-awards">
-                                <AvatarDisplay />
+                                <AvatarDisplay avatar={this.state.userdata.avatar}/>
                                 <div className="profile-name">
                                     <PointBar points={this.state.userdata.points}/>
                                 </div>
