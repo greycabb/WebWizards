@@ -11,6 +11,7 @@ import Trash from './Trash';
 import ExistingBlock from './ExistingBlock';
 import ExistingDropSlot from './ExistingDropSlot';
 import SettingsModal from './SettingsModal';
+import OutsideAlerter from './OutsideAlerter';
 
 class EditPage extends React.Component {
     constructor(props) {
@@ -794,26 +795,28 @@ class EditPage extends React.Component {
                         </ExistingBlock>
                     </ul>
                     {/* Expanded div */}
-                    <div id={'expanded-edit-text-' + currentId} className="hidden text-expanded-container">
-                        <textarea rows="4" cols="20" maxLength="1000" className="editor-text-content editor-text-expanded" id={'input-edit-text-' + currentId} defaultValue={text} />
+                    <OutsideAlerter handler={() => saveEditedText(currentId)}>
+                        <div id={'expanded-edit-text-' + currentId} className="hidden text-expanded-container">
+                            <textarea rows="4" cols="20" maxLength="1000" className="editor-text-content editor-text-expanded" id={'input-edit-text-' + currentId} defaultValue={text} />
 
-                        {/* Save edited text to DB*/}
-                        <div className="edit-text-button btn-success" onClick={function () {
-                            saveEditedText(currentId);
-                            that.setState({
-                                forbidDrag: false
-                            });
-                        }}>Save</div>
+                            {/* Save edited text to DB*/}
+                            <div className="edit-text-button btn-success" onClick={function () {
+                                saveEditedText(currentId);
+                                that.setState({
+                                    forbidDrag: false
+                                });
+                            }}>Save</div>
 
-                        {/* Cancel editing text */}
-                        <div className="edit-text-button btn-danger" onClick={function () {
-                            collapseEditText(currentId);
-                            that.setState({
-                                forbidDrag: false
-                            });
-                        }}>Cancel</div>
+                            {/* Cancel editing text */}
+                            <div className="edit-text-button btn-danger" onClick={function () {
+                                collapseEditText(currentId);
+                                that.setState({
+                                    forbidDrag: false
+                                });
+                            }}>Cancel</div>
 
-                    </div>
+                        </div>
+                    </OutsideAlerter>
                 </div>
 
 
