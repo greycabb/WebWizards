@@ -449,3 +449,7 @@ textarea {
   left: 35px;
   background-color: rgb(48,176,76, 0.8);
 }
+
+.block-choices-category-column {
+  width: 33%;
+}

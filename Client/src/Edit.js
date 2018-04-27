@@ -1387,35 +1387,32 @@ class EditPage extends React.Component {
                     }
 
                     {this.state.bricksByName !== undefined &&
-                        <div>
+                        <table>
                             {/* <h3>Click and drag one of these blocks into the right!</h3> */}
-                            <div>
+                            <td className="block-choices-category-column">
                                 <Block name={"div"} handler={that.pickup} title={this.state.bricksByName['div'].description} />
-
-                            </div>
-                            <div>
-                                <Block name={"img"} handler={that.pickup} title={this.state.bricksByName['img'].description} />
-                                <Block name={"text-content"} handler={that.pickup} title={this.state.bricksByName['text-content'].description}>
-                                    <input type="text" name="lname" disabled value="text" className="short-text-box" />
-                                </Block>
-                            </div>
-                            <div>
-                                <div>
-                                    <Block name={"p"} handler={that.pickup} title={this.state.bricksByName['p'].description} />
-                                </div>
-                                <Block name={"h1"} handler={that.pickup} title={this.state.bricksByName['h1'].description} />
-                                <Block name={"h2"} handler={that.pickup} title={this.state.bricksByName['h2'].description} />
-                                <Block name={"h3"} handler={that.pickup} title={this.state.bricksByName['h3'].description} />
-                                <Block name={"h4"} handler={that.pickup} title={this.state.bricksByName['h4'].description} />
-                            </div>
-                            <div>
+                                <br />
                                 <Block name={"ul"} handler={that.pickup} title={this.state.bricksByName['ul'].description} />
                                 <Block name={"ol"} handler={that.pickup} title={this.state.bricksByName['ol'].description} />
                                 <ul>
                                     <li><Block name={"li"} handler={that.pickup} title={this.state.bricksByName['li'].description} /></li>
                                 </ul>
-                            </div>
-                        </div>
+                            </td>
+                            <td>
+                                <Block name={"img"} handler={that.pickup} title={this.state.bricksByName['img'].description} />
+                                <Block name={"text-content"} handler={that.pickup} title={this.state.bricksByName['text-content'].description}>
+                                    <input type="text" name="lname" disabled value="text" className="short-text-box" />
+                                </Block>
+                            </td>
+                            <td>
+                                <Block name={"p"} handler={that.pickup} title={this.state.bricksByName['p'].description} />
+                                <br />
+                                <Block name={"h1"} handler={that.pickup} title={this.state.bricksByName['h1'].description} />
+                                <Block name={"h2"} handler={that.pickup} title={this.state.bricksByName['h2'].description} />
+                                <Block name={"h3"} handler={that.pickup} title={this.state.bricksByName['h3'].description} />
+                                <Block name={"h4"} handler={that.pickup} title={this.state.bricksByName['h4'].description} />
+                            </td>
+                        </table>
                     }
                 </div>
                 <div className="half-width draggable-space">
