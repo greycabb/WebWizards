@@ -795,7 +795,6 @@ class EditPage extends React.Component {
                         </ExistingBlock>
                     </ul>
                     {/* Expanded div */}
-                    <OutsideAlerter handler={() => saveEditedText(currentId)}>
                         <div id={'expanded-edit-text-' + currentId} className="hidden text-expanded-container">
                             <textarea rows="4" cols="20" maxLength="1000" className="editor-text-content editor-text-expanded" id={'input-edit-text-' + currentId} defaultValue={text} />
 
@@ -816,7 +815,6 @@ class EditPage extends React.Component {
                             }}>Cancel</div>
 
                         </div>
-                    </OutsideAlerter>
                 </div>
 
 
