@@ -269,12 +269,14 @@ class EditPage extends React.Component {
                         // rotate the result so that it's a dictionary with names as keys
                         for (var i = 0; i < result.length; i++) {
                             let current = result[i];
+                            console.log(current);
                             brickContainer[current.name] = {
                                 'id': i,
                                 'translation': current.translation,
                                 'description': current.description,
                                 'type': current.type,
-                                'unallowed_children': current.unallowed_children
+                                'unallowed_children': current.unallowed_children,
+                                'self_closing': current.self_closing
                             }
                         }
                         console.log(brickContainer);
@@ -644,6 +646,13 @@ class EditPage extends React.Component {
             //     startTag = startTag + '     ' + current.id;//.slice(-2);
             // }
             let endTag = '</' + current.blocktype + '>';
+
+            if (current.blocktype === 'img' || that.state.bricksByName[current.blocktype] !== undefined && that.state.bricksByName[current.blocktype].self_closing === true) {
+                startTag = '<' + current.blocktype + ' />';
+                endTag = '';
+            }
+
+
             if (current.blocktype === undefined) {
                 setTimeout(function () {
                     that.makeLayout();
@@ -850,9 +859,10 @@ class EditPage extends React.Component {
                         console.log('New block: ' + slot);
                         console.log(result);
 
-                        let delay = 0;
                         if (that.state.bricksByName[slot].type === 'textwrapper') {
-                            that.createBlock('text-content', result.id, 0);
+                            setTimeout(function() {
+                                that.createBlock('text-content', result.id, 0);
+                            }, 600);
                         } else {
                             that.updateProject(that.state.htmlBlockId);
                         }
@@ -1096,7 +1106,7 @@ class EditPage extends React.Component {
             console.log('sb undefined');
             if (this.state.selectedBlock !== undefined) {
                 console.log('move');
-                // If a block is selected, call moveBlock instead
+                // If a block is selected, call move block instead
                 this.moveBlock(parentId, index);
             }
             this.setState({
@@ -1374,7 +1384,7 @@ class EditPage extends React.Component {
                     }
 
                     {this.state.bricksByName !== undefined &&
-                        <div className="bricks-panel">
+                        <div>
                             {/* <h3>Click and drag one of these blocks into the right!</h3> */}
                             <div>
                                 <Block name={"div"} handler={that.pickup} title={this.state.bricksByName['div'].description} />
