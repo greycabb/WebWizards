@@ -2,7 +2,6 @@ import React from 'react';
 import { hashHistory, Link } from 'react-router';
 import Nav from './Nav';
 import CreateBanner from './CreateBanner';
-import img from './img/ProfilePictures/Cow.png';
 import AvatarDisplay from './AvatarDisplay';
 import PointBar from './PointBar';
 
@@ -10,19 +9,11 @@ export default class ProfilePage extends React.Component {
     constructor(props) {
         super(props);
 
-        var mobileView = false;
-
-        if (window.innerWidth < 801) {
-            console.log(window.innerWidth);
-            mobileView = true;
-        }
-
         this.state = {
             'error': undefined,
             'userdata': undefined,
             'projects': undefined, // List of projects
-            'width': window.innerWidth,
-            'mobileView': mobileView
+            'width': window.innerWidth
         };
 
         fetch('https://api.webwizards.me/v1/users?name=' + this.props.params.username, {
@@ -139,7 +130,7 @@ export default class ProfilePage extends React.Component {
 
         return (
             <div>
-                {!this.state.mobileView && this.state.userdata && this.state.userdata.userName !== undefined &&
+                {this.state.userdata && this.state.userdata.userName !== undefined &&
                     <div>
                         <nav className="navbar navbar-default header">
                             <Link to="/main"><h1 className="title navbar-title disable-select">Web Wizards</h1></Link>
@@ -161,12 +152,6 @@ export default class ProfilePage extends React.Component {
                                 </div>
                             </div>
                         </div>
-                    </div>
-                }
-                {this.state.mobileView &&
-                    <div id="mobile-view">
-                        <img src={img} width="400px"/><br />
-                        Oops! Web Wizards only works on a computer!
                     </div>
                 }
             </div>
