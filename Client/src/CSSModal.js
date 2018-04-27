@@ -84,7 +84,8 @@ export default class CSSModal extends React.Component {
                                                 buttons: buttons,
                                                 cssGroups: cssGroups,
                                                 allCssGroupData: result2,
-                                                attributes: attributesBoxes
+                                                attributes: attributesBoxes,
+                                                possibleAttributes: attributes
                                             });
                                         });
 
@@ -124,7 +125,7 @@ export default class CSSModal extends React.Component {
 
         var found = false;
 
-        var currAttributes = that.state.currAppliedAttributes;
+        let currAttributes = that.state.currAppliedAttributes;
 
         if (!currAttributes) {
             currAttributes = [];
@@ -159,9 +160,37 @@ export default class CSSModal extends React.Component {
 
                 if (response.ok) {
                     response.json().then((result) => {
+
+                        var attributesBoxes = [];
+
+                        if (this.state.possibleAttributes) {
+                            // Add attribute input boxes here
+                            for (var i = 0; i < this.state.possibleAttributes.length; i ++) {
+                                var current = this.state.possibleAttributes[i];
+                                // Check to see if this attribute currently exists
+                                var existing = "";
+                                console.log(currAttributes);
+                                for (var j = 0; j < currAttributes.length; j ++) {
+                                    if (currAttributes[j].includes(current)) {
+                                        existing = currAttributes[j];
+                                        // only want value
+                                        // "alt='a value'" ==> "a value"
+                                        existing = existing.substring(current.length + 2, existing.length - 1);
+                                        break;
+                                    }
+                                }
+                                var useImagePicker = false;
+                                if (current == "src") {
+                                    useImagePicker = true;
+                                }
+                                attributesBoxes.push(<AttributeInputBox useImagePicker={useImagePicker} key={current} attributeName={current} val={existing} handle={that.attributeHandler} />);
+                            }
+                        }
                         this.props.handleChange(result);
+                        this.props.increasePointsBy(2);
                         this.setState({
-                            currAppliedAttributes: currAttributes
+                            currAppliedAttributes: currAttributes,
+                            attributes: attributesBoxes
                         });
                     });
                 } else {
@@ -250,6 +279,7 @@ export default class CSSModal extends React.Component {
     }
 
     handleValueChange(attribute, value) {
+
         //Grab current value
         var curr = this.state.currAppliedCss;
         var exists = false;
@@ -260,6 +290,8 @@ export default class CSSModal extends React.Component {
                 curr[i].value = value;
             }
         }
+
+        this.props.increasePointsBy(1);
 
         console.log(attribute);
         console.log(value);

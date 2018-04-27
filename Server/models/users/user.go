@@ -82,7 +82,7 @@ func (nu *NewUser) ToUser() (*User, error) {
 	//Setting User Structure's Time field
 	user.DateJoined = time.Now()
 	user.Points = 0
-	user.Avatar = "https://webwizards.me/Avatars/Lizard.png"
+	user.Avatar = "https://webwizards.me/img/Avatars/Lizard.png"
 	return user, err
 }
 

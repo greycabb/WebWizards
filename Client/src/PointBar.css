@@ -1,0 +1,59 @@
+#point-bar-container {
+    min-width: calc(80vw - 150px);
+    min-height: 40px;
+    background-color: white;
+    border-radius: 10px;
+    -webkit-box-shadow: 0px 2px 1px 2px rgba(156,151,156,1);
+    -moz-box-shadow: 0px 2px 1px 2px rgba(156,151,156,1);
+    box-shadow: 0px 2px 1px 2px rgba(156,151,156,1);
+}
+
+#point-bar-fill {
+    background-color: #196AB5;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    min-height: 40px;
+    left: 0px;
+    text-align: right;
+    padding-right: 20px;
+    font-size: 20px;
+    line-height: 40px;
+    color: white;
+}
+
+.point-tooltip-container {
+    margin-top: 5px;
+    text-align: right;
+    font-size: 14px;
+    color: gray;
+}
+
+.tier-display {
+    margin-top: 40px;
+    color: #196AB5;
+    font-size: 30px;
+    text-transform: uppercase;
+    font-weight: 800;
+    display: inline-block;
+}
+
+.points-display {
+    position: relative;
+    display: inline-block;
+    margin-left: 20px;
+}
+
+#point-tooltip {
+    font-size: 15px;
+    color: gray;
+    z-index: 4;
+    position: absolute;
+    width: 300px;
+    padding: 30px;
+    background-color: white;
+    -webkit-box-shadow: 0px 2px 1px 2px rgba(156,151,156,0.5);
+    -moz-box-shadow: 0px 2px 1px 2px rgba(156,151,156,0.5);
+    box-shadow: 0px 2px 1px 2px rgba(156,151,156,0.5);
+    right: 21vw;
+    transform: translateY(-105px);
+}

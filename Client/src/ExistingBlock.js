@@ -7,11 +7,31 @@ import { DragSource } from 'react-dnd'
 
 const blockSource = {
 
+    canDrag(props) {
+
+        var elements = document.getElementsByClassName("text-expanded-container");
+
+        if (elements.length > 0) {
+
+            var hasExpanded = false;
+
+            for (var i = 0; i < elements.length; i ++) {
+                if (!elements[i].classList.contains("hidden")) {
+                    hasExpanded = true;
+                    break;
+                };
+            }
+            return !hasExpanded;
+        }
+	},
+
     beginDrag(props) {
-        props.handle(props.id)
-		return {
-			id: props.id,
-		}
+
+        props.handle(props.id);
+        return {
+            id: props.id,
+        }
+
     }
     
 }
@@ -29,6 +49,9 @@ class Block extends React.Component {
         super(props);
     }
 
+    componentWillReceiveProps(nextProps) {
+        this.setState({ forbidDrag: nextProps.forbidDrag });  
+    }
 
     render() {
 
@@ -46,5 +69,6 @@ Block.propTypes = {
     connectDragSource: PropTypes.func.isRequired,
     isDragging: PropTypes.bool.isRequired
   };
+
 
 export default DragSource(BlockTypes.EXISTING, blockSource, collect)(Block);

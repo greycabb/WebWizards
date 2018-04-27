@@ -68,3 +68,7 @@ img.library-preview:active {
 .image-input {
     min-width: 120px;
 }
+
+.clear-button {
+    background-color: #ED3B3B !important;
+}

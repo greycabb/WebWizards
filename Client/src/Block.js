@@ -27,9 +27,9 @@ class Block extends React.Component {
         super(props);
         var classes = "brick ";
 
-        var primaryBricks = ["div", "p"];
+        var primaryBricks = ["div", "ul", "ol", "li"];
         var secondaryBricks = ["img", "text-content"];
-        var thirdBricks = ["h1", "h2", "h3", "h4"];
+        var thirdBricks = ["h1", "h2", "h3", "h4", "p"];
 
         for (var i = 0; i < primaryBricks.length; i++) {
             if (primaryBricks[i] == this.props.name) {
@@ -60,7 +60,7 @@ class Block extends React.Component {
         const { connectDragSource, isDragging } = this.props;
 
         return connectDragSource(
-            <div className={this.state.classes} id={this.props.name} >
+            <div className={this.state.classes} id={this.props.name} title={this.props.title}>
                 {this.props.name != "text-content" &&
                     <div>
                         {this.props.name}

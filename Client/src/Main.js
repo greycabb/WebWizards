@@ -3,17 +3,28 @@ import { hashHistory } from 'react-router';
 import Nav from './Nav';
 import CreateBanner from './CreateBanner';
 import img from './img/ProfilePictures/Cow.png';
+import AvatarDisplay from './AvatarDisplay';
+import PointBar from './PointBar';
 
 export default class MainPage extends React.Component {
     constructor(props) {
         super(props);
 
         // Userdata and authentication token
-        let ud = JSON.parse(localStorage.getItem('USERDATA'));
+        let ud = localStorage.getItem('USERDATA');
         let auth = localStorage.getItem('Authorization');
 
         if (!ud || !auth) {
             hashHistory.push('/login');
+        }
+        
+        var udJson;
+
+        if (this.isJsonString(ud)) {
+            udJson = JSON.parse(ud);
+        }
+        else {
+            udJson = {};
         }
 
         var mobileView = false;
@@ -25,7 +36,7 @@ export default class MainPage extends React.Component {
 
         this.state = {
             'error': undefined,
-            'userdata': ud,
+            'userdata': udJson,
             'projects': undefined, // List of projects
             'width': window.innerWidth,
             'mobileView': mobileView
@@ -42,7 +53,19 @@ export default class MainPage extends React.Component {
 
                 if (response.ok) {
                     console.log("logged in");
-                    this.getAllUserProjects();
+                    response.json().then((result) => {
+                        console.log(result);
+                        let userdata = {
+                            'userName': result.userName,
+                            'firstName': result.firstName,
+                            'lastName': result.lastName,
+                            'id': result.id,
+                            'email': result.email,
+                            'points': result.points,
+                            'avatar': result.avatar
+                        };
+                        this.getAllUserProjects(userdata);
+                    });
                 } else {
                     response.text().then(text => {
                         hashHistory.push('/login');
@@ -56,22 +79,72 @@ export default class MainPage extends React.Component {
             });
 
         if (ud) {
-            if (ud.username !== undefined) {
-                this.state.username = ud.username;
+            if (ud.userName !== undefined) {
+                this.state.userName = ud.userName;
             }
         }
         // Get project data
     }
 
+    isJsonString(str) {
+        try {
+            JSON.parse(str);
+        } catch (e) {
+            return false;
+        }
+        return true;
+    }
+
+    componentDidMount() {
+
+        let auth = localStorage.getItem('Authorization');
+
+        fetch('https://api.webwizards.me/v1/users/me', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': auth
+            }
+        })
+            .then((response) => {
+
+                if (response.ok) {
+                    console.log("logged in");
+                    response.json().then((result) => {
+                        console.log(result);
+                        let userdata = {
+                            'userName': result.userName,
+                            'firstName': result.firstName,
+                            'lastName': result.lastName,
+                            'id': result.id,
+                            'email': result.email,
+                            'points': result.points,
+                            'avatar': result.avatar
+                        };
+                        this.getAllUserProjects(userdata);
+                    });
+                } else {
+                    response.text().then(text => {
+                        hashHistory.push('/login');
+                    });
+
+                }
+            })
+            .catch(err => {
+                console.log('caught it!', err);
+                hashHistory.push('/login');
+            });
+    }
+
     // Get all projects for user
-    getAllUserProjects() {
+    getAllUserProjects(newUserData) {
+        var ud = newUserData;
         let that = this;
-        console.log(this.state.userdata);
-        if (this.state.userdata === undefined || this.state.userdata === null) {
+        if (newUserData === undefined || newUserData === null) {
             hashHistory.push('/login');
             return;
         } else {
-            fetch('https://api.webwizards.me/v1/user/projects?id=' + this.state.userdata.id, {
+            fetch('https://api.webwizards.me/v1/user/projects?id=' + newUserData.id, {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
@@ -83,8 +156,10 @@ export default class MainPage extends React.Component {
 
                     if (response.ok) {
                         response.json().then(function (result) {
-                            console.log(result);
+                            console.log(ud);
+                            localStorage.setItem('USERDATA', JSON.stringify(ud));
                             that.setState({
+                                'userdata': ud,
                                 'projects': result.reverse() // Reversed array so that newer projects appear first
                             });
                         });
@@ -127,15 +202,15 @@ export default class MainPage extends React.Component {
 
         return (
             <div>
-                {!this.state.mobileView && this.state.userdata && this.state.userdata.username !== undefined &&
+                {!this.state.mobileView && this.state.userdata && this.state.userdata.userName !== undefined &&
                     <div>
-                        <Nav username={this.state.userdata.username} />
+                        <Nav username={this.state.userdata.userName} />
                         <div className="main-content">
                             <CreateBanner />
-                            <div id="profileAndAwards" className="profile-and-awards">
-                                <div className="profile-picture"></div>
+                            <div className="profile-and-awards">
+                                <AvatarDisplay avatar={this.state.userdata.avatar}/>
                                 <div className="profile-name">
-                                    <div>My Awards</div>
+                                    <PointBar points={this.state.userdata.points}/>
                                 </div>
                             </div>
                             <div id="yourProjects" className="your-projects">

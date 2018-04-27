@@ -1,0 +1,16 @@
+.avatar-modal {
+    background-color: white !important;
+    color: gray !important;
+    width: 480px !important;
+    text-align: left;
+}
+
+.avatar-img-preview {
+    cursor: pointer;
+    margin: 5px 5px 15px 5px;
+    border: 1px solid gray;
+}
+
+.avatar-img-preview:hover {
+    filter: brightness(130%);
+}

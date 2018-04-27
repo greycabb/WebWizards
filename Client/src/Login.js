@@ -7,6 +7,15 @@ import WelcomeBanner from './WelcomeBanner';
 import FeaturedProjects from './FeaturedProjects';
 import img from './img/ProfilePictures/Cow.png';
 
+const featuredIds = [
+    "5ae257a83ebaf90001a4cb6d",
+    "5ae248fa3ebaf90001a4cb48",
+    "5ae21cd63ebaf90001a4cace",
+    "5ae214e73ebaf90001a4ca8a",
+    "5ae218893ebaf90001a4cab6",
+    "5ae2550a3ebaf90001a4cb52"
+];
+
 export default class LoginPage extends React.Component {
     constructor(props) {
         super(props);
@@ -116,11 +125,13 @@ export default class LoginPage extends React.Component {
                         console.log(result);
 
                         let userdata = JSON.stringify({
-                            'username': result.userName,
+                            'userName': result.userName,
                             'firstName': result.firstName,
                             'lastName': result.lastName,
                             'id': result.id,
-                            'email': result.email
+                            'email': result.email,
+                            'points': result.points,
+                            'avatar': result.avatar
                         });
 
                         let auth = response.headers.get('Authorization');
@@ -196,6 +207,7 @@ export default class LoginPage extends React.Component {
     }
 
     render() {
+
         //field validation
         var usernameErrors = this.validate(this.state.username, { required: true, username: true });
         var passwordErrors = this.validate(this.state.password, { required: true, minLength: 3 });
@@ -240,7 +252,7 @@ export default class LoginPage extends React.Component {
                         </div>
                     }
                     <WelcomeBanner />
-                    <FeaturedProjects />
+                    <FeaturedProjects ids={featuredIds}/>
                 </div>
                 }
                 {this.state.mobileView &&
