@@ -9,6 +9,7 @@ import (
 
 	"github.com/greycabb/WebWizards/server/models/users"
 	"github.com/greycabb/WebWizards/server/sessions"
+	"gopkg.in/mgo.v2/bson"
 )
 
 //UsersHandler handles requests for the "users" resource and
@@ -16,30 +17,18 @@ import (
 func (ctx *HandlerContext) UsersHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		//Check for authentication
-		id, err := sessions.GetSessionID(r, ctx.SigningKey)
-		if err != nil {
-			http.Error(w, fmt.Sprintf("error getting sessionID"), http.StatusUnauthorized)
-			return
-		}
-		// Get SessionState with sessionID
-		state := &SessionState{}
-		err = ctx.SessionStore.Get(id, &state)
-		if err != nil {
-			http.Error(w, fmt.Sprintf("error retrieving SessionState"), http.StatusUnauthorized)
-			return
-		}
 		//user := state.Authenticated
-		q := r.URL.Query().Get("q")
-		if q == "" {
+		id := r.URL.Query().Get("id")
+		if id == "" {
 			respond(w, make([]struct{}, 0))
 		}
-		users, err := ctx.usersStore.IdsToUsers(ctx.trie.Get(q, 20))
+		//users, err := ctx.usersStore.IdsToUsers(ctx.trie.Get(q, 20))
+		user, err := ctx.usersStore.GetByID(bson.ObjectIdHex(id))
 		if err != nil {
-			http.Error(w, fmt.Sprintf("error getting users: %v", err), http.StatusInternalServerError)
+			http.Error(w, fmt.Sprintf("error getting user: %v", err), http.StatusInternalServerError)
 			return
 		}
-		respond(w, users)
+		respond(w, user)
 	case "POST":
 		//Decode request body into users.NewUser struct
 		newUser := &users.NewUser{}
