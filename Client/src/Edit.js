@@ -713,7 +713,7 @@ class EditPage extends React.Component {
             function expandEditText(blockId, newText) {
                 let blockShow = document.getElementById('expanded-edit-text-' + blockId);
                 let blockHide = document.getElementById('collapsed-edit-text-' + blockId);
-                blockHide.classList.add('hidden')
+                //blockHide.classList.add('hidden')
                 blockShow.classList.remove('hidden');
             }
             // Collapse text to be what it was before
@@ -768,34 +768,37 @@ class EditPage extends React.Component {
             let currentId = current.id;
 
             b = (
-                <ul className="layout-block">
-                    <ExistingBlock id={currentId} handle={function (id) { that.pickupBlock(id, current.parentid, current.index) }}>
-                        <li className={blockclass}>
-                            {b}
-                            {/* Collapsed div */}
-                            <div id={'collapsed-edit-text-' + currentId}>
-                                <input type="text" id={'input-preview-edit-text-' + currentId} readOnly value={text} title="Click to change text" className="editor-text-content"
-                                    onClick={function () {
-                                        expandEditText(currentId);
-                                    }} />
-                            </div>
-                            {/* Expanded div */}
-                            <div id={'expanded-edit-text-' + currentId} className="hidden">
-                                <textarea rows="4" cols="20" maxLength="1000" className="editor-text-content editor-text-expanded" id={'input-edit-text-' + currentId} defaultValue={text} />
+                <div>
+                    <ul className="layout-block">
+                        <ExistingBlock id={currentId} handle={function (id) { that.pickupBlock(id, current.parentid, current.index) }}>
+                            <li className={blockclass}>
+                                {b}
+                                {/* Collapsed div */}
+                                <div id={'collapsed-edit-text-' + currentId}>
+                                    <input type="text" id={'input-preview-edit-text-' + currentId} readOnly value={text} title="Click to change text" className="editor-text-content"
+                                        onClick={function () {
+                                            expandEditText(currentId);
+                                        }} />
+                                </div>
+                            </li>
+                        </ExistingBlock>
+                    </ul>
+                    {/* Expanded div */}
+                    <div id={'expanded-edit-text-' + currentId} className="hidden text-expanded-container">
+                        <textarea rows="4" cols="20" maxLength="1000" className="editor-text-content editor-text-expanded" id={'input-edit-text-' + currentId} defaultValue={text} />
 
-                                {/* Save edited text to DB*/}
-                                <div className="edit-text-button btn-success" onClick={function () {
-                                    saveEditedText(currentId);
-                                }}>Save</div>
+                        {/* Save edited text to DB*/}
+                        <div className="edit-text-button btn-success" onClick={function () {
+                            saveEditedText(currentId);
+                        }}>Save</div>
 
-                                {/* Cancel editing text */}
-                                <div className="edit-text-button btn-danger" onClick={function () {
-                                    collapseEditText(currentId);
-                                }}>Cancel</div>
-                            </div>
-                        </li>
-                    </ExistingBlock>
-                </ul>
+                        {/* Cancel editing text */}
+                        <div className="edit-text-button btn-danger" onClick={function () {
+                            collapseEditText(currentId);
+                        }}>Cancel</div>
+
+                    </div>
+                </div>
             );
         }
         return b;
