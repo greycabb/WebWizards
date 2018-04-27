@@ -168,6 +168,11 @@ func (ctx *HandlerContext) ProjectHandler(w http.ResponseWriter, r *http.Request
 		if err != nil {
 			http.Error(w, fmt.Sprintf("error applying updats: %v", err), http.StatusBadRequest)
 		}
+		proj, err = ctx.projectStore.GetByProjectID(hexed)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("error finding projects: %v", err), http.StatusBadRequest)
+		}
+		respond(w, proj)
 	}
 }
 

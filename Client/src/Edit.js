@@ -10,6 +10,7 @@ import DropSlot from './DropSlot';
 import Trash from './Trash';
 import ExistingBlock from './ExistingBlock';
 import ExistingDropSlot from './ExistingDropSlot';
+import SettingsModal from './SettingsModal';
 
 class EditPage extends React.Component {
     constructor(props) {
@@ -26,6 +27,8 @@ class EditPage extends React.Component {
         let pid = this.props.location.query.project;
 
         this.state = {
+
+            settingsToggled: false,
 
             styleToggled: false,
 
@@ -120,6 +123,8 @@ class EditPage extends React.Component {
 
         this.cssModalToggleOn = this.cssModalToggleOn.bind(this);
         this.cssModalToggleOff = this.cssModalToggleOff.bind(this);
+        this.settingToggle = this.settingToggle.bind(this);
+        this.settingsHandler = this.settingsHandler.bind(this);
         this.handleProjectUpdates = this.handleProjectUpdates.bind(this);
 
         this.deleteBlock = this.deleteBlock.bind(this);
@@ -1349,6 +1354,18 @@ class EditPage extends React.Component {
             })
     }
 
+    settingToggle() {
+        this.setState({
+            settingsToggled: !this.state.settingsToggled
+        })
+    }
+
+    settingsHandler(result) {
+        this.setState({
+            projectData: result
+        });
+    }
+
 
 
     //____________________________________________________________________________
@@ -1377,7 +1394,7 @@ class EditPage extends React.Component {
                         {this.state.projectId != undefined && this.state.projectData != undefined &&
                             <span>
                                 <a href={urlstring} target="_blank"><button className="btn yellow-button">View Page</button></a>
-                                <button className="btn yellow-button">Settings</button>
+                                <button className="btn yellow-button" onClick={this.settingToggle}>Settings</button>
                                 <h2 className="editor-project-title">{this.state.projectData.name}</h2>
                             </span>
                         }
@@ -1431,6 +1448,9 @@ class EditPage extends React.Component {
                     <div>
                         <CSSModal increasePointsBy={this.increasePointsBy} currBlock={this.state.styleToggledBlock} toggle={this.cssModalToggleOff} handleChange={this.handleProjectUpdates} />
                     </div>
+                }
+                {this.state.settingsToggled &&
+                    <SettingsModal handle={this.settingsHandler} toggle={this.settingToggle} private={this.state.projectData.private} name={this.state.projectData.name} id={this.state.projectId}/>
                 }
 
             </div>
