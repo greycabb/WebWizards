@@ -107,11 +107,28 @@ export default class ImageLibrary extends React.Component {
                                     </div>
                                 </div>
                             }
-                            {this.state.viewingCategory &&
+                            {this.state.viewingCategory && this.state.currentCategory != "Web Wizards" &&
                                 <div>
                                     <div className="library-top-bar">
                                         <div id="library-back-button" className="disable-select" onClick={this.goBack}>&#x276e;</div>
                                         <h2 className="library-category-header">{this.state.currentCategory}</h2>
+                                    </div>
+                                    <div className="library-images-container">
+                                        {images}
+                                    </div>
+                                </div>
+                            }
+                            {this.state.viewingCategory && this.state.currentCategory == "Web Wizards" &&
+                                <div>
+                                    <div className="library-top-bar">
+                                        <div id="library-back-button" className="disable-select" onClick={this.goBack}>&#x276e;</div>
+                                        <h2 className="library-category-header">
+                                        Web Wi
+                                        <span onDoubleClick={() => this.handleImageChoice("https://webwizards.me/img/Web_Wizards/secret/1.png")}>z</span>
+                                        a
+                                        <span onDoubleClick={() => this.handleImageChoice("https://webwizards.me/img/Web_Wizards/secret/2.png")}>r</span>
+                                        ds
+                                        </h2>
                                     </div>
                                     <div className="library-images-container">
                                         {images}
