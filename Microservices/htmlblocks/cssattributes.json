@@ -120,7 +120,43 @@
 	},
 	"margin": {
 		"translation": "Margin",
-		"description": "Change border width",
+		"description": "Change all margin",
+		"units": "px",
+		"default": "0px",
+		"extra_options": {
+			"range": [0, 300]
+		}
+	},
+	"margin-left": {
+		"translation": "Margin left",
+		"description": "Change margin left",
+		"units": "px",
+		"default": "0px",
+		"extra_options": {
+			"range": [0, 300]
+		}
+	},
+	"margin-right": {
+		"translation": "Margin right",
+		"description": "Change margin right",
+		"units": "px",
+		"default": "0px",
+		"extra_options": {
+			"range": [0, 300]
+		}
+	},
+	"margin-top": {
+		"translation": "Margin top",
+		"description": "Change margin top",
+		"units": "px",
+		"default": "0px",
+		"extra_options": {
+			"range": [0, 300]
+		}
+	},
+	"margin-bottom": {
+		"translation": "Margin bottom",
+		"description": "Change margin bottom",
 		"units": "px",
 		"default": "0px",
 		"extra_options": {
@@ -128,8 +164,44 @@
 		}
 	},
 	"padding": {
-		"translation": "Margin",
-		"description": "Change border width",
+		"translation": "Padding",
+		"description": "Change all padding",
+		"units": "px",
+		"default": "0px",
+		"extra_options": {
+			"range": [0, 300]
+		}
+	},
+	"padding-left": {
+		"translation": "Padding left",
+		"description": "Change padding left",
+		"units": "px",
+		"default": "0px",
+		"extra_options": {
+			"range": [0, 300]
+		}
+	},
+	"padding-right": {
+		"translation": "Padding right",
+		"description": "Change padding right",
+		"units": "px",
+		"default": "0px",
+		"extra_options": {
+			"range": [0, 300]
+		}
+	},
+	"padding-top": {
+		"translation": "Padding top",
+		"description": "Change padding top",
+		"units": "px",
+		"default": "0px",
+		"extra_options": {
+			"range": [0, 300]
+		}
+	},
+	"padding-bottom": {
+		"translation": "Padding bottom",
+		"description": "Change padding bottom",
 		"units": "px",
 		"default": "0px",
 		"extra_options": {
