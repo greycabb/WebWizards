@@ -1483,12 +1483,12 @@ class EditPage extends React.Component {
                         </table>
                     }
                 </div>
-                {this.state.lockedEditor === true &&
-                    <div className="loading-message">
-                        Loading...
-                        </div>
-                }
                 <div className={editorClasses}>
+                    {this.state.lockedEditor === true &&
+                        <div className="loading-message">
+                            Loading...
+                        </div>
+                    }
                     <div>
                         {/*this.state.recursiveLayout === undefined &&
                             <h1>Loading...</h1>
@@ -1499,7 +1499,7 @@ class EditPage extends React.Component {
                         <Trash handle={that.deleteBlock} />
                     </div>
                 </div>
-                
+
 
                 {this.state.styleToggled &&
                     <div>

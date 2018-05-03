@@ -460,15 +460,15 @@ textarea {
 
 .locked-editor {
   pointer-events: none;
+  opacity: 0.8;
 }
 .loading-message {
   font-size: 24px;
   border: 3px solid white;
-  border-radius: 5px;
-  background-color: darkblue;
+  background-color: black;
   color: white;
   float: right;
   padding: 8px;
-  position: absolute;
   margin: 10px;
+  position: fixed;
 }
