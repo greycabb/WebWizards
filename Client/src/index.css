@@ -258,6 +258,7 @@ body > div > .login-page {
 }
 
 .draggable-space {
+  min-height: 200px;
   max-height: calc(100vh - 140px);
   background-color: #F4f4f4; 
   overflow: scroll;
@@ -460,15 +461,15 @@ textarea {
 
 .locked-editor {
   pointer-events: none;
-  opacity: 0.8;
+  opacity: 0.6;
 }
 .loading-message {
   font-size: 24px;
   border: 3px solid white;
   background-color: black;
   color: white;
-  float: right;
-  padding: 8px;
-  margin: 10px;
+  padding: 20px;
+  margin: 20px;
   position: fixed;
+  right: 50px;
 }

@@ -533,8 +533,7 @@ class EditPage extends React.Component {
         let badStyleClass = '';
         let badStyleMessage = '';
         if (parentTagName !== undefined) {
-            //console.log(that.state.bricksByName[parentTagName].unallowed_children);
-            //console.log(current.blocktype);
+            
             if (that.state.bricksByName[parentTagName].unallowed_children.includes(current.blocktype)) {
                 badStyleClass = 'bad-style-block';
                 badStyleMessage = 'Oh no! "' + current.blocktype + '"' + " shouldn't be placed inside " + '"' + parentTagName + '"!';
@@ -612,16 +611,6 @@ class EditPage extends React.Component {
                     }
                 }
             }
-            // if (blockTypesToIgnore[current.blocktype] !== true) {
-            //     b = (
-            //         <span>
-            //             {/* <li className="red">
-            //                 <span className="yellow">-> parent: {current.parentid.substr(current.parentid.length - 3)}, index: 0</span>
-            //             </li> */}
-            //             {b}
-            //         </span>
-            //     );
-            // }
         }
 
         if (blockname !== undefined && blockname.type === "content") {
@@ -629,11 +618,6 @@ class EditPage extends React.Component {
             console.log("current content: " + JSON.stringify(content));
             b = (<span></span>);
         }
-        // if (current.children[0] !== undefined && current.children[0].blocktype === "text-content") {
-        //     let content = current.children[0].children.content;
-        //     console.log("Testing " + content);
-        //     b = (<input type="text" className="editor-text-content" value={content} />);
-        // }
 
         var blockclass;
         if (blockname !== undefined) {
