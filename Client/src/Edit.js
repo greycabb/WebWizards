@@ -49,6 +49,7 @@ class EditPage extends React.Component {
             'htmlBlockId': undefined, // ID of the root HTML block in the project data
 
             'layout': {}, // Layout of the right display
+            'lockedEditor': true,
 
             /* Example layout:
                 {
@@ -131,6 +132,8 @@ class EditPage extends React.Component {
         this.moveBlock = this.moveBlock.bind(this);
 
         this.increasePointsBy = this.increasePointsBy.bind(this);
+        this.lockEditor = this.lockEditor.bind(this);
+        this.unlockEditor = this.unlockEditor.bind(this);
 
         console.log('______________________');
         this.setup_getProjectData();
@@ -548,8 +551,8 @@ class EditPage extends React.Component {
 
                 b = (<span>
                     {b}
-                    <ExistingDropSlot handle={function () { that.moveBlock(current.id, 0, locationInLayout) }}>
-                        <DropSlot handle={function () { that.drop(current.id, 0, locationInLayout) }}>
+                    <ExistingDropSlot handle={function () { that.moveBlock(current.id, 0, locationInLayout) } }>
+                        <DropSlot handle={function () { that.drop(current.id, 0, locationInLayout) } }>
                             <div className="drop-slot-space">
                                 &nbsp;
                             </div>
@@ -567,8 +570,8 @@ class EditPage extends React.Component {
                         let index = i;
                         b = (<span>
                             {b}
-                            <ExistingDropSlot handle={function () { that.moveBlock(current.id, index, locationInLayout) }}>
-                                <DropSlot handle={function () { that.drop(current.id, index, locationInLayout) }}>
+                            <ExistingDropSlot handle={function () { that.moveBlock(current.id, index, locationInLayout) } }>
+                                <DropSlot handle={function () { that.drop(current.id, index, locationInLayout) } }>
                                     <div className="drop-slot-space">
                                         &nbsp;
                                 </div>
@@ -597,8 +600,8 @@ class EditPage extends React.Component {
                             ); */
                             b = (<span>
                                 {b}
-                                <ExistingDropSlot handle={function () { that.moveBlock(current.id, index, locationInLayout, true) }}>
-                                    <DropSlot handle={function () { that.drop(current.id, index, locationInLayout) }}>
+                                <ExistingDropSlot handle={function () { that.moveBlock(current.id, index, locationInLayout, true) } }>
+                                    <DropSlot handle={function () { that.drop(current.id, index, locationInLayout) } }>
                                         <div className="drop-slot-space">
                                             &nbsp;
                                     </div>
@@ -667,7 +670,7 @@ class EditPage extends React.Component {
                 <ul className="layout-block">
                     {(['head', 'html', 'body', 'title'].includes(current.blocktype)) &&
                         <li className={blockclass + ' ' + badStyleClass}>
-                            <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
+                            <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) } }>
                                 <div className="bad-style">{badStyleMessage}</div>
                                 {startTag}
                                 {/*current.id !== undefined &&
@@ -675,7 +678,7 @@ class EditPage extends React.Component {
                                         */}
                             </div>
                             {b}
-                            <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
+                            <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) } }>
                                 {endTag}
                             </div>
                         </li>
@@ -683,22 +686,22 @@ class EditPage extends React.Component {
 
 
                     {!(['head', 'body', 'title', 'html'].includes(current.blocktype)) &&
-                        <ExistingDropSlot handle={function (e) { that.moveBlock(current.id, current.index, locationInLayout) }}>
+                        <ExistingDropSlot handle={function (e) { that.moveBlock(current.id, current.index, locationInLayout) } }>
                             {/* <DropSlot handle={function (e) { that.drop(current.id, (Object.keys(current.children)).length, e) }}> */}
-                            <ExistingBlock id={current.id} handle={function (id) { that.pickupBlock(id, current.parentid, current.index, locationInLayout) }}>
+                            <ExistingBlock id={current.id} handle={function (id) { that.pickupBlock(id, current.parentid, current.index, locationInLayout) } }>
                                 <li className={blockclass + ' ' + badStyleClass}>
-                                    <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
+                                    <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) } }>
                                         <div className="bad-style">{badStyleMessage}</div>
                                         {startTag}
                                     </div>
                                     {Object.keys(current.children).length === 0 && (current.blocktype === 'li' || that.state.bricksByName[current.blocktype].type === 'textwrapper') &&
-                                        <button className="black-text" onClick={function(e) {e.stopPropagation(); that.createBlock('text-content', current.id, 0); }}>Write...</button>
+                                        <button className="black-text" onClick={function (e) { e.stopPropagation(); that.createBlock('text-content', current.id, 0); } }>Write...</button>
                                     }
                                     {b}
                                     {(current.blocktype === 'ul' || current.blocktype === 'ol') &&
-                                        <button className="black-text" onClick={function(e) {e.stopPropagation(); that.createBlock('li', current.id, Object.keys(current.children).length); }}>Add &lt;li&gt;</button>
+                                        <button className="black-text" onClick={function (e) { e.stopPropagation(); that.createBlock('li', current.id, Object.keys(current.children).length); } }>Add &lt;li&gt;</button>
                                     }
-                                    <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
+                                    <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) } }>
                                         {endTag}
                                     </div>
                                 </li>
@@ -779,7 +782,7 @@ class EditPage extends React.Component {
 
             b = (
                 <ul className="layout-block">
-                    <ExistingBlock id={currentId} handle={function (id) { that.pickupBlock(id, current.parentid, current.index, locationInLayout) }}>
+                    <ExistingBlock id={currentId} handle={function (id) { that.pickupBlock(id, current.parentid, current.index, locationInLayout) } }>
                         <li className={blockclass}>
                             {b}
                             {/* Collapsed div */}
@@ -787,7 +790,7 @@ class EditPage extends React.Component {
                                 <input type="text" id={'input-preview-edit-text-' + currentId} readOnly value={text} title="Click to change text" className="editor-text-content"
                                     onClick={function () {
                                         expandEditText(currentId);
-                                    }} />
+                                    } } />
                             </div>
                         </li>
                         {/* Expanded div */}
@@ -797,12 +800,12 @@ class EditPage extends React.Component {
                             {/* Save edited text to DB*/}
                             <div className="edit-text-button btn-success" onClick={function () {
                                 saveEditedText(currentId);
-                            }}>Save</div>
+                            } }>Save</div>
 
                             {/* Cancel editing text */}
                             <div className="edit-text-button btn-danger" onClick={function () {
                                 collapseEditText(currentId);
-                            }}>Cancel</div>
+                            } }>Cancel</div>
                         </div>
                     </ExistingBlock>
                 </ul>
@@ -846,6 +849,8 @@ class EditPage extends React.Component {
     createBlock(slot, parentId, index) {
         let brickId = this.state.bricksByName[slot].id;
         let that = this;
+
+        this.lockEditor();
 
         fetch('https://api.webwizards.me/v1/blocks', {
             method: 'POST',
@@ -1012,6 +1017,7 @@ class EditPage extends React.Component {
                                 that.setState({
                                     'recursiveLayout': that.recursiveLayout(layout, true)
                                 });
+                                that.unlockEditor();
                             }
                         } else {
                             console.log(result);
@@ -1134,6 +1140,7 @@ class EditPage extends React.Component {
         let brick = this.state.selectedBrick;
         console.log('Attempting to drop <' + brick + '> in ' + parentId + ' ' + index);
 
+        this.lockEditor();
 
         if (brick && parentId !== undefined && index !== undefined) {
             this.pickup(); // unselect the selected brick
@@ -1174,8 +1181,8 @@ class EditPage extends React.Component {
                 'Authorization': localStorage.getItem('Authorization')
             },
             body:
-                JSON.stringify({
-                })
+            JSON.stringify({
+            })
         })
             .then(function (response) {
 
@@ -1314,7 +1321,7 @@ class EditPage extends React.Component {
             return;
         }
 
-
+        this.lockEditor();
 
         fetch('https://api.webwizards.me/v1/blocks?id=' + this.state.selectedBlock, {
             method: 'PATCH',
@@ -1391,6 +1398,22 @@ class EditPage extends React.Component {
         });
     }
 
+    // Lock editor when loading stuff/making changes
+    lockEditor() {
+        console.log('LOCK ON');
+        this.setState({
+            'lockedEditor': true
+        });
+    }
+
+    // Unlock editor when the API calls complete
+    unlockEditor() {
+        console.log('LOCK OFF')
+        this.setState({
+            'lockedEditor': false
+        });
+    }
+
 
 
     //____________________________________________________________________________
@@ -1403,7 +1426,10 @@ class EditPage extends React.Component {
 
         let that = this;
 
-
+        let editorClasses = 'half-width draggable-space';
+        if (this.state.lockedEditor === true) {
+            editorClasses += ' locked-editor';
+        }
 
         var urlstring = "#/project/" + this.state.projectId;
 
@@ -1457,17 +1483,23 @@ class EditPage extends React.Component {
                         </table>
                     }
                 </div>
-                <div className="half-width draggable-space">
+                {this.state.lockedEditor === true &&
+                    <div className="loading-message">
+                        Loading...
+                        </div>
+                }
+                <div className={editorClasses}>
                     <div>
-                        {this.state.recursiveLayout === undefined &&
+                        {/*this.state.recursiveLayout === undefined &&
                             <h1>Loading...</h1>
-                        }
+                        */}
                         {this.state.recursiveLayout !== undefined &&
                             this.state.recursiveLayout
                         }
                         <Trash handle={that.deleteBlock} />
                     </div>
                 </div>
+                
 
                 {this.state.styleToggled &&
                     <div>
