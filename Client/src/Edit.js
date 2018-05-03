@@ -1467,7 +1467,7 @@ class EditPage extends React.Component {
                         </div>
                     }
                     {(this.state.lockedEditor === false && errorCount > 0) &&
-                        <div className="error-count">
+                        <div className="error-count" title="Try dragging the red blocks into the trash can!">
                             <div>
                                 {errorCountMessage}
                             </div>
