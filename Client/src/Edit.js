@@ -130,6 +130,7 @@ class EditPage extends React.Component {
 
         this.deleteBlock = this.deleteBlock.bind(this);
         this.moveBlock = this.moveBlock.bind(this);
+        this.changeTextContent = this.changeTextContent.bind(this);
 
         this.increasePointsBy = this.increasePointsBy.bind(this);
         this.lockEditor = this.lockEditor.bind(this);
@@ -514,7 +515,7 @@ class EditPage extends React.Component {
         let badStyleClass = '';
         let badStyleMessage = '';
         if (parentTagName !== undefined) {
-            
+
             if (that.state.bricksByName[parentTagName].unallowed_children.includes(current.blocktype)) {
                 badStyleClass = 'bad-style-block';
                 badStyleMessage = 'Oh no! "' + current.blocktype + '"' + " shouldn't be placed inside " + '"' + parentTagName + '"!';
@@ -719,28 +720,9 @@ class EditPage extends React.Component {
                 // sanitize this?
                 collapseEditText(blockId, value);
 
+                that.changeTextContent(blockId, value)
 
-                fetch('https://api.webwizards.me/v1/blocks?id=' + blockId, {
-                    method: 'PATCH',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                        'Authorization': localStorage.getItem('Authorization')
-                    },
-                    body: JSON.stringify({
-                        'children': [value],
-                        'index': -1 // don't change index
-                    })
-                })
-                    .then(function (response) {
-                        //that.getBlock(blockId);
-                        //that.setup_getProjectData();
-                        //that.updateProject(that.state.htmlBlockId);
-                        that.handleProjectUpdates();
-                    })
-                    .catch(err => {
-                        console.log('ERROR: ', err);
-                    });
+
             }
 
             let currentId = current.id;
@@ -807,11 +789,39 @@ class EditPage extends React.Component {
             });
     }
 
+
+    changeTextContent(blockId, newText) {
+        let that = this;
+        if (blockId !== undefined && newText !== undefined && newText.length < 1000) {
+            fetch('https://api.webwizards.me/v1/blocks?id=' + blockId, {
+                method: 'PATCH',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': localStorage.getItem('Authorization')
+                },
+                body: JSON.stringify({
+                    'children': [newText],
+                    'index': -1 // don't change index
+                })
+            })
+                .then(function (response) {
+                    //that.getBlock(blockId);
+                    //that.setup_getProjectData();
+                    //that.updateProject(that.state.htmlBlockId);
+                    that.handleProjectUpdates();
+                })
+                .catch(err => {
+                    console.log('ERROR: ', err);
+                });
+        }
+    }
+
     //____________________________________________________________________________
     // slot like "title" or whatever
     // parentid is the parent of the block
     // index is the # index child the block is, of the parent
-    createBlock(slot, parentId, index) {
+    createBlock(slot, parentId, index, textContent) {
         let brickId = this.state.bricksByName[slot].id;
         let that = this;
 
@@ -841,9 +851,12 @@ class EditPage extends React.Component {
 
                         if (slot === 'title') {//that.state.bricksByName[slot].type === 'textwrapper') {
                             that.updateProject(that.state.htmlBlockId);
-                            that.createBlock('text-content', result.id, 0);
+                            that.createBlock('text-content', result.id, 0, true);
                         } else {
                             that.updateProject(that.state.htmlBlockId);
+                        }
+                        if (textContent === true) {
+                            that.changeTextContent(result.id, that.state.projectData.name);
                         }
                     });
                 } else {
@@ -1429,33 +1442,33 @@ class EditPage extends React.Component {
 
                     {this.state.bricksByName !== undefined &&
                         <table>
-                        <tbody>
-                        <tr>
-                            {/* <h3>Click and drag one of these blocks into the right!</h3> */}
-                            <td className="block-choices-category-column">
-                                <Block name={"div"} handler={that.pickup} title={this.state.bricksByName['div'].description} />
-                                <br />
-                                <Block name={"ul"} handler={that.pickup} title={this.state.bricksByName['ul'].description} />
-                                <Block name={"ol"} handler={that.pickup} title={this.state.bricksByName['ol'].description} />
-                                <ul>
-                                    <li><Block name={"li"} handler={that.pickup} title={this.state.bricksByName['li'].description} /></li>
-                                </ul>
-                            </td>
-                            <td>
-                                <Block name={"img"} handler={that.pickup} title={this.state.bricksByName['img'].description} />
-                                <Block name={"text-content"} handler={that.pickup} title={this.state.bricksByName['text-content'].description}>
-                                    <input type="text" name="lname" disabled value="text" className="short-text-box" />
-                                </Block>
-                            </td>
-                            <td>
-                                <Block name={"p"} handler={that.pickup} title={this.state.bricksByName['p'].description} />
-                                <br />
-                                <Block name={"h1"} handler={that.pickup} title={this.state.bricksByName['h1'].description} />
-                                <Block name={"h2"} handler={that.pickup} title={this.state.bricksByName['h2'].description} />
-                                <Block name={"h3"} handler={that.pickup} title={this.state.bricksByName['h3'].description} />
-                                <Block name={"h4"} handler={that.pickup} title={this.state.bricksByName['h4'].description} />
-                            </td>
-                            </tr>
+                            <tbody>
+                                <tr>
+                                    {/* <h3>Click and drag one of these blocks into the right!</h3> */}
+                                    <td className="block-choices-category-column">
+                                        <Block name={"div"} handler={that.pickup} title={this.state.bricksByName['div'].description} />
+                                        <br />
+                                        <Block name={"ul"} handler={that.pickup} title={this.state.bricksByName['ul'].description} />
+                                        <Block name={"ol"} handler={that.pickup} title={this.state.bricksByName['ol'].description} />
+                                        <ul>
+                                            <li><Block name={"li"} handler={that.pickup} title={this.state.bricksByName['li'].description} /></li>
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        <Block name={"img"} handler={that.pickup} title={this.state.bricksByName['img'].description} />
+                                        <Block name={"text-content"} handler={that.pickup} title={this.state.bricksByName['text-content'].description}>
+                                            <input type="text" name="lname" disabled value="text" className="short-text-box" />
+                                        </Block>
+                                    </td>
+                                    <td>
+                                        <Block name={"p"} handler={that.pickup} title={this.state.bricksByName['p'].description} />
+                                        <br />
+                                        <Block name={"h1"} handler={that.pickup} title={this.state.bricksByName['h1'].description} />
+                                        <Block name={"h2"} handler={that.pickup} title={this.state.bricksByName['h2'].description} />
+                                        <Block name={"h3"} handler={that.pickup} title={this.state.bricksByName['h3'].description} />
+                                        <Block name={"h4"} handler={that.pickup} title={this.state.bricksByName['h4'].description} />
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     }

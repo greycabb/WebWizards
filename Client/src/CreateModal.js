@@ -95,7 +95,7 @@ export default class CreateModal extends React.Component {
                                 <label htmlFor="share-checkbox" className="css-label">Share with others</label>
                                 {this.state.shared === true &&
                                     <div className="yel">
-                                        NOTE: Your project will be viewable by others, so make sure that you don't write any personal information on your website!
+                                        NOTE: Your project will be viewable by others, so make sure that you don't have any personal information on your website!
                                     </div>
                                 }
                             </div>
