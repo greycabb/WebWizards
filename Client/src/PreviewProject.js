@@ -159,7 +159,7 @@ export default class PreviewProject extends React.Component {
                                                     sanitizedTextContent = '';
                                                 } else {
                                                     sanitizedTextContent = sanitizeHtml(children[0], {
-                                                        allowedTags: ['b', 'i', 'em', 'strong'],//'a'
+                                                        allowedTags: ['b', 'i', 'em', 'strong', 'br'],//'a'
                                                         allowedAttributes: {
                                                             //'a': ['href']
                                                         }
