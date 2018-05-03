@@ -106,10 +106,15 @@ export default class SettingsModal extends React.Component {
                             <div className="share-box">
                                 <input type="checkbox" id="share-checkbox" checked={this.state.shared} className="css-checkbox" name="share-proj" value="share" onClick={this.handleCheck}/>
                                 <label htmlFor="share-checkbox" className="css-label">Share with others</label>
+                                {this.state.shared === true &&
+                                    <div className="yel">
+                                        NOTE: Before making your website available to others, make sure that you don't have any personal information written anywhere on your website!
+                                    </div>
+                                }
                             </div>
                             <center>
                                 <button className="btn yellow-button" onClick={(e) => this.props.toggle(e)}>Cancel</button>
-                                <button className="btn green-button" onClick={this.update}>Update</button>
+                                <button className="btn green-button" onClick={this.update}>Confirm</button>
                             </center>
                         </div>
                     </OutsideAlerter>

@@ -91,8 +91,13 @@ export default class CreateModal extends React.Component {
                                 <input id="proj-title" type="name" maxLength="15" name="proj-title" onChange={(e) =>this.handleName(e)}/>
                             </div>
                             <div className="share-box">
-                                <input type="checkbox" id="share-checkbox" className="css-checkbox" name="share-proj" value="share" onClick={this.handleCheck}/>
+                                <input checked={this.state.shared} type="checkbox" id="share-checkbox" className="css-checkbox" name="share-proj" value="share" onClick={this.handleCheck}/>
                                 <label htmlFor="share-checkbox" className="css-label">Share with others</label>
+                                {this.state.shared === true &&
+                                    <div className="yel">
+                                        NOTE: Your project will be viewable by others, so make sure that you don't write any personal information on your website!
+                                    </div>
+                                }
                             </div>
                             <center>
                                 <button className="btn yellow-button" onClick={(e) => this.props.toggle(e)}>Cancel</button>
