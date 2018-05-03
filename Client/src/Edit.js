@@ -692,7 +692,7 @@ class EditPage extends React.Component {
             function expandEditText(blockId, newText) {
                 let blockShow = document.getElementById('expanded-edit-text-' + blockId);
                 let blockHide = document.getElementById('collapsed-edit-text-' + blockId);
-                //blockHide.classList.add('hidden')
+                blockHide.classList.add('hidden')
                 blockShow.classList.remove('hidden');
             }
             // Collapse text to be what it was before
@@ -739,21 +739,23 @@ class EditPage extends React.Component {
                                         expandEditText(currentId);
                                     } } />
                             </div>
+
+                            {/* Expanded div */}
+                            <div id={'expanded-edit-text-' + currentId} className="hidden">
+                                <textarea rows="4" cols="20" maxLength="1000" className="editor-text-content editor-text-expanded" id={'input-edit-text-' + currentId} defaultValue={text} />
+
+                                {/* Save edited text to DB*/}
+                                <div className="edit-text-button btn-success" onClick={function () {
+                                    saveEditedText(currentId);
+                                } }>Save</div>
+
+                                {/* Cancel editing text */}
+                                <div className="edit-text-button btn-danger" onClick={function () {
+                                    collapseEditText(currentId);
+                                } }>Cancel</div>
+                            </div>
                         </li>
-                        {/* Expanded div */}
-                        <div id={'expanded-edit-text-' + currentId} className="hidden">
-                            <textarea rows="4" cols="20" maxLength="1000" className="editor-text-content editor-text-expanded" id={'input-edit-text-' + currentId} defaultValue={text} />
 
-                            {/* Save edited text to DB*/}
-                            <div className="edit-text-button btn-success" onClick={function () {
-                                saveEditedText(currentId);
-                            } }>Save</div>
-
-                            {/* Cancel editing text */}
-                            <div className="edit-text-button btn-danger" onClick={function () {
-                                collapseEditText(currentId);
-                            } }>Cancel</div>
-                        </div>
                     </ExistingBlock>
                 </ul>
             );

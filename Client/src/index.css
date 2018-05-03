@@ -388,7 +388,8 @@ li.layout-block  {
 }
 
 .hidden {
-  display: none;
+  height: 0;
+  width: 0;
 }
 textarea {
   color: black;
