@@ -391,7 +391,6 @@ class EditPage extends React.Component {
                         'finishedBuildingHeadBody': true
                     });
                     that.updateProject(that.state.htmlBlockId);
-                    //that.makeLayout(); // Now make the layout on the right
                 }
             }, 200)
         });
@@ -469,30 +468,12 @@ class EditPage extends React.Component {
         // Clear stack
         this.setState({
             stack: [],
-            stackVisited: {}
-        });
-
-        // let hd = this.state.headData;
-        // if (hd) {
-        //     this.setState({
-        //         layout: {
-        //             id: hd.id,
-        //             blocktype: hd.blocktype,
-        //             css: hd.css,
-        //             parentid: hd.parentid,
-        //             children: {
-
-        //             }
-        //         }
-        //     });
-        // } else {
-        this.setState({
+            stackVisited: {},
             layout: {
                 children: {
 
                 }
             }
-            // })
         });
 
         // Recursively build the layout
@@ -1415,6 +1396,14 @@ class EditPage extends React.Component {
             editorClasses += ' locked-editor';
         }
 
+        let errorCountMessage = '';
+        let errorCount = document.querySelectorAll('.bad-style-block').length;
+        if (errorCount === 1) {
+            errorCountMessage = 'Oops! 1 block is in the wrong place.';
+        } else {
+            errorCountMessage = 'Oops! ' + errorCount + ' blocks are in the wrong place.';
+        }
+
         var urlstring = "#/project/" + this.state.projectId;
 
         return (
@@ -1440,6 +1429,8 @@ class EditPage extends React.Component {
 
                     {this.state.bricksByName !== undefined &&
                         <table>
+                        <tbody>
+                        <tr>
                             {/* <h3>Click and drag one of these blocks into the right!</h3> */}
                             <td className="block-choices-category-column">
                                 <Block name={"div"} handler={that.pickup} title={this.state.bricksByName['div'].description} />
@@ -1464,6 +1455,8 @@ class EditPage extends React.Component {
                                 <Block name={"h3"} handler={that.pickup} title={this.state.bricksByName['h3'].description} />
                                 <Block name={"h4"} handler={that.pickup} title={this.state.bricksByName['h4'].description} />
                             </td>
+                            </tr>
+                            </tbody>
                         </table>
                     }
                 </div>
@@ -1471,6 +1464,13 @@ class EditPage extends React.Component {
                     {this.state.lockedEditor === true &&
                         <div className="loading-message">
                             Loading...
+                        </div>
+                    }
+                    {(this.state.lockedEditor === false && errorCount > 0) &&
+                        <div className="error-count">
+                            <div>
+                                {errorCountMessage}
+                            </div>
                         </div>
                     }
                     <div>
