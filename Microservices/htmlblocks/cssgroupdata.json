@@ -20,8 +20,13 @@
         "attributes": ["width", "height"]
     },
     {
-        "name": "spacing",
-        "description": "These styles change spacing of this element",
-        "attributes": ["margin", "padding"]
+        "name": "margin",
+        "description": "These styles change margin of this element",
+        "attributes": ["margin", "margin-left", "margin-right", "margin-top", "margin-bottom"]
+    },
+    {
+        "name": "padding",
+        "description": "These styles change padding of this element",
+        "attributes": ["padding", "padding-left", "padding-right", "padding-top", "padding-bottom"]
     }
 ]

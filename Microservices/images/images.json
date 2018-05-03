@@ -107,5 +107,20 @@
            "https://webwizards.me/img/Web_Wizards/Web_Wizards4.png",
            "https://webwizards.me/img/Web_Wizards/Web_Wizards5.png"
         ]
+    },
+
+    "Patterns": {
+        "images": [
+           "https://webwizards.me/img/Patterns/Patterns1.jpeg",
+           "https://webwizards.me/img/Patterns/Patterns2.jpeg",
+           "https://webwizards.me/img/Patterns/Patterns3.jpeg",
+           "https://webwizards.me/img/Patterns/Patterns4.jpeg",
+           "https://webwizards.me/img/Patterns/Patterns5.jpeg",
+           "https://webwizards.me/img/Patterns/Patterns6.jpg",
+           "https://webwizards.me/img/Patterns/Patterns7.jpeg",
+           "https://webwizards.me/img/Patterns/Patterns8.jpeg",
+           "https://webwizards.me/img/Patterns/Patterns9.jpeg",
+           "https://webwizards.me/img/Patterns/Patterns10.jpeg"
+        ]
     }
 }

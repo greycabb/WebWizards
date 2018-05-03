@@ -30,7 +30,7 @@
 		"translation": "body",
 		"description": "A 'body' block defines the page body",
 		"type": "wrapper",
-		"css_groups": ["font", "background", "border", "size", "spacing"],
+		"css_groups": ["font", "background", "border", "size", "padding"],
 		"unallowed_children": ["html", "head", "title", "li"]
 	},
 	{
@@ -39,7 +39,7 @@
 		"translation": "paragraph",
 		"description": "A 'p' block defines a paragraph",
 		"type": "textwrapper",
-		"css_groups": ["font", "background", "border", "size", "spacing"],
+		"css_groups": ["font", "background", "border", "size", "margin", "padding"],
 		"unallowed_children": ["html", "head", "title", "body", "li"],
 		"attributes": ["title"]
     },
@@ -49,7 +49,7 @@
 		"translation": "block",
 		"description": "A 'div' is a section that is a block element. Block elements appear on a new row.",
 		"type": "wrapper",
-		"css_groups": ["font", "background", "border", "size", "spacing"],
+		"css_groups": ["font", "background", "border", "size",  "margin", "padding"],
 		"unallowed_children": ["html", "head", "title", "body", "li"],
 		"attributes": ["title"]
 	},
@@ -67,7 +67,7 @@
 		"translation": "header 1",
 		"description": "Largest heading",
 		"type": "textwrapper",
-		"css_groups": ["font", "background", "border", "size", "spacing"],
+		"css_groups": ["font", "background", "border", "size",  "margin", "padding"],
 		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "img", "li", "ul", "ol"],
 		"attributes": ["title"]
 	},
@@ -77,7 +77,7 @@
 		"translation": "header 2",
 		"description": "Second largest heading",
 		"type": "textwrapper",
-		"css_groups": ["font", "background", "border", "size", "spacing"],
+		"css_groups": ["font", "background", "border", "size",  "margin", "padding"],
 		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "img", "li", "ul", "ol"],
 		"attributes": ["title"]
 	},
@@ -87,7 +87,7 @@
 		"translation": "header 3",
 		"description": "Third largest heading",
 		"type": "textwrapper",
-		"css_groups": ["font", "background", "border", "size", "spacing"],
+		"css_groups": ["font", "background", "border", "size",  "margin", "padding"],
 		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "img", "li", "ul", "ol"],
 		"attributes": ["title"]
 	},
@@ -97,7 +97,7 @@
 		"translation": "header 4",
 		"description": "Fourth largest heading",
 		"type": "textwrapper",
-		"css_groups": ["font", "background", "border", "size", "spacing"],
+		"css_groups": ["font", "background", "border", "size",  "margin", "padding"],
 		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "img", "li", "ul", "ol"],
 		"attributes": ["title"]
 	},
@@ -123,7 +123,7 @@
 		"translation": "image",
 		"description": "An image",
 		"type": "image",
-		"css_groups": ["border", "size", "spacing"],
+		"css_groups": ["border", "size",  "margin", "padding"],
 		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "strong", "em", "img", "text-content", "li", "ul", "ol"],
 		"self_closing": true,
 		"attributes": ["src", "alt", "title"]
@@ -161,7 +161,7 @@
 		"translation": "list line",
 		"description": "A line in a list. Must be inside an <ol> (Ordered list) or <ul> (Unordered list) ",
 		"type": "wrapper",
-		"css_groups": ["font", "background", "border", "size", "spacing"],
+		"css_groups": ["font", "background", "border", "size", "margin", "padding"],
 		"unallowed_children": ["html", "head", "title", "body", "li"]
 	}
 ]
