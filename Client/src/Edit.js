@@ -842,6 +842,11 @@ class EditPage extends React.Component {
     // parentid is the parent of the block
     // index is the # index child the block is, of the parent
     createBlock(slot, parentId, index, textContent) {
+
+        if (slot === undefined) {
+            return;
+        }
+
         let brickId = this.state.bricksByName[slot].id;
         let that = this;
 
@@ -900,6 +905,10 @@ class EditPage extends React.Component {
     // forSetup: if the getBlockgetBlock() call is
     // locationInLayout: e.g. if it's [0, 2, 4] then you can get to the block in state.layout at 0: children: { 2: children { 4 }}
     getBlock(id, forSetup, locationInLayout) {
+
+        if (id === undefined) {
+            return;
+        }
 
         let that = this;
         fetch('https://api.webwizards.me/v1/blocks?id=' + id, {

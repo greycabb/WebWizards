@@ -90,6 +90,7 @@ export default class PreviewProject extends React.Component {
 
     // Recursive calls
     blockToHtml(id, isTitle) {
+        
         return new Promise((resolve, reject) => {
             var auth = localStorage.getItem('Authorization');
             fetch('https://api.webwizards.me/v1/blocks?id=' + id, {
