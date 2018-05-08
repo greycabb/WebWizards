@@ -17,7 +17,7 @@ export default class MainPage extends React.Component {
         if (!ud || !auth) {
             hashHistory.push('/login');
         }
-        
+
         var udJson;
 
         if (this.isJsonString(ud)) {
@@ -29,8 +29,12 @@ export default class MainPage extends React.Component {
 
         var mobileView = false;
 
-        if (window.innerWidth < 801) {
-            console.log(window.innerWidth);
+        // if (window.innerWidth < 801) {
+        //     console.log(window.innerWidth);
+
+        //     mobileView = true;
+        // }
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
             mobileView = true;
         }
 
@@ -187,9 +191,9 @@ export default class MainPage extends React.Component {
         const ProjectsInList = ({ projects }) => (
             <div>
                 {projects.map(project => (
-                    <div className="project-in-list" key={project.id} onClick={function () { hashHistory.push('/edit?project=' + project.id); }} >
-                        <div className="project-square"><img src={project.img} width="180px"/></div>
-                        {project.name !== '' && 
+                    <div className="project-in-list" key={project.id} onClick={function () { hashHistory.push('/edit?project=' + project.id); } } >
+                        <div className="project-square"><img src={project.img} width="180px" /></div>
+                        {project.name !== '' &&
                             <div className="project-title">{project.name}</div>
                         }
                         {project.name === '' &&
@@ -208,9 +212,9 @@ export default class MainPage extends React.Component {
                         <div className="main-content">
                             <CreateBanner />
                             <div className="profile-and-awards">
-                                <AvatarDisplay avatar={this.state.userdata.avatar}/>
+                                <AvatarDisplay avatar={this.state.userdata.avatar} />
                                 <div className="profile-name">
-                                    <PointBar points={this.state.userdata.points}/>
+                                    <PointBar points={this.state.userdata.points} />
                                 </div>
                             </div>
                             <div id="yourProjects" className="your-projects">
@@ -226,8 +230,10 @@ export default class MainPage extends React.Component {
                 }
                 {this.state.mobileView &&
                     <div id="mobile-view">
-                        <img src={img} width="400px"/><br />
+                        <img src={img} width="400px" /><br />
                         Oops! Web Wizards only works on a computer!
+
+                        <div>Continue regardless</div>
                     </div>
                 }
             </div>
