@@ -1424,6 +1424,15 @@ class EditPage extends React.Component {
         });
     }
 
+    // Place yellow text at the block position.
+    // Disappears after a few seconds
+    blockMessage(elementId, text) {
+        let element = document.getElementById(elementId);
+        if (element !== null) {
+
+        }
+    }
+
 
 
     //____________________________________________________________________________

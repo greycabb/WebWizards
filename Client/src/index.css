@@ -486,3 +486,10 @@ textarea {
   position: fixed;
   right: 50px;
 }
+
+/*Message that appears in a block*/
+.block-message {
+  color: red;
+  font-size: 48pt;
+  position: absolute;
+}
