@@ -632,7 +632,7 @@ class EditPage extends React.Component {
                 return;
             }
 
-            console.log(current);
+            // console.log(current);
             b = (
                 <ul className="layout-block">
                     {(['head', 'html', 'body', 'title'].includes(current.blocktype)) &&
@@ -1231,6 +1231,9 @@ class EditPage extends React.Component {
             console.log('Cancelled delete');
             return;
         }
+
+        this.lockEditor();
+
         let that = this;
         fetch('https://api.webwizards.me/v1/blocks?id=' + blockId, {
             method: 'DELETE',
