@@ -50,8 +50,7 @@ func (ctx *HandlerContext) ProjectHandler(w http.ResponseWriter, r *http.Request
 			state := &SessionState{}
 			err = ctx.SessionStore.Get(authid, &state)
 			if err != nil {
-				http.Error(w, fmt.Sprintf("error retrieving SessionState"), http.StatusUnauthorized)
-				return
+				break
 			}
 			userID = state.Authenticated.ID
 		}
@@ -272,6 +271,7 @@ func (ctx *HandlerContext) BlocksHandler(w http.ResponseWriter, r *http.Request)
 			}
 			newParentUpdates := &blocks.BlockUpdates{}
 			newParentUpdates.Children = finalParentChildren
+			newParentUpdates.Index = -1
 			_, err = ctx.blockStore.UpdateBlock(newParentHex, newParentUpdates)
 			if err != nil {
 				http.Error(w, fmt.Sprintf("error updating parent: %v", err), http.StatusBadRequest)
@@ -331,6 +331,7 @@ func (ctx *HandlerContext) BlocksHandler(w http.ResponseWriter, r *http.Request)
 			parentChildren = append(parentChildren[:block.Index], parentChildren[block.Index+1:]...)
 			parentUpdates := &blocks.BlockUpdates{}
 			parentUpdates.Children = parentChildren
+			parentUpdates.Index = -1
 			ctx.blockStore.UpdateBlock(parentHex, parentUpdates)
 			for i, v := range parentChildren {
 				if len(v) > 0 && bson.IsObjectIdHex(v) {
@@ -385,6 +386,7 @@ func (ctx *HandlerContext) BlocksHandler(w http.ResponseWriter, r *http.Request)
 			}
 			newParentUpdates := &blocks.BlockUpdates{}
 			newParentUpdates.Children = finalParentChildren
+			newParentUpdates.Index = -1
 			_, err = ctx.blockStore.UpdateBlock(newParentHex, newParentUpdates)
 			if err != nil {
 				http.Error(w, fmt.Sprintf("error updating parent: %v", err), http.StatusBadRequest)
@@ -444,6 +446,7 @@ func (ctx *HandlerContext) BlocksHandler(w http.ResponseWriter, r *http.Request)
 				}
 				parentUpdates := &blocks.BlockUpdates{}
 				parentUpdates.Children = parentChildren
+				parentUpdates.Index = -1
 				ctx.blockStore.UpdateBlock(parentHex, parentUpdates)
 			}
 			//Now delete original block
