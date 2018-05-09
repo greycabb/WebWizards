@@ -716,6 +716,9 @@ class EditPage extends React.Component {
                 if (!value || expandedDiv.classList.contains('hidden')) {
                     return;
                 }
+
+                that.lockEditor();
+
                 value = value.value;
 
                 console.log(value);
@@ -830,6 +833,7 @@ class EditPage extends React.Component {
                     //that.setup_getProjectData();
                     //that.updateProject(that.state.htmlBlockId);
                     that.handleProjectUpdates();
+                    that.unlockEditor();
                 })
                 .catch(err => {
                     console.log('ERROR: ', err);
