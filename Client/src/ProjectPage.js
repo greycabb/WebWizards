@@ -66,7 +66,7 @@ export default class ProjectPage extends React.Component {
     
     //Should return an array with start tag and end tag
     //Ex: ["<div>", "</div>"]
-    generateHtmlString(blockType, css, attributes) {
+    generateHtmlString(blockType, css, attributes, blockId) {
         if (blockType != "text-content" && blockType != "title") {
 
             //Generate attributes string
@@ -77,7 +77,7 @@ export default class ProjectPage extends React.Component {
             }
 
             //Generate css string
-            var cssString = "";
+            var cssString = ' id="block-' + blockId + '"';
             if (css != null && css.length > 0) {
                 cssString = ' style="';
                 if (blockType == "body" || blockType == "html") {
@@ -136,6 +136,7 @@ export default class ProjectPage extends React.Component {
                             let css = json.css;
                             let children = json.children;
                             let attributes = json.attributes;
+                            let id = json.id;
 
                             //Need to grab information on current block type
                             fetch('https://api.webwizards.me/v1/htmlblocks?id=' + type, {
@@ -152,7 +153,7 @@ export default class ProjectPage extends React.Component {
                                         let json = response.json().then((blockInfo) => {
 
                                             //Generate a string of this block
-                                            let blockTags = this.generateHtmlString(blockInfo.name, css, attributes);
+                                            let blockTags = this.generateHtmlString(blockInfo.name, css, attributes, id);
 
                                             // An array of child tags 
                                             let childTags = Array(children.length);
@@ -206,7 +207,7 @@ export default class ProjectPage extends React.Component {
                                                     sanitizedTextContent = '';
                                                 } else {
                                                     sanitizedTextContent = sanitizeHtml(children[0], {
-                                                        allowedTags: ['b', 'i', 'em', 'strong', 'br'],//'a'
+                                                        allowedTags: ['b', 'i', 'em', 'strong'],//'a'
                                                         allowedAttributes: {
                                                             //'a': ['href']
                                                         }

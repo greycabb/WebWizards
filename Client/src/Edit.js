@@ -21,6 +21,8 @@ class EditPage extends React.Component {
         let ud = JSON.parse(localStorage.getItem('USERDATA'));
         let auth = localStorage.getItem('Authorization');
 
+        console.log(auth);
+
         // If missing userdata, auth token, or query parameter "location", kick to login page
         if (!ud || !auth || !this.props.location.query || !this.props.location.query.project) {
             hashHistory.push('/login');
@@ -598,7 +600,7 @@ class EditPage extends React.Component {
 
         if (blockname !== undefined && blockname.type === "content") {
             let content = current.children;
-            console.log("current content: " + JSON.stringify(content));
+            //console.log("current content: " + JSON.stringify(content));
             b = (<span></span>);
         }
 
@@ -616,7 +618,7 @@ class EditPage extends React.Component {
             }
         }
         if (current.blocktype !== 'text-content') {
-            let startTag = '<' + current.blocktype + '>';
+            let startTag = '<' + current.blocktype + '>' + ' --------> ' + current.index;
             let endTag = '</' + current.blocktype + '>';
 
             if (current.blocktype === 'img' || that.state.bricksByName[current.blocktype] !== undefined && that.state.bricksByName[current.blocktype].self_closing === true) {
@@ -632,7 +634,7 @@ class EditPage extends React.Component {
                 return;
             }
 
-            // console.log(current);
+            console.log(current);
             b = (
                 <ul className="layout-block">
                     {(['head', 'html', 'body', 'title'].includes(current.blocktype)) &&
@@ -650,7 +652,6 @@ class EditPage extends React.Component {
                             </div>
                         </li>
                     }
-
 
                     {!(['head', 'body', 'title', 'html'].includes(current.blocktype)) &&
                         <ExistingBlock id={current.id} handle={function (id) { that.pickupBlock(id, current.parentid, current.index, locationInLayout) }}>
@@ -833,7 +834,9 @@ class EditPage extends React.Component {
                     //that.setup_getProjectData();
                     //that.updateProject(that.state.htmlBlockId);
                     that.handleProjectUpdates();
-                    that.unlockEditor();
+                    setTimeout(function() {
+                        that.unlockEditor();
+                    }, 600);
                 })
                 .catch(err => {
                     console.log('ERROR: ', err);
