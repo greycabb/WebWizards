@@ -623,7 +623,7 @@ class EditPage extends React.Component {
             }
         }
         if (current.blocktype !== 'text-content') {
-            let startTag = '<' + current.blocktype + '>' + ' --------> ' + current.index;
+            let startTag = '<' + current.blocktype + '>';//+ ' --------> ' + current.index;
             let endTag = '</' + current.blocktype + '>';
 
             if (current.blocktype === 'img' || that.state.bricksByName[current.blocktype] !== undefined && that.state.bricksByName[current.blocktype].self_closing === true) {
@@ -764,7 +764,7 @@ class EditPage extends React.Component {
                     {/* Expanded div */}
                     <OutsideAlerter handler={() => saveEditedText(currentId)}>
                         <div id={'expanded-edit-text-' + currentId} className="hidden text-expanded-container">
-                            <textarea rows="4" cols="20" maxLength="1000" className="editor-text-content editor-text-expanded" id={'input-edit-text-' + currentId} defaultValue={text} />
+                            <textarea rows="4" cols="20" maxLength="200" className="editor-text-content editor-text-expanded" id={'input-edit-text-' + currentId} defaultValue={text} />
 
                             {/* Save edited text to DB*/}
                             <div className="edit-text-button btn-success" onClick={function () {
