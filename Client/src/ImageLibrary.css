@@ -33,6 +33,7 @@ button.library-button:focus, button.library-button:active {
 img.library-preview {
     height: 100px;
     margin: 5px;
+    cursor: pointer;
 }
 
 img.library-preview:active {
