@@ -35,6 +35,7 @@ export default class MainPage extends React.Component {
         //     mobileView = true;
         // }
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
+            console.log('Mobile');
             mobileView = true;
         }
 
@@ -226,7 +227,7 @@ export default class MainPage extends React.Component {
                     <div>
                         <Nav username={this.state.userdata.userName} />
                         <div className="main-content">
-                            <CreateBanner mobileView={this.state.mobileView}/>
+                            <CreateBanner mobileView={this.state.mobileView} toggle={false}/>
                             <div className="profile-and-awards">
                                 <AvatarDisplay avatar={this.state.userdata.avatar} />
                                 <div className="profile-name">

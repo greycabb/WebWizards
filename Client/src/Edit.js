@@ -1472,7 +1472,7 @@ class EditPage extends React.Component {
 
         var urlstring = "#/project/" + this.state.projectId;
 
-        if (!this.state.mobileView) {
+        if (this.state.mobileView) {
             return (
                 <div id="mobile-view">
                     <img src={img} width="400px" /><br />
