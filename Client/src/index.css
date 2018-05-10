@@ -270,6 +270,10 @@ html, body{
   height:100%;
 }
 
+.grey-text {
+  color: rgb(180,180,180);
+}
+
 /* The boxes on left side, span, div, etc. */
 .brick {
   padding: 0px 12px 0px 12px;

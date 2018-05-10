@@ -190,27 +190,43 @@ export default class MainPage extends React.Component {
         // Scrolling list with projects in it
         const ProjectsInList = ({ projects }) => (
             <div>
-                {projects.map(project => (
-                    <div className="project-in-list" key={project.id} onClick={function () { hashHistory.push('/edit?project=' + project.id); } } >
-                        <div className="project-square"><img src={project.img} width="180px" /></div>
-                        {project.name !== '' &&
-                            <div className="project-title">{project.name}</div>
-                        }
-                        {project.name === '' &&
-                            <div className="project-title"><i>untitled</i></div>
-                        }
-                    </div>
-                ))}
+                {!this.state.mobileView &&
+                    projects.map(project => (
+                        <div className="project-in-list" key={project.id} onClick={function () { hashHistory.push('/edit?project=' + project.id); } } >
+                            <div className="project-square"><img src={project.img} width="180px" /></div>
+                            {project.name !== '' &&
+                                <div className="project-title">{project.name}</div>
+                            }
+                            {project.name === '' &&
+                                <div className="project-title"><i>untitled</i></div>
+                            }
+                        </div>
+                    ))
+                }
+                {/* On mobile, load the website, instead of the editor*/}
+                {this.state.mobileView &&
+                    projects.map(project => (
+                        <div className="project-in-list" key={project.id} onClick={function () { hashHistory.push('/project/' + project.id); } } >
+                            <div className="project-square"><img src={project.img} width="180px" /></div>
+                            {project.name !== '' &&
+                                <div className="project-title">{project.name}</div>
+                            }
+                            {project.name === '' &&
+                                <div className="project-title"><i>untitled</i></div>
+                            }
+                        </div>
+                    ))
+                }
             </div>
         );
 
         return (
             <div>
-                {!this.state.mobileView && this.state.userdata && this.state.userdata.userName !== undefined &&
+                {this.state.userdata && this.state.userdata.userName !== undefined &&
                     <div>
                         <Nav username={this.state.userdata.userName} />
                         <div className="main-content">
-                            <CreateBanner />
+                            <CreateBanner mobileView={this.state.mobileView}/>
                             <div className="profile-and-awards">
                                 <AvatarDisplay avatar={this.state.userdata.avatar} />
                                 <div className="profile-name">
@@ -219,23 +235,29 @@ export default class MainPage extends React.Component {
                             </div>
                             <div id="yourProjects" className="your-projects">
                                 <div>Your Projects</div>
+                                {this.state.mobileView &&
+                                    <div className="grey-text">Changing your website only works on a computer, but you can still view your sites here.</div>
+                                }
                                 <div className="projects-list">
                                     {this.state.projects !== undefined &&
-                                        <ProjectsInList projects={this.state.projects} />
+                                        <ProjectsInList projects={this.state.projects} mobileView={this.state.mobileView} />
+                                    }
+                                    {this.state.projects === undefined &&
+                                        <h1>Loading...</h1>    
                                     }
                                 </div>
                             </div>
                         </div>
                     </div>
                 }
-                {this.state.mobileView &&
+                {/*this.state.mobileView &&
                     <div id="mobile-view">
                         <img src={img} width="400px" /><br />
                         Oops! Web Wizards only works on a computer!
 
                         <div>Continue regardless</div>
                     </div>
-                }
+                */}
             </div>
 
         );

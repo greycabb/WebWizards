@@ -22,10 +22,10 @@ export default class LoginPage extends React.Component {
 
         var mobileView = false;
 
-        if (window.innerWidth < 801) {
-            console.log(window.innerWidth);
-            mobileView = true;
-        }
+        // if (window.innerWidth < 801) {
+        //     console.log(window.innerWidth);
+        //     mobileView = true;
+        // }
 
         this.state = {
             'username': undefined,
