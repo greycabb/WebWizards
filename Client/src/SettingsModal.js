@@ -2,6 +2,7 @@ import React from 'react';
 import { hashHistory } from 'react-router';
 import './CreateModal.css';
 import OutsideAlerter from './OutsideAlerter';
+import './SettingsModal.css';
 
 export default class SettingsModal extends React.Component {
     constructor(props) {
@@ -17,13 +18,17 @@ export default class SettingsModal extends React.Component {
         }
 
         this.state = {
+            sharedNewChecked: false, // check to see if the user JUST checked the share button
             shared: shared,
             name: this.props.name,
-            error: false
+            error: false,
+            deleteWarningOn: false
         }
         this.handleName = this.handleName.bind(this);
         this.handleCheck = this.handleCheck.bind(this);
         this.update = this.update.bind(this);
+        this.deleteProject = this.deleteProject.bind(this);
+        this.deleteProjectWarning = this.deleteProjectWarning.bind(this);
     }
 
     handleName(e) {
@@ -33,8 +38,41 @@ export default class SettingsModal extends React.Component {
     }
 
     handleCheck() {
+
+        var showWarning = false;
+
+        if (this.state.shared == false) {
+            showWarning = true;
+        }
+
         this.setState({
+            sharedNewChecked: showWarning,
             shared: !this.state.shared
+        });
+    }
+
+    deleteProject() {
+        // Must call on API and immediately redirect to main page
+        fetch('https://api.webwizards.me/v1/projects?id=' + this.props.id, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('Authorization')
+            }
+        })
+            .then(function (response) {
+                // redirect
+                hashHistory.push('/main');
+            })
+            .catch(err => {
+                console.log('ERROR: ', err);
+            });
+    }
+
+    deleteProjectWarning() {
+        this.setState({
+            deleteWarningOn: !this.state.deleteWarningOn
         });
     }
 
@@ -96,8 +134,8 @@ export default class SettingsModal extends React.Component {
         return (
             <div className="modal-container">
                 <div className="modal-background">
-                    <OutsideAlerter handler={(e) => this.props.toggle(e)}>
-                        <div id="modal-popup">
+                    <OutsideAlerter handler={(e) => this.update()}>
+                        <div id="modal-popup" className="settings-modal">
                             <h2>Update Project</h2>
                             <div>
                                 <label htmlFor="title">Project Title </label>
@@ -106,16 +144,34 @@ export default class SettingsModal extends React.Component {
                             <div className="share-box">
                                 <input type="checkbox" id="share-checkbox" checked={this.state.shared} className="css-checkbox" name="share-proj" value="share" onClick={this.handleCheck}/>
                                 <label htmlFor="share-checkbox" className="css-label">Share with others</label>
-                                {this.state.shared === true &&
-                                    <div className="yel">
+                                {this.state.sharedNewChecked === true &&
+                                    <div className="settings-warning">
                                         NOTE: Before making your website available to others, make sure that you don't have any personal information written anywhere on your website!
                                     </div>
                                 }
                             </div>
-                            <center>
-                                <button className="btn yellow-button" onClick={(e) => this.props.toggle(e)}>Cancel</button>
-                                <button className="btn green-button" onClick={this.update}>Confirm</button>
-                            </center>
+                            <div>
+                                {this.state.deleteWarningOn &&
+                                     <div className="settings-delete-warning">
+                                        Are you sure you want to delete your project? This cannot be undone.
+                                     </div>
+                                }
+                                {!this.state.deleteWarningOn &&
+                                    <div>
+                                        <div className="center-div">
+                                            <button className="btn yellow-button confirm-button" onClick={this.update}>Confirm</button>
+                                            <br />
+                                            <a className="delete-link" onClick={this.deleteProjectWarning}>I want to delete my project.</a>
+                                        </div>
+                                    </div>
+                                }
+                                {this.state.deleteWarningOn &&
+                                    <div className="center-div">
+                                        <button className="btn yellow-button delete-button delete-cancel" onClick={this.deleteProjectWarning}>NO, do not delete it.</button>
+                                        <button className="btn yellow-button delete-button delete-confirmation" onClick={this.deleteProject}>YES, delete it.</button>
+                                    </div>
+                                }
+                            </div>
                         </div>
                     </OutsideAlerter>
                 </div>
