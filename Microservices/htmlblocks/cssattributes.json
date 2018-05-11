@@ -11,7 +11,7 @@
 		"units": "EO_choices",
 		"default": "Arial",
 		"extra_options": {
-			"choices": ["Arial", "Helvetica", "Times New Roman", "Cursive"]
+			"choices": ["Arial", "Helvetica", "Times New Roman", "Cursive", "Fontdiner Swanky", "Permanent Marker", "Dancing Script", "Amatic SC", "Gloria Hallelujah", "Special Elite"]
 		}
 	},
 	"font-size": {
