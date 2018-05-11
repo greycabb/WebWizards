@@ -270,6 +270,10 @@ html, body{
   height:100%;
 }
 
+.grey-text {
+  color: rgb(180,180,180);
+}
+
 /* The boxes on left side, span, div, etc. */
 .brick {
   padding: 0px 12px 0px 12px;
@@ -429,7 +433,7 @@ textarea {
 }
 
 .drop-slot-space {
-  line-height: 5px;
+  line-height: 15px;
 }
 
 .has-error .help-block, .has-error .control-label, .has-error .radio, .has-error .checkbox, .has-error .radio-inline, .has-error .checkbox-inline, .has-error.radio label, .has-error.checkbox label, .has-error.radio-inline label, .has-error.checkbox-inline label {
@@ -464,8 +468,10 @@ textarea {
 
 .locked-editor {
   pointer-events: none;
-  opacity: 0.8;
 }
+/* * > .locked-editor {
+  cursor: not-allowed;
+} */
 .loading-message {
   font-size: 24px;
   border: 3px solid white;
@@ -485,4 +491,11 @@ textarea {
   margin: 20px;
   position: fixed;
   right: 50px;
+}
+
+/*Message that appears in a block*/
+.block-message {
+  color: red;
+  font-size: 48pt;
+  position: absolute;
 }

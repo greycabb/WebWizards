@@ -18,6 +18,10 @@
     vertical-align: top;
     display: inline-block;
     margin: 0px 20px 0px 20px;
+    cursor: pointer;
+  }
+  .featured-project-in-list:hover {
+      text-decoration: underline;
   }
 
   .project-creator {
