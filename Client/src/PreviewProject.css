@@ -1,6 +1,6 @@
 #preview-container-container {
-    width: max-width;
-    height: 260px;
+    width: auto;
+    height: 33vh;
     border: 0.5px solid gray;
     margin-top: 10px;
     margin-bottom: 20px;
@@ -12,5 +12,6 @@
     top: 0px;
     left: 0px;
     zoom: 46%;
+    width: 100%;
     height: 100%;
 }

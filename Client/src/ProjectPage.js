@@ -81,7 +81,7 @@ export default class ProjectPage extends React.Component {
             if (css != null && css.length > 0) {
                 cssString = ' style="';
                 if (blockType == "body" || blockType == "html") {
-                    cssString += "width: 100%; height: 100%;"
+                    cssString += "width: 100%; height: 100%; overflow: scroll;"
                 }
                 for (var i = 0; i < css.length; i++) {
                     cssString += (css[i].attribute + ": " + css[i].value + "; ");
@@ -90,7 +90,7 @@ export default class ProjectPage extends React.Component {
             }
             else {
                 if (blockType == "body" || blockType == "html") {
-                    cssString += " style=\"width: 100%; height: 100%;\"";
+                    cssString += " style=\"width: 100%; height: 100%; overflow: scroll;\"";
                 }
             }
 

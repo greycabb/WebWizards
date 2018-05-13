@@ -38,7 +38,7 @@ export default class PreviewProject extends React.Component {
     //Should return an array with start tag and end tag
     //Ex: ["<div>", "</div>"]
     generateHtmlString(blockType, css, attributes) {
-        if (blockType != "text-content" && blockType != "title") {
+        if (blockType != "text-content" && blockType != "title" && blockType != "head") {
 
             //Generate attributes string
             var attributeString = "";
@@ -52,7 +52,7 @@ export default class PreviewProject extends React.Component {
             if (css != null && css.length > 0) {
                 cssString = ' style="';
                 if (blockType == "body" || blockType == "html") {
-                    cssString += "width: 100%; height: 100%;"
+                    cssString += "width: 100%; height: 100%; overflow: scroll;"
                 }
                 for (var i = 0; i < css.length; i++) {
                     cssString += (css[i].attribute + ": " + css[i].value + "; ");
@@ -61,7 +61,7 @@ export default class PreviewProject extends React.Component {
             }
             else {
                 if (blockType == "body" || blockType == "html") {
-                    cssString += " style=\"width: 100%; height: 100%;\"";
+                    cssString += " style=\"width: 100%; height: 100%; overflow: scroll;\"";
                 }
             }
 
@@ -69,7 +69,7 @@ export default class PreviewProject extends React.Component {
             var endTag = "";
 
             //We want to convert head, body, title, and html tags to div tags to be previewable
-            if (blockType == "head" || blockType == "body" || blockType == "html") {
+            if (blockType == "body" || blockType == "html") {
                 startTag = "<div" + cssString + ">";
                 endTag = "</div>";
             }
