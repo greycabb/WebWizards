@@ -1510,6 +1510,7 @@ class EditPage extends React.Component {
                                     {/* <h3>Click and drag one of these blocks into the right!</h3> */}
                                     <td className="block-choices-category-column">
                                         <Block name={"div"} handler={that.pickup} title={this.state.bricksByName['div'].description} />
+                                        <Block name={"span"} handler={that.pickup} title={this.state.bricksByName['span'].description} />
                                         <br />
                                         <Block name={"ul"} handler={that.pickup} title={this.state.bricksByName['ul'].description} />
                                         <Block name={"ol"} handler={that.pickup} title={this.state.bricksByName['ol'].description} />
