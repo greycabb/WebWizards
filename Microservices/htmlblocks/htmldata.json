@@ -144,7 +144,8 @@
 		"description": "A list of things with bullets (no numbers)",
 		"type": "wrapper",
 		"css_groups": [],
-		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "strong", "em", "img", "text-content", "ol", "ul"]
+		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "strong", "em", "img", "text-content", "ol", "ul"],
+		"attributes": ["title"]
 	},
 	{
 		"id": 16,
@@ -153,7 +154,8 @@
 		"description": "A list of things with a number for each thing",
 		"type": "wrapper",
 		"css_groups": [],
-		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "strong", "em", "img", "text-content", "ol", "ul"]
+		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "strong", "em", "img", "text-content", "ol", "ul"],
+		"attributes": ["title"]
 	},
 	{
         "id": 17,
@@ -162,6 +164,17 @@
 		"description": "A line in a list. Must be inside an <ol> (Ordered list) or <ul> (Unordered list) ",
 		"type": "wrapper",
 		"css_groups": ["font", "background", "border", "size", "margin", "padding"],
-		"unallowed_children": ["html", "head", "title", "body", "li"]
+		"unallowed_children": ["html", "head", "title", "body", "li"],
+		"attributes": ["title"]
+	},
+	{
+        "id": 18,
+        "name": "span",
+		"translation": "span",
+		"description": "Separation but inline with other elements",
+		"type": "wrapper",
+		"css_groups": ["font", "background", "border", "size", "margin", "padding"],
+		"unallowed_children": ["html", "head", "title", "body", "li"],
+		"attributes": ["title"]
 	}
 ]
