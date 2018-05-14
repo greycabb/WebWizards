@@ -234,17 +234,13 @@ body > div > .login-page {
   width: 180px;
   display: inline-block;
   margin-right: 40px;
-  cursor: pointer;
-}
-.project-in-list:hover {
-  text-decoration: underline;
 }
 
 .project-square {
-  border: 1px solid rgb(181,181,181);
-  background-color: white;
+  background-color: rgb(211, 209, 209);
   height: 120px;
   width: 180px;
+  padding: 0px;
 }
 .project-title {
   color:#F07E2B;

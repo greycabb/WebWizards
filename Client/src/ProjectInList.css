@@ -1,0 +1,23 @@
+.larger-btn {
+    width: 140px !important;
+    display: block !important;
+    border-radius: 15px !important;
+    margin: 0px auto !important;
+    margin-bottom: 7px !important;
+}
+
+.smaller-btn {
+    width: 80px !important;
+    border-radius: 15px !important;
+    margin: 0px auto !important;
+    margin-left: 3px !important;
+    margin-right: 3px !important;
+    margin-top: 20px !important;
+    padding: 7px !important;
+}
+
+.hover-div {
+    color: #ED3B3B;
+    text-align: center;
+    padding: 7px;
+}
