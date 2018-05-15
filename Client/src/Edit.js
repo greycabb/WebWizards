@@ -111,7 +111,7 @@ class EditPage extends React.Component {
         // 3. Update project
         this.updateProject = this.updateProject.bind(this); // Update project, passing in the ID of the base HTML block
         this.handleProjectUpdates = this.handleProjectUpdates.bind(this); // Updating project
-    
+
         // 4. Editor functions
         this.pickup = this.pickup.bind(this); // Grab a block for creating, deleting or moving
         this.drop = this.drop.bind(this); // Perform an action after picking up a block - create, delete, or move
@@ -165,10 +165,10 @@ class EditPage extends React.Component {
                 'Authorization': localStorage.getItem('Authorization')
             }
         })
-            .then(function (response) {
+            .then(function(response) {
 
                 if (response.ok) {
-                    response.json().then(function (result) {
+                    response.json().then(function(result) {
                         console.log(result);
 
                         // Set projectData state
@@ -236,10 +236,10 @@ class EditPage extends React.Component {
                 'Authorization': localStorage.getItem('Authorization')
             }
         })
-            .then(function (response) {
+            .then(function(response) {
 
                 if (response.ok) {
-                    response.json().then(function (result) {
+                    response.json().then(function(result) {
                         // Check if project creator's user ID is the same as the ID of the authorized user
                         if (that.state.projectData.userid !== result.id) {
                             console.log('Setup 1.5: Authentication failed!')
@@ -273,10 +273,10 @@ class EditPage extends React.Component {
                 'Content-Type': 'application/json'
             }
         })
-            .then(function (response) {
+            .then(function(response) {
 
                 if (response.ok) {
-                    response.json().then(function (result) {
+                    response.json().then(function(result) {
                         console.log(result);
 
                         let brickContainer = {};
@@ -339,7 +339,7 @@ class EditPage extends React.Component {
 
         let that = this;
         this.setState({
-            'buildTimer': setInterval(function () {
+            'buildTimer': setInterval(function() {
                 if (that.state.htmlBlockId !== undefined) { // when setup_createBaseBlock(html) completes
 
                     clearInterval(that.state.buildTimer);
@@ -366,7 +366,7 @@ class EditPage extends React.Component {
 
         let that = this;
         this.setState({
-            'buildTimer': setInterval(function () {
+            'buildTimer': setInterval(function() {
                 if (that.state.headBlockId !== undefined) { // when setup_createBaseBlock(head) completes
 
                     clearInterval(that.state.buildTimer);
@@ -389,7 +389,7 @@ class EditPage extends React.Component {
 
         let that = this;
         this.setState({
-            'buildTimer': setInterval(function () {
+            'buildTimer': setInterval(function() {
                 if (that.state.bodyBlockId !== undefined) { // when setup_createBaseBlock(body) completes
 
                     clearInterval(that.state.buildTimer);
@@ -423,10 +423,10 @@ class EditPage extends React.Component {
                 'index': index
             })
         })
-            .then(function (response) {
+            .then(function(response) {
 
                 if (response.ok) {
-                    response.json().then(function (result) {
+                    response.json().then(function(result) {
                         console.log('New block - ' + slot);
                         console.log(result);
 
@@ -527,7 +527,7 @@ class EditPage extends React.Component {
         // If the current child's block type is an unallowed child of the parent's block type
         let badStyleClass = ''; // Red outline box
         let badStyleMessage = ''; // "Oh no! [blocktype] shouldn't be placed inside [parent blocktype]'
-        
+
         if (parentTagName !== undefined) {
             if (that.state.bricksByName[parentTagName].unallowed_children.includes(current.blocktype)) {
                 badStyleClass = 'bad-style-block';
@@ -535,74 +535,40 @@ class EditPage extends React.Component {
             }
         }
 
+        let currentChildren = Object.assign({}, current.children);
+
         if (blockname != undefined &&
             (blockname.type == 'wrapper' || blockname.type == 'textwrapper')) {
-            let kids = Object.keys(current.children);
 
-            // No children
-            if (kids.length === 0) {
+            currentChildren[Object.keys(currentChildren).length] = {
+                'emptySlot': true
+            };
 
-                b = (<span>
-                    {b}
-                    <ExistingDropSlot handle={function () { that.moveBlock(current.id, 0, locationInLayout) } }>
-                        <DropSlot handle={function () { that.drop(current.id, 0, locationInLayout) } }>
-                            <div className="drop-slot-space">
-                                &nbsp;
-                            </div>
-                        </DropSlot>
-                    </ExistingDropSlot>
-                </span>);
-            } else {
+            let kids = Object.keys(currentChildren);
 
-                // Has children
-                for (let i = 0; i < kids.length; i++) {
-                    let child = current.children[kids[i]];
+            
+            // Has children
+            for (let i = 0; i < kids.length; i++) {
+                let child = currentChildren[kids[i]];
 
-                    if (blockTypesToIgnore[child.blocktype] !== true) {
-                        // Place a dropspace before each child
-                        let index = i;
-                        b = (<span>
-                            {b}
-                            <ExistingDropSlot handle={function () { that.moveBlock(current.id, index, locationInLayout) } }>
-                                <DropSlot handle={function () { that.drop(current.id, index, locationInLayout) } }>
-                                    <div className="drop-slot-space">
-                                        &nbsp;
+                if (blockTypesToIgnore[child.blocktype] !== true) {
+                    // Place a dropspace before each child
+                    let index = i;
+                    b = (<span>
+                        {b}
+                        <ExistingDropSlot handle={function() { that.moveBlock(current.id, index, locationInLayout) } }>
+                            <DropSlot handle={function() { that.drop(current.id, index, locationInLayout) } }>
+                                <div className="drop-slot-space">
+                                    &nbsp;
                                 </div>
-                                </DropSlot>
-                            </ExistingDropSlot>
-                            {this.recursiveLayout(child, i, current.blocktype)}
-                        </span>);
-                    } else {
-                        b = (<span>{b}{this.recursiveLayout(child, i, current.blocktype)}</span>);
-                    }
-
-                    if (i === kids.length - 1) {
-                        if (blockTypesToIgnore[child.blocktype] !== true) {
-                            // Place a dropspace after the last child
-                            let index = i + 1;
-                            /*
-                            b = (
-                                <span>
-                                    {b}
-                                    <DropSlot handle={function () { that.drop(current.id, index) }}>
-                                        <div className="red">
-                                            <span className="yellow">-> parent: {current.id.substr(current.id.length - 3)}, index: {index}</span>
-                                        </div>
-                                    </DropSlot>
-                                </span>
-                            ); */
-                            b = (<span>
-                                {b}
-                                <ExistingDropSlot handle={function () { that.moveBlock(current.id, index, locationInLayout, true) } }>
-                                    <DropSlot handle={function () { that.drop(current.id, index, locationInLayout) } }>
-                                        <div className="drop-slot-space">
-                                            &nbsp;
-                                    </div>
-                                    </DropSlot>
-                                </ExistingDropSlot>
-                            </span>);
+                            </DropSlot>
+                        </ExistingDropSlot>
+                        {child.emptySlot !== true &&
+                            this.recursiveLayout(child, i, current.blocktype)
                         }
-                    }
+                    </span>);
+                } else {
+                    b = (<span>{b}{this.recursiveLayout(child, i, current.blocktype)}</span>);
                 }
             }
         }
@@ -637,7 +603,7 @@ class EditPage extends React.Component {
 
 
             if (current.blocktype === undefined) {
-                setTimeout(function () {
+                setTimeout(function() {
                     that.makeLayout();
                 }, 300);
                 return;
@@ -648,7 +614,7 @@ class EditPage extends React.Component {
                 <ul className="layout-block">
                     {(['head', 'html', 'body', 'title'].includes(current.blocktype)) &&
                         <li className={blockclass + ' ' + badStyleClass}>
-                            <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) } }>
+                            <div className="disable-select tag-block-span" onDoubleClick={function(e) { let curcontent = current; that.cssModalToggleOn(curcontent) } }>
                                 <div className="bad-style">{badStyleMessage}</div>
                                 {startTag}
                                 {/*current.id !== undefined &&
@@ -656,27 +622,27 @@ class EditPage extends React.Component {
                                         */}
                             </div>
                             {b}
-                            <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) } }>
+                            <div className="disable-select tag-block-span" onDoubleClick={function(e) { let curcontent = current; that.cssModalToggleOn(curcontent) } }>
                                 {endTag}
                             </div>
                         </li>
                     }
 
                     {!(['head', 'body', 'title', 'html'].includes(current.blocktype)) &&
-                        <ExistingBlock id={current.id} handle={function (id) { that.pickupBlock(id, current.parentid, current.index, locationInLayout) } }>
+                        <ExistingBlock id={current.id} handle={function(id) { that.pickupBlock(id, current.parentid, current.index, locationInLayout) } }>
                             <li className={blockclass + ' ' + badStyleClass}>
-                                <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) } }>
+                                <div className="disable-select tag-block-span" onDoubleClick={function(e) { let curcontent = current; that.cssModalToggleOn(curcontent) } }>
                                     <div className="bad-style">{badStyleMessage}</div>
                                     {startTag}
                                 </div>
                                 {Object.keys(current.children).length === 0 && (current.blocktype === 'li' || that.state.bricksByName[current.blocktype].type === 'textwrapper') &&
-                                    <button className="black-text" onClick={function (e) { e.stopPropagation(); that.createBlock('text-content', current.id, 0); } }>Write...</button>
+                                    <button className="black-text" onClick={function(e) { e.stopPropagation(); that.createBlock('text-content', current.id, 0); } }>Write...</button>
                                 }
                                 {b}
                                 {(current.blocktype === 'ul' || current.blocktype === 'ol') &&
-                                    <button className="black-text" onClick={function (e) { e.stopPropagation(); that.createBlock('li', current.id, Object.keys(current.children).length); } }>Add &lt;li&gt;</button>
+                                    <button className="black-text" onClick={function(e) { e.stopPropagation(); that.createBlock('li', current.id, Object.keys(current.children).length); } }>Add &lt;li&gt;</button>
                                 }
-                                <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) } }>
+                                <div className="disable-select tag-block-span" onDoubleClick={function(e) { let curcontent = current; that.cssModalToggleOn(curcontent) } }>
                                     {endTag}
                                 </div>
                             </li>
@@ -749,13 +715,13 @@ class EditPage extends React.Component {
 
                 <div>
                     <ul className="layout-block">
-                        <ExistingBlock id={currentId} handle={function (id) { that.pickupBlock(id, current.parentid, current.index, locationInLayout) } }>
+                        <ExistingBlock id={currentId} handle={function(id) { that.pickupBlock(id, current.parentid, current.index, locationInLayout) } }>
                             <li className={blockclass}>
                                 {b}
                                 {/* Collapsed div */}
                                 <div id={'collapsed-edit-text-' + currentId}>
                                     <input type="text" id={'input-preview-edit-text-' + currentId} readOnly value={text} title="Click to change text" className="editor-text-content"
-                                        onClick={function () {
+                                        onClick={function() {
                                             expandEditText(currentId);
                                             that.setState({
                                                 forbidDrag: true
@@ -771,7 +737,7 @@ class EditPage extends React.Component {
                             <textarea rows="4" cols="20" maxLength="900" className="editor-text-content editor-text-expanded" id={'input-edit-text-' + currentId} defaultValue={text} />
 
                             {/* Save edited text to DB*/}
-                            <div className="edit-text-button btn-success" onClick={function () {
+                            <div className="edit-text-button btn-success" onClick={function() {
                                 saveEditedText(currentId);
                                 that.setState({
                                     forbidDrag: false
@@ -779,7 +745,7 @@ class EditPage extends React.Component {
                             } }>Save</div>
 
                             {/* Cancel editing text */}
-                            <div className="edit-text-button btn-danger" onClick={function () {
+                            <div className="edit-text-button btn-danger" onClick={function() {
                                 collapseEditText(currentId);
                                 that.setState({
                                     forbidDrag: false
@@ -814,7 +780,7 @@ class EditPage extends React.Component {
                 'content': [blockId]
             })
         })
-            .then(function (response) {
+            .then(function(response) {
                 that.setup_getProjectData();
             })
             .catch(err => {
@@ -838,12 +804,12 @@ class EditPage extends React.Component {
                     'index': -1 // don't change index
                 })
             })
-                .then(function (response) {
+                .then(function(response) {
                     //that.getBlock(blockId);
                     //that.setup_getProjectData();
                     //that.updateProject(that.state.htmlBlockId);
                     that.handleProjectUpdates();
-                    setTimeout(function () {
+                    setTimeout(function() {
                         that.unlockEditor();
                     }, 600);
                 })
@@ -883,10 +849,10 @@ class EditPage extends React.Component {
                 'index': index
             })
         })
-            .then(function (response) {
+            .then(function(response) {
 
                 if (response.ok) {
-                    response.json().then(function (result) {
+                    response.json().then(function(result) {
                         console.log('New block: ' + slot);
                         console.log(result);
 
@@ -935,10 +901,10 @@ class EditPage extends React.Component {
                 'Authorization': localStorage.getItem('Authorization')
             }
         })
-            .then(function (response) {
+            .then(function(response) {
 
                 if (response.ok) {
-                    response.json().then(function (result) {
+                    response.json().then(function(result) {
 
 
                         if (forSetup === true && locationInLayout !== undefined && locationInLayout.length > 0) {
@@ -1207,7 +1173,7 @@ class EditPage extends React.Component {
             JSON.stringify({
             })
         })
-            .then(function (response) {
+            .then(function(response) {
 
                 if (response.ok) {
                     console.log(response);
@@ -1219,11 +1185,11 @@ class EditPage extends React.Component {
                             'Authorization': localStorage.getItem('Authorization')
                         }
                     })
-                        .then(function (response2) {
+                        .then(function(response2) {
 
                             if (response.ok) {
                                 console.log(response2);
-                                response2.json().then(function (result2) {
+                                response2.json().then(function(result2) {
                                     console.log(result2);
 
                                     // Set projectData state
@@ -1276,7 +1242,7 @@ class EditPage extends React.Component {
                 'Authorization': localStorage.getItem('Authorization')
             }
         })
-            .then(function (response) {
+            .then(function(response) {
                 that.setup_getProjectData();
             })
             .catch(err => {
@@ -1361,7 +1327,7 @@ class EditPage extends React.Component {
                 'index': newIndex
             })
         })
-            .then(function (response) {
+            .then(function(response) {
 
                 console.log('_________');
                 console.log('VVVVVV');
@@ -1390,10 +1356,10 @@ class EditPage extends React.Component {
                 'points': newPoints
             })
         })
-            .then(function (response) {
+            .then(function(response) {
 
                 if (response.ok) {
-                    response.json().then(function (result) {
+                    response.json().then(function(result) {
                         var ud = that.state.userdata;
                         ud.points = newPoints;
                         localStorage.setItem('USERDATA', JSON.stringify(ud));
