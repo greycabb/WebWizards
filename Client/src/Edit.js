@@ -85,7 +85,7 @@ class EditPage extends React.Component {
                 }
             */
             'stack': [], // For building the layout: order of blocks to go through
-            'stackVisited': {}, // Also for building the layout: which blocks have already been visited
+            'stackVisited': {}, // Also for building the layout: which blocks have already been visited in the stack
 
             'finishedBuildingHeadBody': false, // If html, head, body tags exist in the project content
             'recursiveLayout': undefined // JSX content of the right display, built from layout
@@ -93,6 +93,8 @@ class EditPage extends React.Component {
 
         // 1. Setup functions
         this.setup_getProjectData = this.setup_getProjectData.bind(this); // state.projectdata
+        this.getBlock = this.getBlock.bind(this); // Get information about a block
+
         this.setup_compareProjectUserIdToAuthTokenUserId = this.setup_compareProjectUserIdToAuthTokenUserId.bind(this); // dependent on getProjectData's user ID
         this.setup_getAllPossibleHtmlBlocks = this.setup_getAllPossibleHtmlBlocks.bind(this);
 
@@ -106,33 +108,30 @@ class EditPage extends React.Component {
         this.makeLayout = this.makeLayout.bind(this); // Create "layout" state
         this.recursiveLayout = this.recursiveLayout.bind(this); // Using the layout state, create the display on the right
 
-        // 3. Update project, get data
+        // 3. Update project
         this.updateProject = this.updateProject.bind(this); // Update project, passing in the ID of the base HTML block
-        this.getBlock = this.getBlock.bind(this); // Get information about a block
-
+        this.handleProjectUpdates = this.handleProjectUpdates.bind(this); // Updating project
+    
         // 4. Editor functions
         this.pickup = this.pickup.bind(this); // Grab a block for creating, deleting or moving
         this.drop = this.drop.bind(this); // Perform an action after picking up a block - create, delete, or move
 
         this.createBlock = this.createBlock.bind(this); // Create a new block in the project
-        this.deleteBlock = this.deleteBlock.bind(this); // Delete
-        this.moveBlock = this.moveBlock.bind(this); // Move
-        this.changeTextContent = this.changeTextContent.bind(this); // Change text
-        
-        this.handleProjectUpdates = this.handleProjectUpdates.bind(this); // Updating project
+        this.deleteBlock = this.deleteBlock.bind(this); // Delete block
+        this.moveBlock = this.moveBlock.bind(this); // Move block somewhere else
+        this.changeTextContent = this.changeTextContent.bind(this); // Change text of a text content block
 
-        // 5. CSS modal appearing
+        // 5. CSS & settings modals
         this.cssModalToggleOn = this.cssModalToggleOn.bind(this);
         this.cssModalToggleOff = this.cssModalToggleOff.bind(this);
 
-        // 6. Settings modal appearing
         this.settingToggle = this.settingToggle.bind(this);
         this.settingsHandler = this.settingsHandler.bind(this);
 
-        // 7. Player progress
+        // 6. Player progress
         this.increasePointsBy = this.increasePointsBy.bind(this);
 
-        // 8. Make editor usable/unusable, since it's API call based
+        // 7. Make editor usable/unusable, since it's API call based
         this.lockEditor = this.lockEditor.bind(this);
         this.unlockEditor = this.unlockEditor.bind(this);
 
