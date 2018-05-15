@@ -22,25 +22,20 @@ class EditPage extends React.Component {
         let ud = JSON.parse(localStorage.getItem('USERDATA'));
         let auth = localStorage.getItem('Authorization');
 
-        console.log(auth);
-
         // If missing userdata, auth token, or query parameter "location", kick to login page
         if (!ud || !auth || !this.props.location.query || !this.props.location.query.project) {
             hashHistory.push('/login');
         }
-        let pid = this.props.location.query.project;
-
-        let mobileView = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent));
 
         this.state = {
 
-            settingsToggled: false,
+            settingsToggled: false, // Settings modal visible
 
-            styleToggled: false,
+            styleToggled: false, // CSS style modal visible
+            styleToggledBlock: undefined, // Another CSS style modal visible
 
-            styleToggledBlock: undefined,
-
-            'mobileView': mobileView,
+            // Check if user is on a mobile device - the editor doesn't work on mobile
+            'mobileView': (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)), // If on mobile
 
             'error': undefined,
             'userdata': ud, // first name, last name, etc., gotten from local storage
@@ -49,7 +44,7 @@ class EditPage extends React.Component {
             'selectedBlock': undefined, // Which block on the right is selected
 
             'projectData': undefined, // Data about the project
-            'projectId': pid, // id of the project
+            'projectId': this.props.location.query.project, // id of the project from query parameter
 
             'bricksById': undefined, // All posible HTML blocks, will be called bricks throughout
             'bricksByName': undefined, // All possible bricks by name (div, span, etc) instead of ID
@@ -81,24 +76,13 @@ class EditPage extends React.Component {
 
                                     }
                                 }
-                            },
-                            1: {
-                                type: 'body',
-                                id: '34545',
-                                attributes: '',
-                                locked: true,
-                                position: [0, 1]
-
-                                children: {
-
-                                }
                             }
                         }
                     }
                 }
             */
-            'stack': [], // For building the layout
-            'stackVisited': {}, // Also for building the layout
+            'stack': [], // For building the layout: order of blocks to go through
+            'stackVisited': {}, // Also for building the layout: which blocks have already been visited
 
             'finishedBuildingHeadBody': false, // If html, head, body tags exist in the project content
             'recursiveLayout': undefined // JSX content of the right display, built from layout
@@ -128,19 +112,25 @@ class EditPage extends React.Component {
 
         // Editor functions
         this.pickup = this.pickup.bind(this);
-        this.drop = this.drop.bind(this);
+        this.drop = this.drop.bind(this); // Create
+        this.deleteBlock = this.deleteBlock.bind(this); // Delete
+        this.moveBlock = this.moveBlock.bind(this); // Move
+        this.changeTextContent = this.changeTextContent.bind(this); // Change text
+        
+        this.handleProjectUpdates = this.handleProjectUpdates.bind(this); // Updating project
 
+        // CSS modal appearing
         this.cssModalToggleOn = this.cssModalToggleOn.bind(this);
         this.cssModalToggleOff = this.cssModalToggleOff.bind(this);
+
+        // Settings modal appearing
         this.settingToggle = this.settingToggle.bind(this);
         this.settingsHandler = this.settingsHandler.bind(this);
-        this.handleProjectUpdates = this.handleProjectUpdates.bind(this);
 
-        this.deleteBlock = this.deleteBlock.bind(this);
-        this.moveBlock = this.moveBlock.bind(this);
-        this.changeTextContent = this.changeTextContent.bind(this);
-
+        // Player progress
         this.increasePointsBy = this.increasePointsBy.bind(this);
+
+        // Make editor usable/unusable, since it's API call based
         this.lockEditor = this.lockEditor.bind(this);
         this.unlockEditor = this.unlockEditor.bind(this);
 
@@ -185,9 +175,10 @@ class EditPage extends React.Component {
                             projectData: result
                         });
 
+                        // Make sure the user is editing one of their own projects
                         that.setup_compareProjectUserIdToAuthTokenUserId();
 
-                        // If <html> and <head> and <body> are missing
+                        // If <html> block is missing
                         if (result.content.length === 0) {
                             console.log('Setup 1 -> A: Missing html, head, body');
                             that.setState({

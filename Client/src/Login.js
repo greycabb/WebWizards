@@ -67,7 +67,7 @@ export default class LoginPage extends React.Component {
     }
 
     componentDidMount() {
-        document.title = 'Login - Web Wizards';
+        document.title = 'Web Wizards';
     }
 
     //update state for specific field
