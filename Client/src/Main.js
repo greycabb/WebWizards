@@ -5,7 +5,6 @@ import CreateBanner from './CreateBanner';
 import img from './img/ProfilePictures/Cow.png';
 import AvatarDisplay from './AvatarDisplay';
 import PointBar from './PointBar';
-import ProjectInList from './ProjectInList';
 
 export default class MainPage extends React.Component {
     constructor(props) {
@@ -45,8 +44,7 @@ export default class MainPage extends React.Component {
             'userdata': udJson,
             'projects': undefined, // List of projects
             'width': window.innerWidth,
-            'mobileView': mobileView,
-            'projectList': []
+            'mobileView': mobileView
         };
 
         fetch('https://api.webwizards.me/v1/users/me', {
@@ -91,9 +89,6 @@ export default class MainPage extends React.Component {
             }
         }
         // Get project data
-
-        this.deleteProject = this.deleteProject.bind(this);
-
     }
 
     isJsonString(str) {
@@ -146,29 +141,6 @@ export default class MainPage extends React.Component {
             });
     }
 
-    deleteProject(id) {
-        var that = this;
-        // Must call on API and immediately redirect to main page
-        fetch('https://api.webwizards.me/v1/projects?id=' + id, {
-            method: 'DELETE',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': localStorage.getItem('Authorization')
-            }
-        })
-            .then(function (response) {
-
-                //remove this project from list
-                that.getAllUserProjects(that.state.userdata);
-                
-
-            })
-            .catch(err => {
-                console.log('ERROR: ', err);
-            });
-    }
-
     // Get all projects for user
     getAllUserProjects(newUserData) {
         var ud = newUserData;
@@ -189,22 +161,11 @@ export default class MainPage extends React.Component {
 
                     if (response.ok) {
                         response.json().then(function (result) {
-                            console.log(result);
+                            console.log(ud);
                             localStorage.setItem('USERDATA', JSON.stringify(ud));
-
-                            var projectList = [];
-
-                            result.forEach((project) => {
-                                projectList.push(
-                                    <ProjectInList key={project.id} id={project.id} img={project.img} name={project.name} mobileView={that.state.mobileView} 
-                                        redirectEdit={()=> {that.redirectEdit(project.id)}} deleteProject={()=> {that.deleteProject(project.id)}}/>
-                                );
-                            });
-
                             that.setState({
                                 'userdata': ud,
-                                'projects': result.reverse(), // Reversed array so that newer projects appear first
-                                'projectList': projectList
+                                'projects': result.reverse() // Reversed array so that newer projects appear first
                             });
                         });
 
@@ -225,23 +186,40 @@ export default class MainPage extends React.Component {
         document.title = 'Web Wizards';
     }
 
-    redirectEdit(projectid) {
-        hashHistory.push('/edit?project=' + projectid);
-    }
-
     render() {
 
         // Scrolling list with projects in it
-        /*const ProjectsInList = ({ projects }) => (
-
+        const ProjectsInList = ({ projects }) => (
             <div>
-                {projects.map(project =>(
-                    <ProjectInList key={project.id} id={projects.id} img={project.img} name={project.name} mobileView={this.state.mobileView} 
-                        redirectEdit={()=> {this.redirectEdit(project.id)}} deleteProject={()=> {this.deleteProject(project.id)}}/>
-                ))}
+                {!this.state.mobileView &&
+                    projects.map(project => (
+                        <div className="project-in-list" key={project.id} onClick={function () { hashHistory.push('/edit?project=' + project.id); } } >
+                            <div className="project-square"><img src={project.img} width="180px" /></div>
+                            {project.name !== '' &&
+                                <div className="project-title">{project.name}</div>
+                            }
+                            {project.name === '' &&
+                                <div className="project-title"><i>untitled</i></div>
+                            }
+                        </div>
+                    ))
+                }
+                {/* On mobile, load the website, instead of the editor*/}
+                {this.state.mobileView &&
+                    projects.map(project => (
+                        <div className="project-in-list" key={project.id} onClick={function () { hashHistory.push('/project/' + project.id); } } >
+                            <div className="project-square"><img src={project.img} width="180px" /></div>
+                            {project.name !== '' &&
+                                <div className="project-title">{project.name}</div>
+                            }
+                            {project.name === '' &&
+                                <div className="project-title"><i>untitled</i></div>
+                            }
+                        </div>
+                    ))
+                }
             </div>
-
-        ); */
+        );
 
         return (
             <div>
@@ -262,10 +240,12 @@ export default class MainPage extends React.Component {
                                     <div className="grey-text">Changing your website only works on a computer, but you can still view your sites here.</div>
                                 }
                                 <div className="projects-list">
-                                    {this.state.projectList.length == 0 &&
-                                        <span>Loading...</span>
+                                    {this.state.projects !== undefined &&
+                                        <ProjectsInList projects={this.state.projects} mobileView={this.state.mobileView} />
                                     }
-                                    {this.state.projectList}
+                                    {this.state.projects === undefined &&
+                                        <h1>Loading...</h1>    
+                                    }
                                 </div>
                             </div>
                         </div>

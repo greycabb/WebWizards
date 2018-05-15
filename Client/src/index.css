@@ -234,6 +234,7 @@ body > div > .login-page {
   width: 180px;
   display: inline-block;
   margin-right: 40px;
+  cursor: pointer;
 }
 
 .project-square {
