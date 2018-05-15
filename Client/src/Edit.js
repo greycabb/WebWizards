@@ -104,7 +104,7 @@ class EditPage extends React.Component {
         this.setup_buildBody = this.setup_buildBody.bind(this);
         this.setup_createBaseBlock = this.setup_createBaseBlock.bind(this); // used in setup_build...s
 
-        // 2. Editor preparation
+        // 2. Editor preparation - making the layout on the right... makeLayout then recursiveLayout
         this.makeLayout = this.makeLayout.bind(this); // Create "layout" state
         this.recursiveLayout = this.recursiveLayout.bind(this); // Using the layout state, create the display on the right
 
@@ -223,6 +223,7 @@ class EditPage extends React.Component {
 
     //____________________________________________________________________________
     // Called during setup_getProjectData() after the API call for getting project data completes
+    // Verifies that the authorized user's user ID is the same as the edited project's user ID
     setup_compareProjectUserIdToAuthTokenUserId() {
 
         let that = this;
@@ -261,7 +262,7 @@ class EditPage extends React.Component {
     }
 
     //____________________________________________________________________________
-    // Get all possible HTML blocks, putting them as bricks on left
+    // Get all possible HTML blocks, creating a dictionary of blocks
     setup_getAllPossibleHtmlBlocks() {
         let that = this;
         // 2. Project creator user ID compared to auth token's user ID
@@ -488,6 +489,9 @@ class EditPage extends React.Component {
 
     //____________________________________________________________________________
     // Recursively build the display on the right
+    //      current: ID of the current block which is the first element in the stack state
+    //      first: if block is the HTML block root of the layout
+    //      parentTagName: name of the parent of the current block
     recursiveLayout(current, first, parentTagName) {
 
         if (!current) {
