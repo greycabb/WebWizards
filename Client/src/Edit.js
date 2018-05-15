@@ -491,7 +491,7 @@ class EditPage extends React.Component {
     // Recursively build the display on the right
     //      current: ID of the current block which is the first element in the stack state
     //      first: if block is the HTML block root of the layout
-    //      parentTagName: name of the parent of the current block
+    //      parentTagName: name of the parent of the current block. Used for checking if the block's parent is fine with having the current block's type as a child
     recursiveLayout(current, first, parentTagName) {
 
         if (!current) {
@@ -499,12 +499,14 @@ class EditPage extends React.Component {
         }
         let locationInLayout = current.locationInLayout;
 
+        // Ignore html, head, body
         const blockTypesToIgnore = {
             'html': true,
-            'body': true,
-            'head': true
+            'head': true,
+            'body': true
         };
 
+        // the overall block doesn't have anything in it, but its 0th child is the HTML root.
         if (first === true) {
             if (current.children !== undefined && current.children[0] !== undefined) {
                 current = current.children[0];
@@ -514,17 +516,19 @@ class EditPage extends React.Component {
             }
         }
 
+        // Will contain the block's contents
         let b = (<span></span>);
 
+        // Label for the block
         let blockname = this.state.bricksByName[current.blocktype];
 
         let that = this;
 
         // If the current child's block type is an unallowed child of the parent's block type
-        let badStyleClass = '';
-        let badStyleMessage = '';
+        let badStyleClass = ''; // Red outline box
+        let badStyleMessage = ''; // "Oh no! [blocktype] shouldn't be placed inside [parent blocktype]'
+        
         if (parentTagName !== undefined) {
-
             if (that.state.bricksByName[parentTagName].unallowed_children.includes(current.blocktype)) {
                 badStyleClass = 'bad-style-block';
                 badStyleMessage = 'Oh no! "' + current.blocktype + '"' + " shouldn't be placed inside " + '"' + parentTagName + '"!';
@@ -537,7 +541,6 @@ class EditPage extends React.Component {
 
             // No children
             if (kids.length === 0) {
-
 
                 b = (<span>
                     {b}
