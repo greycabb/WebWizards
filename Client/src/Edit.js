@@ -22,9 +22,12 @@ class EditPage extends React.Component {
         let ud = JSON.parse(localStorage.getItem('USERDATA'));
         let auth = localStorage.getItem('Authorization');
 
-        // If missing userdata, auth token, or query parameter "location", kick to login page
-        if (!ud || !auth || !this.props.location.query || !this.props.location.query.project) {
+        // If missing userdata, auth token, or query parameter "location", kick to login or main
+        if (!ud || !auth) {
             hashHistory.push('/login');
+        }
+        if (!this.props.location.query || !this.props.location.query.project) {
+            hashHistory.push('/main');
         }
 
         this.state = {
@@ -52,7 +55,7 @@ class EditPage extends React.Component {
             'htmlBlockId': undefined, // ID of the root HTML block in the project data
 
             'layout': {}, // Layout of the right display
-            'lockedEditor': true,
+            'lockedEditor': true, // When API calls haven't completed, lock actions on the editor
 
             /* Example layout:
                 {
@@ -88,53 +91,52 @@ class EditPage extends React.Component {
             'recursiveLayout': undefined // JSX content of the right display, built from layout
         };
 
-        // Setup functions
+        // 1. Setup functions
         this.setup_getProjectData = this.setup_getProjectData.bind(this); // state.projectdata
         this.setup_compareProjectUserIdToAuthTokenUserId = this.setup_compareProjectUserIdToAuthTokenUserId.bind(this); // dependent on getProjectData's user ID
         this.setup_getAllPossibleHtmlBlocks = this.setup_getAllPossibleHtmlBlocks.bind(this);
 
-        // Build the original project components - root, head, body, base. Maybe make these run when the project gets created
+        // 1.5. Build the original project components - root, head, body, base. Maybe make these run when the project gets created
         this.setup_buildHtmlRoot = this.setup_buildHtmlRoot.bind(this); // dependent on getProjectData's content
         this.setup_buildHead = this.setup_buildHead.bind(this); // Root -> head -> body (in order, very important)
         this.setup_buildBody = this.setup_buildBody.bind(this);
         this.setup_createBaseBlock = this.setup_createBaseBlock.bind(this); // used in setup_build...s
 
-        // Editor preparation
+        // 2. Editor preparation
         this.makeLayout = this.makeLayout.bind(this); // Create "layout" state
         this.recursiveLayout = this.recursiveLayout.bind(this); // Using the layout state, create the display on the right
 
-        // Setting data
+        // 3. Update project, get data
         this.updateProject = this.updateProject.bind(this); // Update project, passing in the ID of the base HTML block
-        this.createBlock = this.createBlock.bind(this); // Create a new block in the project
-
-        // Getting data
         this.getBlock = this.getBlock.bind(this); // Get information about a block
 
-        // Editor functions
-        this.pickup = this.pickup.bind(this);
-        this.drop = this.drop.bind(this); // Create
+        // 4. Editor functions
+        this.pickup = this.pickup.bind(this); // Grab a block for creating, deleting or moving
+        this.drop = this.drop.bind(this); // Perform an action after picking up a block - create, delete, or move
+
+        this.createBlock = this.createBlock.bind(this); // Create a new block in the project
         this.deleteBlock = this.deleteBlock.bind(this); // Delete
         this.moveBlock = this.moveBlock.bind(this); // Move
         this.changeTextContent = this.changeTextContent.bind(this); // Change text
         
         this.handleProjectUpdates = this.handleProjectUpdates.bind(this); // Updating project
 
-        // CSS modal appearing
+        // 5. CSS modal appearing
         this.cssModalToggleOn = this.cssModalToggleOn.bind(this);
         this.cssModalToggleOff = this.cssModalToggleOff.bind(this);
 
-        // Settings modal appearing
+        // 6. Settings modal appearing
         this.settingToggle = this.settingToggle.bind(this);
         this.settingsHandler = this.settingsHandler.bind(this);
 
-        // Player progress
+        // 7. Player progress
         this.increasePointsBy = this.increasePointsBy.bind(this);
 
-        // Make editor usable/unusable, since it's API call based
+        // 8. Make editor usable/unusable, since it's API call based
         this.lockEditor = this.lockEditor.bind(this);
         this.unlockEditor = this.unlockEditor.bind(this);
 
-        console.log('______________________');
+        //console.log('______________________');
         this.setup_getProjectData();
     }
 
@@ -152,7 +154,7 @@ class EditPage extends React.Component {
 
         let that = this;
 
-        // Query parameter: project: project ID
+        // Query parameter: project ID
         let pid = this.state.projectId;
 
         // Get the project's data
@@ -180,7 +182,7 @@ class EditPage extends React.Component {
 
                         // If <html> block is missing
                         if (result.content.length === 0) {
-                            console.log('Setup 1 -> A: Missing html, head, body');
+                            //console.log('Setup 1 -> A: Missing html, head, body');
                             that.setState({
                                 'needsHtmlRoot': true
                             });
@@ -189,7 +191,11 @@ class EditPage extends React.Component {
                             that.setState({
                                 'htmlBlockId': result.content[0]
                             });
+
+                            // Get Start getting all blocks' data
                             that.getBlock(that.state.htmlBlockId);
+
+                            // Make the right layout
                             if (that.state.bricksByName !== undefined) {
                                 that.makeLayout();
                             }
@@ -203,15 +209,16 @@ class EditPage extends React.Component {
 
                 } else {
                     response.text().then(text => {
+                        // on error getting project data, kick to main page
                         console.log(text);
-                        hashHistory.push('/login');
+                        hashHistory.push('/main');
                     });
 
                 }
             })
             .catch(err => {
                 console.log('ERROR: ', err);
-                hashHistory.push('/login');
+                hashHistory.push('/main');
             });
     }
 
