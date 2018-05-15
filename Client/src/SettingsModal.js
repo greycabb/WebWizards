@@ -21,11 +21,14 @@ export default class SettingsModal extends React.Component {
             sharedNewChecked: false, // check to see if the user JUST checked the share button
             shared: shared,
             name: this.props.name,
-            error: false
+            error: false,
+            deleteWarningOn: false
         }
         this.handleName = this.handleName.bind(this);
         this.handleCheck = this.handleCheck.bind(this);
         this.update = this.update.bind(this);
+        this.deleteProject = this.deleteProject.bind(this);
+        this.deleteProjectWarning = this.deleteProjectWarning.bind(this);
     }
 
     handleName(e) {
@@ -48,6 +51,30 @@ export default class SettingsModal extends React.Component {
         });
     }
 
+    deleteProject() {
+        // Must call on API and immediately redirect to main page
+        fetch('https://api.webwizards.me/v1/projects?id=' + this.props.id, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('Authorization')
+            }
+        })
+            .then(function (response) {
+                // redirect
+                hashHistory.push('/main');
+            })
+            .catch(err => {
+                console.log('ERROR: ', err);
+            });
+    }
+
+    deleteProjectWarning() {
+        this.setState({
+            deleteWarningOn: !this.state.deleteWarningOn
+        });
+    }
 
     update() {
         var that = this;
@@ -123,8 +150,27 @@ export default class SettingsModal extends React.Component {
                                     </div>
                                 }
                             </div>
-                            <div className="center-div">
-                                <button className="btn yellow-button confirm-button" onClick={this.update}>Confirm</button>
+                            <div>
+                                {this.state.deleteWarningOn &&
+                                     <div className="settings-delete-warning">
+                                        Are you sure you want to delete your project? This cannot be undone.
+                                     </div>
+                                }
+                                {!this.state.deleteWarningOn &&
+                                    <div>
+                                        <div className="center-div">
+                                            <button className="btn yellow-button confirm-button" onClick={this.update}>Confirm</button>
+                                            <br />
+                                            <a className="delete-link" onClick={this.deleteProjectWarning}>I want to delete my project.</a>
+                                        </div>
+                                    </div>
+                                }
+                                {this.state.deleteWarningOn &&
+                                    <div className="center-div">
+                                        <button className="btn yellow-button delete-button delete-cancel" onClick={this.deleteProjectWarning}>NO, do not delete it.</button>
+                                        <button className="btn yellow-button delete-button delete-confirmation" onClick={this.deleteProject}>YES, delete it.</button>
+                                    </div>
+                                }
                             </div>
                         </div>
                     </OutsideAlerter>
