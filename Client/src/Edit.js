@@ -535,18 +535,19 @@ class EditPage extends React.Component {
             }
         }
 
+        // Copy children since we're modifying it
         let currentChildren = Object.assign({}, current.children);
 
         if (blockname != undefined &&
             (blockname.type == 'wrapper' || blockname.type == 'textwrapper')) {
 
+            // After all children, the last slot is a slot that doesn't do any recursion, but allows blocks to be inserted here
             currentChildren[Object.keys(currentChildren).length] = {
                 'emptySlot': true
             };
 
             let kids = Object.keys(currentChildren);
 
-            
             // Has children
             for (let i = 0; i < kids.length; i++) {
                 let child = currentChildren[kids[i]];
@@ -609,50 +610,38 @@ class EditPage extends React.Component {
                 return;
             }
 
-            console.log(current);
+            let isHeadBodyTitleOrHtml = (['head', 'body', 'title', 'html'].includes(current.blocktype));
+
+            //console.log(current);
+
             b = (
                 <ul className="layout-block">
-                    {(['head', 'html', 'body', 'title'].includes(current.blocktype)) &&
-                        <li className={blockclass + ' ' + badStyleClass}>
-                            <div className="disable-select tag-block-span" onDoubleClick={function(e) { let curcontent = current; that.cssModalToggleOn(curcontent) } }>
-                                <div className="bad-style">{badStyleMessage}</div>
-                                {startTag}
-                                {/*current.id !== undefined &&
-                                            <span className="yel">id: {current.id.substr(current.id.length - 3)}, index: {first} </span>
-                                        */}
-                            </div>
-                            {b}
-                            <div className="disable-select tag-block-span" onDoubleClick={function(e) { let curcontent = current; that.cssModalToggleOn(curcontent) } }>
-                                {endTag}
-                            </div>
-                        </li>
-                    }
-
-                    {!(['head', 'body', 'title', 'html'].includes(current.blocktype)) &&
-                        <ExistingBlock id={current.id} handle={function(id) { that.pickupBlock(id, current.parentid, current.index, locationInLayout) } }>
-                            <li className={blockclass + ' ' + badStyleClass}>
-                                <div className="disable-select tag-block-span" onDoubleClick={function(e) { let curcontent = current; that.cssModalToggleOn(curcontent) } }>
-                                    <div className="bad-style">{badStyleMessage}</div>
-                                    {startTag}
-                                </div>
-                                {Object.keys(current.children).length === 0 && (current.blocktype === 'li' || that.state.bricksByName[current.blocktype].type === 'textwrapper') &&
-                                    <button className="black-text" onClick={function(e) { e.stopPropagation(); that.createBlock('text-content', current.id, 0); } }>Write...</button>
-                                }
-                                {b}
-                                {(current.blocktype === 'ul' || current.blocktype === 'ol') &&
-                                    <button className="black-text" onClick={function(e) { e.stopPropagation(); that.createBlock('li', current.id, Object.keys(current.children).length); } }>Add &lt;li&gt;</button>
-                                }
-                                <div className="disable-select tag-block-span" onDoubleClick={function(e) { let curcontent = current; that.cssModalToggleOn(curcontent) } }>
-                                    {endTag}
-                                </div>
-                            </li>
-                        </ExistingBlock>
-
-                    }
+                    <li className={blockclass + ' ' + badStyleClass}>
+                        <div className="disable-select tag-block-span" onDoubleClick={function(e) { let curcontent = current; that.cssModalToggleOn(curcontent) } }>
+                            <div className="bad-style">{badStyleMessage}</div>
+                            {startTag}
+                        </div>
+                        {(!isHeadBodyTitleOrHtml && Object.keys(current.children).length === 0 && (current.blocktype === 'li' || that.state.bricksByName[current.blocktype].type === 'textwrapper')) &&
+                            <button className="black-text" onClick={function(e) { e.stopPropagation(); that.createBlock('text-content', current.id, 0); } }>Write...</button>
+                        }
+                        {b}
+                        {(current.blocktype === 'ul' || current.blocktype === 'ol') &&
+                            <button className="black-text" onClick={function(e) { e.stopPropagation(); that.createBlock('li', current.id, Object.keys(current.children).length); } }>Add &lt;li&gt;</button>
+                        }
+                        <div className="disable-select tag-block-span" onDoubleClick={function(e) { let curcontent = current; that.cssModalToggleOn(curcontent) } }>
+                            {endTag}
+                        </div>
+                    </li>
                 </ul>
             );
 
-            //b = ({b});
+            if (!isHeadBodyTitleOrHtml) {
+                b = (
+                    <ExistingBlock id={current.id} handle={function(id) { that.pickupBlock(id, current.parentid, current.index, locationInLayout) } }>
+                        {b}
+                    </ExistingBlock>
+                );
+            }
         }
         else {
             let text = '';
