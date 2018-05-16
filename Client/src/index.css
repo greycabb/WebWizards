@@ -459,8 +459,15 @@ textarea {
   background-color: rgb(48,176,76, 0.8);
 }
 
+td {
+  display: inline-block;
+  padding: 0px;
+  height: 154px;
+}
+
 .block-choices-category-column {
-  width: 33%;
+  padding-left: 15px;
+  width: 200px;
 }
 
 .locked-editor {

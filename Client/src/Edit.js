@@ -1467,6 +1467,20 @@ class EditPage extends React.Component {
                             <tbody>
                                 <tr>
                                     {/* <h3>Click and drag one of these blocks into the right!</h3> */}
+                                    <td>
+                                        <Block name={"h1"} handler={that.pickup} title={this.state.bricksByName['h1'].description} />
+                                        <Block name={"h2"} handler={that.pickup} title={this.state.bricksByName['h2'].description} />
+                                        <Block name={"h3"} handler={that.pickup} title={this.state.bricksByName['h3'].description} />
+                                        <Block name={"h4"} handler={that.pickup} title={this.state.bricksByName['h4'].description} />
+                                        <br/>
+                                        <Block name={"p"} handler={that.pickup} title={this.state.bricksByName['p'].description} />
+                                    </td>
+                                    <td className="block-choices-category-column">
+                                        <Block name={"img"} handler={that.pickup} title={this.state.bricksByName['img'].description} />
+                                        <Block name={"text-content"} handler={that.pickup} title={this.state.bricksByName['text-content'].description}>
+                                            <input type="text" name="lname" disabled value="text" className="short-text-box" />
+                                        </Block>
+                                    </td>
                                     <td className="block-choices-category-column">
                                         <Block name={"div"} handler={that.pickup} title={this.state.bricksByName['div'].description} />
                                         <Block name={"span"} handler={that.pickup} title={this.state.bricksByName['span'].description} />
@@ -1476,20 +1490,6 @@ class EditPage extends React.Component {
                                         <ul>
                                             <li><Block name={"li"} handler={that.pickup} title={this.state.bricksByName['li'].description} /></li>
                                         </ul>
-                                    </td>
-                                    <td>
-                                        <Block name={"img"} handler={that.pickup} title={this.state.bricksByName['img'].description} />
-                                        <Block name={"text-content"} handler={that.pickup} title={this.state.bricksByName['text-content'].description}>
-                                            <input type="text" name="lname" disabled value="text" className="short-text-box" />
-                                        </Block>
-                                    </td>
-                                    <td>
-                                        <Block name={"p"} handler={that.pickup} title={this.state.bricksByName['p'].description} />
-                                        <br />
-                                        <Block name={"h1"} handler={that.pickup} title={this.state.bricksByName['h1'].description} />
-                                        <Block name={"h2"} handler={that.pickup} title={this.state.bricksByName['h2'].description} />
-                                        <Block name={"h3"} handler={that.pickup} title={this.state.bricksByName['h3'].description} />
-                                        <Block name={"h4"} handler={that.pickup} title={this.state.bricksByName['h4'].description} />
                                     </td>
                                 </tr>
                             </tbody>
