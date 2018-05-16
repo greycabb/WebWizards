@@ -51,8 +51,11 @@ export default class PreviewProject extends React.Component {
             var cssString = "";
             if (css != null && css.length > 0) {
                 cssString = ' style="';
-                if (blockType == "body" || blockType == "html") {
+                if (blockType == "body") {
                     cssString += "width: 100%; height: 100%; overflow: scroll;"
+                }
+                else if(blockType == "html") {
+                    cssString += "width: 100%; height: 100%;"
                 }
                 for (var i = 0; i < css.length; i++) {
                     cssString += (css[i].attribute + ": " + css[i].value + "; ");
@@ -60,8 +63,11 @@ export default class PreviewProject extends React.Component {
                 cssString += '"';
             }
             else {
-                if (blockType == "body" || blockType == "html") {
+                if (blockType == "body") {
                     cssString += " style=\"width: 100%; height: 100%; overflow: scroll;\"";
+                }
+                else if(blockType == "html") {
+                    cssString += " style=\"width: 100%; height: 100%;\"";
                 }
             }
 
