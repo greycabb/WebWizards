@@ -1413,12 +1413,26 @@ class EditPage extends React.Component {
         if (action !== undefined && typeof parameters === 'object') {
             switch(action) {
                 case 'create':
+                    /*
+                        'parentid': id of parent block
+                        'index': # index that this newly created block will go to, under the parent block
+                        'blocktype': e.g. div, h1, h2, p, ul
+                    */
 
                     break;
                 case 'delete':
+                    /*
+                        'blockid': id of block to delete
+                    */
 
                     break;
                 case 'move':
+                    /*
+                        'parentid': id of new parent block
+                        'index': # index that this moved block will go to
+                        'blocktype': e.g. div, h1, h2, p, ul
+                        'blockid': id of block to move
+                    */
 
                     break;
             }
