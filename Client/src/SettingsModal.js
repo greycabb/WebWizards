@@ -138,7 +138,7 @@ export default class SettingsModal extends React.Component {
                         <div id="modal-popup" className="settings-modal">
                             <h2>Update Project</h2>
                             <div>
-                                <label htmlFor="title">Project Title </label>
+                                <label htmlFor="title">Project Name</label>
                                 <input id="proj-title" placeholder={this.props.name} type="name" maxLength="15" name="proj-title" onChange={(e) =>this.handleName(e)}/>
                             </div>
                             <div className="share-box">

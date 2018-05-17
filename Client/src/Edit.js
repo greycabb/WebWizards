@@ -177,6 +177,7 @@ class EditPage extends React.Component {
                         that.setState({
                             projectData: result
                         });
+                        // document.title = result.name + ' - Web Wizards';
 
                         // Make sure the user is editing one of their own projects
                         that.setup_compareProjectUserIdToAuthTokenUserId();
@@ -1429,8 +1430,13 @@ class EditPage extends React.Component {
                     /*
                         'blockid': id of block to delete
                     */
-                    let blockToDelete = document.getElementById('layoutBlock_' + params['blockid'])
+                    let blockToDelete = document.getElementById('layoutBlock_' + params['blockid']);
                     blockToDelete.parentNode.removeChild(blockToDelete);
+
+                    // Update the layout object then re-render the right layout. (CURRENT)
+                    if (this.state.layout !== undefined) {
+                        // somehow need to get to the object
+                    }
 
                     break;
                 case 'move':

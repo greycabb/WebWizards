@@ -87,7 +87,7 @@ export default class CreateModal extends React.Component {
                         <div id="modal-popup">
                             <h2>Create Project</h2>
                             <div>
-                                <label htmlFor="title">Project Title </label>
+                                <label htmlFor="title">Project Name</label>
                                 <input id="proj-title" type="name" maxLength="15" name="proj-title" onChange={(e) =>this.handleName(e)}/>
                             </div>
                             <div className="share-box">
