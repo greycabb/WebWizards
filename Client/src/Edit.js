@@ -623,7 +623,7 @@ class EditPage extends React.Component {
                             <div className="bad-style">{badStyleMessage}</div>
                             {startTag}
                         </div>
-                        {(!isHeadBodyTitleOrHtml && Object.keys(current.children).length === 0 && (current.blocktype === 'li' || that.state.bricksByName[current.blocktype].type === 'textwrapper')) &&
+                        {((!isHeadBodyTitleOrHtml || current.blocktype === 'title') && Object.keys(current.children).length === 0 && (current.blocktype === 'li' || that.state.bricksByName[current.blocktype].type === 'textwrapper')) &&
                             <button className="black-text" onClick={function(e) { e.stopPropagation(); that.createBlock('text-content', current.id, 0); } }>Write...</button>
                         }
                         {b}
