@@ -616,7 +616,7 @@ class EditPage extends React.Component {
 
             b = (
                 <ul className="layout-block">
-                    <li className={blockclass + ' ' + badStyleClass}>
+                    <li className={blockclass + ' ' + badStyleClass} id={'layoutBlock_' + current.id}>
                         <div className="disable-select tag-block-span" onDoubleClick={function(e) { let curcontent = current; that.cssModalToggleOn(curcontent) } }>
                             <div className="bad-style">{badStyleMessage}</div>
                             {startTag}
@@ -705,7 +705,7 @@ class EditPage extends React.Component {
                 <div>
                     <ul className="layout-block">
                         <ExistingBlock id={currentId} handle={function(id) { that.pickupBlock(id, current.parentid, current.index, locationInLayout) } }>
-                            <li className={blockclass}>
+                            <li className={blockclass} id={'layoutBlock_' + current.id}>
                                 {b}
                                 {/* Collapsed div */}
                                 <div id={'collapsed-edit-text-' + currentId}>
