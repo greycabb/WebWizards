@@ -121,6 +121,8 @@ class EditPage extends React.Component {
         this.moveBlock = this.moveBlock.bind(this); // Move block somewhere else
         this.changeTextContent = this.changeTextContent.bind(this); // Change text of a text content block
 
+        this.premodifyRecursiveLayout = this.premodifyRecursiveLayout.bind(this); // Update the right layout before the API call finishes
+
         // 5. CSS & settings modals
         this.cssModalToggleOn = this.cssModalToggleOn.bind(this);
         this.cssModalToggleOff = this.cssModalToggleOff.bind(this);
@@ -1402,6 +1404,26 @@ class EditPage extends React.Component {
         if (element !== null) {
 
         }
+    }
+
+    // Modify the recursiveLayout on the right before the API call finishes.
+    // Action: whether to delete, move, create a block
+    // Parameters: based on the action, accept different parameters to put the block in the right place
+    premodifyRecursiveLayout(action, parameters) {
+        if (action !== undefined && typeof parameters === 'object') {
+            switch(action) {
+                case 'create':
+
+                    break;
+                case 'delete':
+
+                    break;
+                case 'move':
+
+                    break;
+            }
+        }
+
     }
 
 
