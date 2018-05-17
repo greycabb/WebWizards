@@ -1224,6 +1224,10 @@ class EditPage extends React.Component {
 
         this.lockEditor();
 
+        this.premodifyRecursiveLayout('delete', {
+            'blockid': blockId
+        });
+
         let that = this;
         fetch('https://api.webwizards.me/v1/blocks?id=' + blockId, {
             method: 'DELETE',
@@ -1409,8 +1413,9 @@ class EditPage extends React.Component {
     // Modify the recursiveLayout on the right before the API call finishes.
     // Action: whether to delete, move, create a block
     // Parameters: based on the action, accept different parameters to put the block in the right place
-    premodifyRecursiveLayout(action, parameters) {
-        if (action !== undefined && typeof parameters === 'object') {
+    premodifyRecursiveLayout(action, params) {
+        console.log('======> ' + action);
+        if (action !== undefined && typeof params === 'object') {
             switch(action) {
                 case 'create':
                     /*
@@ -1424,6 +1429,8 @@ class EditPage extends React.Component {
                     /*
                         'blockid': id of block to delete
                     */
+                    let blockToDelete = document.getElementById('layoutBlock_' + params['blockid'])
+                    blockToDelete.parentNode.removeChild(blockToDelete);
 
                     break;
                 case 'move':
