@@ -123,7 +123,7 @@ class EditPage extends React.Component {
         this.moveBlock = this.moveBlock.bind(this); // Move block somewhere else
         this.changeTextContent = this.changeTextContent.bind(this); // Change text of a text content block
 
-        this.premodifyRecursiveLayout = this.premodifyRecursiveLayout.bind(this); // Update the right layout before the API call finishes
+        //this.premodifyRecursiveLayout = this.premodifyRecursiveLayout.bind(this); // Update the right layout before the API call finishes
 
         // 5. CSS & settings modals
         this.cssModalToggleOn = this.cssModalToggleOn.bind(this);
@@ -554,9 +554,11 @@ class EditPage extends React.Component {
             (blockname.type == 'wrapper' || blockname.type == 'textwrapper')) {
 
             // After all children, the last slot is a slot that doesn't do any recursion, but allows blocks to be inserted here
-            currentChildren[Object.keys(currentChildren).length] = {
-                'emptySlot': true
-            };
+            if (current.blocktype !== 'html') {
+                currentChildren[Object.keys(currentChildren).length] = {
+                    'emptySlot': true
+                };
+            }
 
             let kids = Object.keys(currentChildren);
 
@@ -1240,9 +1242,9 @@ class EditPage extends React.Component {
 
         this.lockEditor();
 
-        this.premodifyRecursiveLayout('delete', {
-            'blockid': blockId
-        });
+        // this.premodifyRecursiveLayout('delete', {
+        //     'blockid': blockId
+        // });
 
         let that = this;
         fetch('https://api.webwizards.me/v1/blocks?id=' + blockId, {
@@ -1429,44 +1431,43 @@ class EditPage extends React.Component {
     // Modify the recursiveLayout on the right before the API call finishes.
     // Action: whether to delete, move, create a block
     // Parameters: based on the action, accept different parameters to put the block in the right place
-    premodifyRecursiveLayout(action, params) {
-        console.log('======> ' + action);
-        if (action !== undefined && typeof params === 'object') {
-            switch (action) {
-                case 'create':
-                    /*
-                        'parentid': id of parent block
-                        'index': # index that this newly created block will go to, under the parent block
-                        'blocktype': e.g. div, h1, h2, p, ul
-                    */
+    // premodifyRecursiveLayout(action, params) {
+    //     console.log('======> ' + action);
+    //     if (action !== undefined && typeof params === 'object') {
+    //         switch (action) {
+    //             case 'create':
+    //                 /*
+    //                     'parentid': id of parent block
+    //                     'index': # index that this newly created block will go to, under the parent block
+    //                     'blocktype': e.g. div, h1, h2, p, ul
+    //                 */
 
-                    break;
-                case 'delete':
-                    /*
-                        'blockid': id of block to delete
-                    */
-                    let blockToDelete = document.getElementById('layoutBlock_' + params['blockid']);
-                    blockToDelete.parentNode.removeChild(blockToDelete);
+    //                 break;
+    //             case 'delete':
+    //                 /*
+    //                     'blockid': id of block to delete
+    //                 */
+    //                 let blockToDelete = document.getElementById('layoutBlock_' + params['blockid']);
+    //                 blockToDelete.parentNode.removeChild(blockToDelete);
 
-                    // Update the layout object then re-render the right layout. (CURRENT)
-                    if (this.state.layout !== undefined) {
-                        // somehow need to get to the object
-                    }
+    //                 // Update the layout object then re-render the right layout. (CURRENT)
+    //                 if (this.state.layout !== undefined) {
+    //                     // somehow need to get to the object
+    //                 }
 
-                    break;
-                case 'move':
-                    /*
-                        'parentid': id of new parent block
-                        'index': # index that this moved block will go to
-                        'blocktype': e.g. div, h1, h2, p, ul
-                        'blockid': id of block to move
-                    */
+    //                 break;
+    //             case 'move':
+    //                 /*
+    //                     'parentid': id of new parent block
+    //                     'index': # index that this moved block will go to
+    //                     'blocktype': e.g. div, h1, h2, p, ul
+    //                     'blockid': id of block to move
+    //                 */
 
-                    break;
-            }
-        }
-
-    }
+    //                 break;
+    //         }
+    //     }
+    // }
 
 
 
