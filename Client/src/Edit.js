@@ -88,7 +88,8 @@ class EditPage extends React.Component {
             'stackVisited': {}, // Also for building the layout: which blocks have already been visited in the stack
 
             'finishedBuildingHeadBody': false, // If html, head, body tags exist in the project content
-            'recursiveLayout': undefined // JSX content of the right display, built from layout
+            'recursiveLayout': undefined, // JSX content of the right display, built from layout
+            'layoutBlockLocations': {} // A dictionary. Key: ID of different blocks, value: array of 
         };
 
         // 1. Setup functions
@@ -105,6 +106,7 @@ class EditPage extends React.Component {
         this.setup_createBaseBlock = this.setup_createBaseBlock.bind(this); // used in setup_build...s
 
         // 2. Editor preparation - making the layout on the right... makeLayout then recursiveLayout
+        this.resetLayout = this.resetLayout.bind(this); // Clear the layout before making it, or when an error occurs
         this.makeLayout = this.makeLayout.bind(this); // Create "layout" state
         this.recursiveLayout = this.recursiveLayout.bind(this); // Using the layout state, create the display on the right
 
@@ -167,10 +169,10 @@ class EditPage extends React.Component {
                 'Authorization': localStorage.getItem('Authorization')
             }
         })
-            .then(function(response) {
+            .then(function (response) {
 
                 if (response.ok) {
-                    response.json().then(function(result) {
+                    response.json().then(function (result) {
                         console.log(result);
 
                         // Set projectData state
@@ -239,10 +241,10 @@ class EditPage extends React.Component {
                 'Authorization': localStorage.getItem('Authorization')
             }
         })
-            .then(function(response) {
+            .then(function (response) {
 
                 if (response.ok) {
-                    response.json().then(function(result) {
+                    response.json().then(function (result) {
                         // Check if project creator's user ID is the same as the ID of the authorized user
                         if (that.state.projectData.userid !== result.id) {
                             console.log('Setup 1.5: Authentication failed!')
@@ -276,10 +278,10 @@ class EditPage extends React.Component {
                 'Content-Type': 'application/json'
             }
         })
-            .then(function(response) {
+            .then(function (response) {
 
                 if (response.ok) {
-                    response.json().then(function(result) {
+                    response.json().then(function (result) {
                         console.log(result);
 
                         let brickContainer = {};
@@ -342,7 +344,7 @@ class EditPage extends React.Component {
 
         let that = this;
         this.setState({
-            'buildTimer': setInterval(function() {
+            'buildTimer': setInterval(function () {
                 if (that.state.htmlBlockId !== undefined) { // when setup_createBaseBlock(html) completes
 
                     clearInterval(that.state.buildTimer);
@@ -369,7 +371,7 @@ class EditPage extends React.Component {
 
         let that = this;
         this.setState({
-            'buildTimer': setInterval(function() {
+            'buildTimer': setInterval(function () {
                 if (that.state.headBlockId !== undefined) { // when setup_createBaseBlock(head) completes
 
                     clearInterval(that.state.buildTimer);
@@ -392,7 +394,7 @@ class EditPage extends React.Component {
 
         let that = this;
         this.setState({
-            'buildTimer': setInterval(function() {
+            'buildTimer': setInterval(function () {
                 if (that.state.bodyBlockId !== undefined) { // when setup_createBaseBlock(body) completes
 
                     clearInterval(that.state.buildTimer);
@@ -426,10 +428,10 @@ class EditPage extends React.Component {
                 'index': index
             })
         })
-            .then(function(response) {
+            .then(function (response) {
 
                 if (response.ok) {
-                    response.json().then(function(result) {
+                    response.json().then(function (result) {
                         console.log('New block - ' + slot);
                         console.log(result);
 
@@ -467,6 +469,21 @@ class EditPage extends React.Component {
             });
     }
 
+    // Clears everything on the right layout
+    resetLayout() {
+        // Clear stack
+        this.setState({
+            stack: [],
+            stackVisited: {},
+            layoutBlockLocations: {},
+            layout: {
+                children: {
+
+                }
+            }
+        });
+    }
+
     //____________________________________________________________________________
     // Get root block and all of it's children and their children to make the layout on the right
     makeLayout() {
@@ -476,15 +493,7 @@ class EditPage extends React.Component {
         }
 
         // Clear stack
-        this.setState({
-            stack: [],
-            stackVisited: {},
-            layout: {
-                children: {
-
-                }
-            }
-        });
+        this.resetLayout();
 
         // Recursively build the layout
         this.getBlock(this.state.htmlBlockId, true, [0]);
@@ -560,8 +569,8 @@ class EditPage extends React.Component {
                     let index = i;
                     b = (<span>
                         {b}
-                        <ExistingDropSlot handle={function() { that.moveBlock(current.id, index, locationInLayout) } }>
-                            <DropSlot handle={function() { that.drop(current.id, index, locationInLayout) } }>
+                        <ExistingDropSlot handle={function () { that.moveBlock(current.id, index, locationInLayout) }}>
+                            <DropSlot handle={function () { that.drop(current.id, index, locationInLayout) }}>
                                 <div className="drop-slot-space">
                                     &nbsp;
                                 </div>
@@ -607,7 +616,7 @@ class EditPage extends React.Component {
 
 
             if (current.blocktype === undefined) {
-                setTimeout(function() {
+                setTimeout(function () {
                     that.makeLayout();
                 }, 300);
                 return;
@@ -620,18 +629,18 @@ class EditPage extends React.Component {
             b = (
                 <ul className="layout-block">
                     <li className={blockclass + ' ' + badStyleClass} id={'layoutBlock_' + current.id}>
-                        <div className="disable-select tag-block-span" onDoubleClick={function(e) { let curcontent = current; that.cssModalToggleOn(curcontent) } }>
+                        <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
                             <div className="bad-style">{badStyleMessage}</div>
                             {startTag}
                         </div>
                         {((!isHeadBodyTitleOrHtml || current.blocktype === 'title') && Object.keys(current.children).length === 0 && (current.blocktype === 'li' || that.state.bricksByName[current.blocktype].type === 'textwrapper')) &&
-                            <button className="black-text" onClick={function(e) { e.stopPropagation(); that.createBlock('text-content', current.id, 0); } }>Write...</button>
+                            <button className="black-text" onClick={function (e) { e.stopPropagation(); that.createBlock('text-content', current.id, 0); }}>Write...</button>
                         }
                         {b}
                         {(current.blocktype === 'ul' || current.blocktype === 'ol') &&
-                            <button className="black-text" onClick={function(e) { e.stopPropagation(); that.createBlock('li', current.id, Object.keys(current.children).length); } }>Add &lt;li&gt;</button>
+                            <button className="black-text" onClick={function (e) { e.stopPropagation(); that.createBlock('li', current.id, Object.keys(current.children).length); }}>Add &lt;li&gt;</button>
                         }
-                        <div className="disable-select tag-block-span" onDoubleClick={function(e) { let curcontent = current; that.cssModalToggleOn(curcontent) } }>
+                        <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
                             {endTag}
                         </div>
                     </li>
@@ -640,7 +649,7 @@ class EditPage extends React.Component {
 
             if (!isHeadBodyTitleOrHtml) {
                 b = (
-                    <ExistingBlock id={current.id} handle={function(id) { that.pickupBlock(id, current.parentid, current.index, locationInLayout) } }>
+                    <ExistingBlock id={current.id} handle={function (id) { that.pickupBlock(id, current.parentid, current.index, locationInLayout) }}>
                         {b}
                     </ExistingBlock>
                 );
@@ -707,18 +716,18 @@ class EditPage extends React.Component {
 
                 <div>
                     <ul className="layout-block">
-                        <ExistingBlock id={currentId} handle={function(id) { that.pickupBlock(id, current.parentid, current.index, locationInLayout) } }>
+                        <ExistingBlock id={currentId} handle={function (id) { that.pickupBlock(id, current.parentid, current.index, locationInLayout) }}>
                             <li className={blockclass} id={'layoutBlock_' + current.id}>
                                 {b}
                                 {/* Collapsed div */}
                                 <div id={'collapsed-edit-text-' + currentId}>
                                     <input type="text" id={'input-preview-edit-text-' + currentId} readOnly value={text} title="Click to change text" className="editor-text-content"
-                                        onClick={function() {
+                                        onClick={function () {
                                             expandEditText(currentId);
                                             that.setState({
                                                 forbidDrag: true
                                             });
-                                        } } />
+                                        }} />
                                 </div>
                             </li>
                         </ExistingBlock>
@@ -729,20 +738,20 @@ class EditPage extends React.Component {
                             <textarea rows="4" cols="20" maxLength="900" className="editor-text-content editor-text-expanded" id={'input-edit-text-' + currentId} defaultValue={text} />
 
                             {/* Save edited text to DB*/}
-                            <div className="edit-text-button btn-success" onClick={function() {
+                            <div className="edit-text-button btn-success" onClick={function () {
                                 saveEditedText(currentId);
                                 that.setState({
                                     forbidDrag: false
                                 });
-                            } }>Save</div>
+                            }}>Save</div>
 
                             {/* Cancel editing text */}
-                            <div className="edit-text-button btn-danger" onClick={function() {
+                            <div className="edit-text-button btn-danger" onClick={function () {
                                 collapseEditText(currentId);
                                 that.setState({
                                     forbidDrag: false
                                 });
-                            } }>Cancel</div>
+                            }}>Cancel</div>
 
                         </div>
                     </OutsideAlerter>
@@ -772,7 +781,7 @@ class EditPage extends React.Component {
                 'content': [blockId]
             })
         })
-            .then(function(response) {
+            .then(function (response) {
                 that.setup_getProjectData();
             })
             .catch(err => {
@@ -796,12 +805,12 @@ class EditPage extends React.Component {
                     'index': -1 // don't change index
                 })
             })
-                .then(function(response) {
+                .then(function (response) {
                     //that.getBlock(blockId);
                     //that.setup_getProjectData();
                     //that.updateProject(that.state.htmlBlockId);
                     that.handleProjectUpdates();
-                    setTimeout(function() {
+                    setTimeout(function () {
                         that.unlockEditor();
                     }, 600);
                 })
@@ -841,10 +850,10 @@ class EditPage extends React.Component {
                 'index': index
             })
         })
-            .then(function(response) {
+            .then(function (response) {
 
                 if (response.ok) {
-                    response.json().then(function(result) {
+                    response.json().then(function (result) {
                         console.log('New block: ' + slot);
                         console.log(result);
 
@@ -893,10 +902,10 @@ class EditPage extends React.Component {
                 'Authorization': localStorage.getItem('Authorization')
             }
         })
-            .then(function(response) {
+            .then(function (response) {
 
                 if (response.ok) {
-                    response.json().then(function(result) {
+                    response.json().then(function (result) {
 
 
                         if (forSetup === true && locationInLayout !== undefined && locationInLayout.length > 0) {
@@ -979,6 +988,15 @@ class EditPage extends React.Component {
                             location.parentid = result.parentid;
                             location.index = result.index;
                             location.locationInLayout = locationInLayout;
+
+                            let layoutBlockLocations = that.state.layoutBlockLocations;
+                            layoutBlockLocations[result.id] = locationInLayout;
+                            that.setState({
+                                'layoutBlockLocations': layoutBlockLocations
+                            });
+
+
+
                             location.children = {}; // Filled out later from stack
 
                             if (textContent != null) {
@@ -1008,10 +1026,7 @@ class EditPage extends React.Component {
                 } else {
                     response.text().then(text => {
                         console.log(text);
-                        that.setState({
-                            stack: [],
-                            stackVisited: {}
-                        });
+                        that.resetLayout();
                     });
 
                 }
@@ -1162,10 +1177,10 @@ class EditPage extends React.Component {
                 'Authorization': localStorage.getItem('Authorization')
             },
             body:
-            JSON.stringify({
-            })
+                JSON.stringify({
+                })
         })
-            .then(function(response) {
+            .then(function (response) {
 
                 if (response.ok) {
                     console.log(response);
@@ -1177,11 +1192,11 @@ class EditPage extends React.Component {
                             'Authorization': localStorage.getItem('Authorization')
                         }
                     })
-                        .then(function(response2) {
+                        .then(function (response2) {
 
                             if (response.ok) {
                                 console.log(response2);
-                                response2.json().then(function(result2) {
+                                response2.json().then(function (result2) {
                                     console.log(result2);
 
                                     // Set projectData state
@@ -1238,7 +1253,7 @@ class EditPage extends React.Component {
                 'Authorization': localStorage.getItem('Authorization')
             }
         })
-            .then(function(response) {
+            .then(function (response) {
                 that.setup_getProjectData();
             })
             .catch(err => {
@@ -1323,7 +1338,7 @@ class EditPage extends React.Component {
                 'index': newIndex
             })
         })
-            .then(function(response) {
+            .then(function (response) {
 
                 console.log('_________');
                 console.log('VVVVVV');
@@ -1352,10 +1367,10 @@ class EditPage extends React.Component {
                 'points': newPoints
             })
         })
-            .then(function(response) {
+            .then(function (response) {
 
                 if (response.ok) {
-                    response.json().then(function(result) {
+                    response.json().then(function (result) {
                         var ud = that.state.userdata;
                         ud.points = newPoints;
                         localStorage.setItem('USERDATA', JSON.stringify(ud));
@@ -1417,7 +1432,7 @@ class EditPage extends React.Component {
     premodifyRecursiveLayout(action, params) {
         console.log('======> ' + action);
         if (action !== undefined && typeof params === 'object') {
-            switch(action) {
+            switch (action) {
                 case 'create':
                     /*
                         'parentid': id of parent block
@@ -1521,7 +1536,7 @@ class EditPage extends React.Component {
                                         <Block name={"h2"} handler={that.pickup} title={this.state.bricksByName['h2'].description} />
                                         <Block name={"h3"} handler={that.pickup} title={this.state.bricksByName['h3'].description} />
                                         <Block name={"h4"} handler={that.pickup} title={this.state.bricksByName['h4'].description} />
-                                        <br/>
+                                        <br />
                                         <Block name={"p"} handler={that.pickup} title={this.state.bricksByName['p'].description} />
                                     </td>
                                     <td className="block-choices-category-column">
