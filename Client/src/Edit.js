@@ -2,7 +2,6 @@ import React from 'react';
 import { hashHistory, Link } from 'react-router';
 import Nav from './Nav';
 import PreviewProject from './PreviewProject';
-import img from './img/ProfilePictures/Cow.png';
 import CSSModal from './CSSModal';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
@@ -13,6 +12,9 @@ import ExistingBlock from './ExistingBlock';
 import ExistingDropSlot from './ExistingDropSlot';
 import SettingsModal from './SettingsModal';
 import OutsideAlerter from './OutsideAlerter';
+
+import img from './img/ProfilePictures/Cow.png';
+import editimg from './img/edit.png';
 
 class EditPage extends React.Component {
     constructor(props) {
@@ -628,12 +630,31 @@ class EditPage extends React.Component {
 
             //console.log(current);
 
+            function showStyles() {
+                let block = document.getElementById("img-" + current.id);
+                block.classList.remove('edit-img-hidden');
+            }
+
+            function hideStyles() {
+                let block = document.getElementById("img-" + current.id);
+                block.classList.add('edit-img-hidden')
+            }
+
             b = (
                 <ul className="layout-block">
                     <li className={blockclass + ' ' + badStyleClass} id={'layoutBlock_' + current.id}>
-                        <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
+
+                        {/* <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
                             <div className="bad-style">{badStyleMessage}</div>
                             {startTag}
+                        </div> */}
+
+                        
+                        <div className="disable-select tag-block-span"  onMouseOver={showStyles} onMouseLeave={hideStyles} onDoubleClick={function(e) { let curcontent = current; that.cssModalToggleOn(curcontent) } }>
+                            <div className="bad-style">{badStyleMessage}</div>
+                            <div className="start-tag">{startTag}</div>
+                            <img src={editimg} id={"img-" + current.id} className="edit-img edit-img-hidden" draggable="false" onClick={function(e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}/>
+
                         </div>
                         {((!isHeadBodyTitleOrHtml || current.blocktype === 'title') && Object.keys(current.children).length === 0 && (current.blocktype === 'li' || that.state.bricksByName[current.blocktype].type === 'textwrapper')) &&
                             <button className="black-text" onClick={function (e) { e.stopPropagation(); that.createBlock('text-content', current.id, 0); }}>Write...</button>
@@ -642,9 +663,11 @@ class EditPage extends React.Component {
                         {(current.blocktype === 'ul' || current.blocktype === 'ol') &&
                             <button className="black-text" onClick={function (e) { e.stopPropagation(); that.createBlock('li', current.id, Object.keys(current.children).length); }}>Add &lt;li&gt;</button>
                         }
-                        <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
-                            {endTag}
-                        </div>
+                        {endTag.length > 0 &&
+                            <div className="disable-select tag-block-span" onDoubleClick={function(e) { let curcontent = current; that.cssModalToggleOn(curcontent) } }>
+                                {endTag}
+                            </div>
+                        }
                     </li>
                 </ul>
             );
@@ -659,7 +682,6 @@ class EditPage extends React.Component {
         }
         else {
             let text = '';
-            console.log(current);
             if (current.textContent !== undefined) {
                 text = current.textContent;
             }

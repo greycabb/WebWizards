@@ -18,7 +18,8 @@ export default class CSSModal extends React.Component {
             hidden: true,
             allCssGroupData: [],
             buttons: [],
-            attributes: []
+            attributes: [],
+            loaded: false
         };
 
         this.handle = this.handle.bind(this);
@@ -81,6 +82,7 @@ export default class CSSModal extends React.Component {
                                             }
 
                                             that.setState({
+                                                loaded: true,
                                                 buttons: buttons,
                                                 cssGroups: cssGroups,
                                                 allCssGroupData: result2,
@@ -100,6 +102,11 @@ export default class CSSModal extends React.Component {
                                 .catch(err => {
                                     console.log('caught it!', err);
                                 });
+                        }
+                        else {
+                            that.setState({
+                                loaded: true
+                            });
                         }
                     });
 
@@ -348,6 +355,12 @@ export default class CSSModal extends React.Component {
                                     <h2>Editing &lt;{this.props.currBlock.blocktype}&gt;</h2>
                                     {this.state.attributes}
                                     {this.state.buttons}
+                                    {this.state.loaded && this.state.attributes.length == 0 && this.state.buttons.length == 0 &&
+                                        <span>There are no styles to edit for &lt;{this.props.currBlock.blocktype}&gt;</span>
+                                    }
+                                    {!this.state.loaded &&
+                                        <span>Loading...</span>
+                                    }
                                 </div>
                             }
                             {this.state.viewingCategory &&
