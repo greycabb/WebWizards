@@ -510,12 +510,12 @@ td {
   height: 40px;
   position: relative;
   left: 140px;
-  display: auto;
+  opacity: 1;
   z-index: 3;
 }
 
 .edit-img-hidden {
-  display: none;
+  opacity: 0;
 }
 
 
