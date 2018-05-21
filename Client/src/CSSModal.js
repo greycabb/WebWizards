@@ -348,6 +348,9 @@ export default class CSSModal extends React.Component {
                                     <h2>Editing &lt;{this.props.currBlock.blocktype}&gt;</h2>
                                     {this.state.attributes}
                                     {this.state.buttons}
+                                    {this.state.attributes.length == 0 && this.state.buttons.length == 0 &&
+                                        <span>There are no styles to edit for &lt;{this.props.currBlock.blocktype}&gt;</span>
+                                    }
                                 </div>
                             }
                             {this.state.viewingCategory &&
