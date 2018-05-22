@@ -889,6 +889,48 @@ class EditPage extends React.Component {
                         if (textContent === true) {
                             that.changeTextContent(result.id, that.state.projectData.name);
                         }
+                        //_________________
+                        // Updating the layout object after a creation:
+                        // 1) Find the parent of the current block (it's just parentId)
+                        let lil = that.state.layoutBlockLocations[parentId];
+                        let current = that.state.layout;
+                        for (let i = 0; i < lil.length; i++) {
+                            current = current.children[lil[i]];
+                        }
+                        console.log('   => parent block id: ' + parentId);
+
+                        // 2) Create an array
+                        let childrenKeys = Object.keys(current.children);
+
+                        let newChildrenObject = {
+
+                        };
+                        let newChildrenObjectCurrentIndex = 0;
+
+                        console.log(that.state.layout);
+
+                        let plusIndex = 0;
+                        for (let i = 0; i < childrenKeys.length + 1; i++) {
+                            let currentChild = current.children[childrenKeys[i]];
+
+                            newChildrenObject[newChildrenObjectCurrentIndex] = currentChild;
+
+                            if (i === index) {
+                                newChildrenObjectCurrentIndex += 2;
+                            } else {
+                                newChildrenObjectCurrentIndex += 1;
+                            }
+                        }
+                        current.children = newChildrenObject;
+
+                        that.forceUpdate();
+                        console.log(that.state.layout);
+
+                        that.setState({
+                            'recursiveLayout': that.recursiveLayout(that.state.layout, true)
+                        });
+                        that.unlockEditor();
+
                     });
                 } else {
                     response.text().then(text => {
@@ -1155,6 +1197,8 @@ class EditPage extends React.Component {
         console.log('CREATE ' + parentId + ' ' + index);
 
 
+
+
         this.increasePointsBy(1);
 
         let brick = this.state.selectedBrick;
@@ -1289,49 +1333,48 @@ class EditPage extends React.Component {
                 //_________________
                 // Updating the layout object after a deletion:
                 // 1) Find the parent of the current block
+                /*
                 let lil = that.state.layoutBlockLocations[blockId];
+                if (lil !== undefined) {
 
-                let current = that.state.layout;
-                for (let i = 0; i < lil.length - 1; i++) {
-                    current = current.children[lil[i]];
-                }
-                let parentBlock = current.id;
-
-                console.log('   => parent block id: ' + current.id);
-
-                //_____
-                // 2) Create an array of all the children
-                // Loop over the array.
-                // Setup a new children object
-                // Once you reach the index of the deleted block, skip over it
-                let childrenKeys = Object.keys(current.children);
-
-                let newChildrenObject = {
-
-                };
-                let newChildrenObjectCurrentIndex = 0;
-
-                for (let i = 0; i < childrenKeys.length; i++) {
-                    let currentChild = current.children[childrenKeys[i]];
-                    if (currentChild.id !== blockId) {
-                        newChildrenObject[newChildrenObjectCurrentIndex] = currentChild;
-                        newChildrenObjectCurrentIndex += 1;
+                    let current = that.state.layout;
+                    for (let i = 0; i < lil.length - 1; i++) {
+                        current = current.children[lil[i]];
                     }
+                    let parentBlock = current.id;
+
+                    console.log('   => parent block id: ' + current.id);
+
+                    //_____
+                    // 2) Create an array of all the children
+                    // Loop over the array.
+                    // Setup a new children object
+                    // Once you reach the index of the deleted block, skip over it
+                    let childrenKeys = Object.keys(current.children);
+
+                    let newChildrenObject = {
+
+                    };
+                    let newChildrenObjectCurrentIndex = 0;
+
+                    for (let i = 0; i < childrenKeys.length; i++) {
+                        let currentChild = current.children[childrenKeys[i]];
+                        if (currentChild.id !== blockId) {
+                            newChildrenObject[newChildrenObjectCurrentIndex] = currentChild;
+                            newChildrenObjectCurrentIndex += 1;
+                        }
+                    }
+                    current.children = newChildrenObject;
+                    delete that.state.layoutBlockLocations[blockId];
+
+                    that.forceUpdate();
+                    console.log(that.state.layout);
+
+                    that.setState({
+                        'recursiveLayout': that.recursiveLayout(that.state.layout, true)
+                    });
+                    that.unlockEditor();
                 }
-                current.children = newChildrenObject;
-                delete that.state.layoutBlockLocations[blockId];
-
-                // that.setState({
-                //     layoutBlockLocations: that.state.layoutBlockLocations,
-                //     layout: that.state.layout
-                // });
-                that.forceUpdate();
-                console.log(that.state.layout);
-
-                that.setState({
-                    'recursiveLayout': that.recursiveLayout(that.state.layout, true)
-                });
-                that.unlockEditor();
 
 
                 // console.log('   => new children: ' + newChildrenArray);
@@ -1343,6 +1386,8 @@ class EditPage extends React.Component {
                 // 5) Remove the ID of the block from layoutBlockLocations
 
                 // Last) Refresh the right layout
+
+                */
             })
             .catch(err => {
                 console.log('ERROR: ', err);
