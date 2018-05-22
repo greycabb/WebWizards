@@ -127,8 +127,8 @@ export default class CSSModal extends React.Component {
 
         var that = this;
         
-        console.log(name);
-        console.log(value);
+        //console.log(name);
+        //console.log(value);
 
         var found = false;
 
@@ -139,7 +139,7 @@ export default class CSSModal extends React.Component {
         }
 
         for (let j = 0; j < currAttributes.length; j ++) {
-            console.log(currAttributes[j]);
+            //console.log(currAttributes[j]);
             if (currAttributes[j].includes(name)) {
                 currAttributes[j] = name + "=\"" + value + "\"";
                 found = true;
@@ -176,7 +176,7 @@ export default class CSSModal extends React.Component {
                                 var current = this.state.possibleAttributes[i];
                                 // Check to see if this attribute currently exists
                                 var existing = "";
-                                console.log(currAttributes);
+                                //console.log(currAttributes);
                                 for (var j = 0; j < currAttributes.length; j ++) {
                                     if (currAttributes[j].includes(current)) {
                                         existing = currAttributes[j];
@@ -300,8 +300,8 @@ export default class CSSModal extends React.Component {
 
         this.props.increasePointsBy(1);
 
-        console.log(attribute);
-        console.log(value);
+        //console.log(attribute);
+        //console.log(value);
 
         if (!exists) {
             curr.push({attribute: attribute, value: value});
@@ -324,7 +324,7 @@ export default class CSSModal extends React.Component {
 
                 if (response.ok) {
                     response.json().then((result) => {
-                        console.log(curr);
+                        //console.log(curr);
                         this.props.handleChange(result);
                         this.setState({
                             currAppliedCss: curr
@@ -470,7 +470,7 @@ class CSSInputBox extends React.Component {
         var chosenUnit;
         var numValue;
 
-        console.log(this.props.object);
+        //console.log(this.props.object);
 
         if (this.props.object.extra_options || this.props.name == "background-image") {
             //Need to parse value and determine unit type
@@ -489,7 +489,7 @@ class CSSInputBox extends React.Component {
             }
             if (currentVal.includes("url")) {
                 numValue = currentVal.substring(4, currentVal.length - 2);
-                console.log(numValue);
+                //console.log(numValue);
             }
         }
 
@@ -499,8 +499,8 @@ class CSSInputBox extends React.Component {
             chosenUnit: chosenUnit
         }
 
-        console.log(numValue);
-        console.log(currentVal);
+        // console.log(numValue);
+        // console.log(currentVal);
 
         this.colorImgHandler = this.colorImgHandler.bind(this);
         this.valHandler = this.valHandler.bind(this);
@@ -547,9 +547,9 @@ class CSSInputBox extends React.Component {
     multiValHandler(event) {
         var stringVal = event.target.value;
         if (this.state.chosenUnit == "pixels") {
-            console.log(stringVal);
+            //console.log(stringVal);
             stringVal += "px";
-            console.log(stringVal);
+            //console.log(stringVal);
         }
         if (this.state.chosenUnit == "percentage") {
             stringVal += "%";

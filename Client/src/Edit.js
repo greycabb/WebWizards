@@ -648,9 +648,9 @@ class EditPage extends React.Component {
                             {startTag}
                         </div> */}
 
-                        
+                          <div className="bad-style">{badStyleMessage}</div>
                         <div className="disable-select tag-block-span"  onMouseOver={showStyles} onMouseLeave={hideStyles} onDoubleClick={function(e) { let curcontent = current; that.cssModalToggleOn(curcontent) } }>
-                            <div className="bad-style">{badStyleMessage}</div>
+                          
                             <div className="start-tag">{startTag}</div>
                             <img src={editimg} id={"img-" + current.id} className="edit-img edit-img-hidden" draggable="false" onClick={function(e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}/>
 
@@ -1174,7 +1174,7 @@ class EditPage extends React.Component {
 
         // Only do something if modal is not already up
         if (!this.state.styleToggled) {
-            console.log(currBlock);
+            // console.log(currBlock);
             this.setState({
                 styleToggled: true,
                 styleToggledBlock: currBlock
@@ -1398,6 +1398,7 @@ class EditPage extends React.Component {
                         var ud = that.state.userdata;
                         ud.points = newPoints;
                         localStorage.setItem('USERDATA', JSON.stringify(ud));
+                        console.log('   +' + points + ' points');
                     });
 
 
