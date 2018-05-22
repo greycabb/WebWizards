@@ -14,7 +14,7 @@ export default class PreviewProject extends React.Component {
         this.componentDidMount = this.componentDidMount.bind(this);
         this.blockToHtml = this.blockToHtml.bind(this);
         this.blockToHtml(this.props.projectObject.content[0], false).then((string) => {
-            console.log(string);
+            // console.log(string); // removed
         });
     }
 
@@ -22,7 +22,7 @@ export default class PreviewProject extends React.Component {
         if (prevProps.projectObject != this.props.projectObject) {
             this.uploadScreenshot();
             this.blockToHtml(this.props.projectObject.content[0], false).then((string) => {
-                console.log(string);
+                //console.log(string);
                 this.setState({ object: string });
             });
         }
@@ -30,7 +30,7 @@ export default class PreviewProject extends React.Component {
 
     componentDidMount() {
         this.blockToHtml(this.props.projectObject.content[0], false).then((string) => {
-            console.log(string);
+            // console.log(string); // removed
             this.setState({ object: string });
         });
     }
@@ -204,7 +204,7 @@ export default class PreviewProject extends React.Component {
 
     uploadScreenshot() {
         var that = this;
-        html2canvas(this.refs.container, { width: 540, height: 360 }).then((canvas) => {
+        html2canvas(this.refs.container, { width: 540, height: 360, logging:false }).then((canvas) => {
             var data = canvas.toDataURL('image/jpeg', 0.9);
             var src = encodeURI(data);
             var auth = localStorage.getItem('Authorization');
@@ -221,7 +221,7 @@ export default class PreviewProject extends React.Component {
                 .then((response) => {
 
                     if (response.ok) {
-                        console.log("screenshot saved");
+                        //console.log("screenshot saved");
                     } else {
                         console.log(response.text());
                     }

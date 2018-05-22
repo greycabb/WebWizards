@@ -125,8 +125,6 @@ class EditPage extends React.Component {
         this.moveBlock = this.moveBlock.bind(this); // Move block somewhere else
         this.changeTextContent = this.changeTextContent.bind(this); // Change text of a text content block
 
-        //this.premodifyRecursiveLayout = this.premodifyRecursiveLayout.bind(this); // Update the right layout before the API call finishes
-
         // 5. CSS & settings modals
         this.cssModalToggleOn = this.cssModalToggleOn.bind(this);
         this.cssModalToggleOff = this.cssModalToggleOff.bind(this);
@@ -175,7 +173,7 @@ class EditPage extends React.Component {
 
                 if (response.ok) {
                     response.json().then(function (result) {
-                        console.log(result);
+                        //console.log(result);
 
                         // Set projectData state
                         that.setState({
@@ -284,7 +282,7 @@ class EditPage extends React.Component {
 
                 if (response.ok) {
                     response.json().then(function (result) {
-                        console.log(result);
+                        //console.log(result);
 
                         let brickContainer = {};
 
@@ -300,12 +298,12 @@ class EditPage extends React.Component {
                                 'self_closing': current.self_closing
                             }
                         }
-                        console.log(brickContainer);
+                        //console.log(brickContainer);
                         that.setState({
                             'bricksById': result,
                             'bricksByName': brickContainer
                         });
-                        console.log(result);
+                        //console.log(result);
 
                         // If body not built yet, build it
                         if (that.state.needsHtmlRoot === true) {
@@ -706,8 +704,6 @@ class EditPage extends React.Component {
 
             let cIndex = current.index;
 
-            console.log('cindex ' + cIndex);
-
             // Change text of block in database
             function saveEditedText(blockId) {
                 let expandedDiv = document.getElementById('expanded-edit-text-' + blockId)
@@ -791,7 +787,7 @@ class EditPage extends React.Component {
     // Update project
     // blockId: the ID of the base <HTML> tag of the project's content
     updateProject(blockId) {
-        console.log('Update Project!' + blockId + '>');
+        //console.log('Update Project!' + blockId + '>');
         let that = this;
 
         fetch('https://api.webwizards.me/v1/projects?id=' + this.state.projectId, {
@@ -878,8 +874,8 @@ class EditPage extends React.Component {
 
                 if (response.ok) {
                     response.json().then(function (result) {
-                        console.log('New block: ' + slot);
-                        console.log(result);
+                        //console.log('New block: ' + slot);
+                        //console.log(result);
 
                         if (slot === 'title') {//that.state.bricksByName[slot].type === 'textwrapper') {
                             that.updateProject(that.state.htmlBlockId);
@@ -1043,7 +1039,7 @@ class EditPage extends React.Component {
                                 that.unlockEditor();
                             }
                         } else {
-                            console.log(result);
+                            //console.log(result);
                             return result;
                         }
                     });
@@ -1091,7 +1087,7 @@ class EditPage extends React.Component {
     //____________________________________________________________________________
     // Click a block on the right, to move it or delete it in trash can
     pickupBlock(blockId, blockParentId, blockIndex, locationInLayout) {
-        console.log('Picked up block ' + blockId);
+        console.log('Picked up block ' + blockId + ', index ' + blockIndex );
         if (blockId === undefined) {
             console.log('Cancelled pickup');
             this.setState({
@@ -1107,7 +1103,7 @@ class EditPage extends React.Component {
             'block_originalIndex': blockIndex,
             'selectedBlockLocation': locationInLayout
         });
-        console.log('BLOCK INDEX ' + blockIndex);
+        console.log('BLOCK INDEX ');
     }
 
 
@@ -1127,7 +1123,7 @@ class EditPage extends React.Component {
         }
         if (this.state.bricksByName !== undefined) {
             if (this.state.bricksByName[brickName] !== undefined) {
-                console.log(brickName);
+                //console.log(brickName);
                 this.setState({
                     'selectedBrick': brickName,
                     'selectedBlock': undefined
@@ -1427,7 +1423,7 @@ class EditPage extends React.Component {
 
     // Lock editor when loading stuff/making changes
     lockEditor() {
-        console.log('LOCK ON');
+        //console.log('LOCK ON');
         this.setState({
             'lockedEditor': true
         });
@@ -1435,7 +1431,7 @@ class EditPage extends React.Component {
 
     // Unlock editor when the API calls complete
     unlockEditor() {
-        console.log('LOCK OFF')
+        //console.log('LOCK OFF')
         this.setState({
             'lockedEditor': false
         });
@@ -1449,49 +1445,6 @@ class EditPage extends React.Component {
 
         }
     }
-
-    // Modify the recursiveLayout on the right before the API call finishes.
-    // Action: whether to delete, move, create a block
-    // Parameters: based on the action, accept different parameters to put the block in the right place
-    // premodifyRecursiveLayout(action, params) {
-    //     console.log('======> ' + action);
-    //     if (action !== undefined && typeof params === 'object') {
-    //         switch (action) {
-    //             case 'create':
-    //                 /*
-    //                     'parentid': id of parent block
-    //                     'index': # index that this newly created block will go to, under the parent block
-    //                     'blocktype': e.g. div, h1, h2, p, ul
-    //                 */
-
-    //                 break;
-    //             case 'delete':
-    //                 /*
-    //                     'blockid': id of block to delete
-    //                 */
-    //                 let blockToDelete = document.getElementById('layoutBlock_' + params['blockid']);
-    //                 blockToDelete.parentNode.removeChild(blockToDelete);
-
-    //                 // Update the layout object then re-render the right layout. (CURRENT)
-    //                 if (this.state.layout !== undefined) {
-    //                     // somehow need to get to the object
-    //                 }
-
-    //                 break;
-    //             case 'move':
-    //                 /*
-    //                     'parentid': id of new parent block
-    //                     'index': # index that this moved block will go to
-    //                     'blocktype': e.g. div, h1, h2, p, ul
-    //                     'blockid': id of block to move
-    //                 */
-
-    //                 break;
-    //         }
-    //     }
-    // }
-
-
 
     //____________________________________________________________________________
     render() {
