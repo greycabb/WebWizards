@@ -433,7 +433,7 @@ class EditPage extends React.Component {
 
                 if (response.ok) {
                     response.json().then(function (result) {
-                        console.log('   New block - ' + slot);
+                        // console.log('   New block - ' + slot);
                         // console.log(result);
 
                         // Used to verify when the <html>, <head> and <body> blocks have been created
@@ -878,6 +878,8 @@ class EditPage extends React.Component {
                         //console.log('New block: ' + slot);
                         //console.log(result);
 
+                        console.log('   Created <' + slot + '> in ' + parentId + ' ' + index);
+
                         if (slot === 'title') {//that.state.bricksByName[slot].type === 'textwrapper') {
                             that.updateProject(that.state.htmlBlockId);
                             that.createBlock('text-content', result.id, 0, true);
@@ -909,6 +911,7 @@ class EditPage extends React.Component {
     // forSetup: if the getBlockgetBlock() call is
     // locationInLayout: e.g. if it's [0, 2, 4] then you can get to the block in state.layout at 0: children: { 2: children { 4 }}
     getBlock(id, forSetup, locationInLayout) {
+        // console.log('GetBlock call');
 
         if (id === undefined) {
             return;
@@ -1088,7 +1091,7 @@ class EditPage extends React.Component {
     //____________________________________________________________________________
     // Click a block on the right, to move it or delete it in trash can
     pickupBlock(blockId, blockParentId, blockIndex, locationInLayout) {
-        console.log('Picked up block ' + blockId + ', index ' + blockIndex );
+        console.log('[Picked up block ' + blockId + ', index ' + blockIndex + ']');
         if (blockId === undefined) {
             console.log('Cancelled pickup');
             this.setState({
@@ -1124,6 +1127,7 @@ class EditPage extends React.Component {
         if (this.state.bricksByName !== undefined) {
             if (this.state.bricksByName[brickName] !== undefined) {
                 //console.log(brickName);
+                console.log('[Picked up brick <' + brickName + '>]');
                 this.setState({
                     'selectedBrick': brickName,
                     'selectedBlock': undefined
@@ -1160,7 +1164,7 @@ class EditPage extends React.Component {
 
         if (brick && parentId !== undefined && index !== undefined) {
             this.pickup(); // unselect the selected brick
-            console.log('   Created <' + brick + '> in ' + parentId + ' ' + index);
+            
             this.createBlock(brick, parentId, index);
         }
     }
@@ -1258,6 +1262,10 @@ class EditPage extends React.Component {
             return;
         }
 
+
+        console.log('DELETE ' + blockId);
+        console.log('   Attempting to delete ' + blockId);
+
         this.lockEditor();
 
         // this.premodifyRecursiveLayout('delete', {
@@ -1274,6 +1282,7 @@ class EditPage extends React.Component {
             }
         })
             .then(function (response) {
+                console.log('   Deleted ' + blockId);
                 that.setup_getProjectData();
             })
             .catch(err => {
@@ -1284,26 +1293,21 @@ class EditPage extends React.Component {
     // Move block
     moveBlock(newParentId, newIndex, locationInLayout, blockIsLastChild) {
 
-        console.log('_______________');
-        console.log('Move block: ');
-        console.log('Block id: ' + this.state.selectedBlock);
-        console.log('newParentId: ' + newParentId);
-        console.log('oldIndex ' + this.state.block_originalIndex);
-        console.log('newIndex:' + newIndex);
-        console.log('_______________');
+        // console.log('_______________');
+        // console.log('Move block: ');
+        // console.log('Block id: ' + this.state.selectedBlock);
+        // console.log('newParentId: ' + newParentId);
+        // console.log('oldIndex ' + this.state.block_originalIndex);
+        // console.log('newIndex:' + newIndex);
+        // console.log('_______________');
 
-        console.log('move');
+        console.log('MOVE ' + this.state.selectedBlock + ' ' + this.state.block_originalIndex + ' to ' + newParentId + ' ' + newIndex);
+
         // If a block is selected, call move block instead
         if (this.state.selectedBlockLocation !== undefined && locationInLayout !== undefined) {
 
             if (locationInLayout.toString().startsWith(this.state.selectedBlockLocation.toString())) {
-                console.log("Block can't be moved there!");
-                // alert("That block can't be moved there!")
-                // let slots = document.querySelectorAll('.drop-slot-hover');
-
-                // for (let i = 0; i < slots.length; i++) {
-                //     slots[i].classList.add('.drop-slot-warning');
-                // }
+                console.log("   Block can't be moved there!");
                 return;
             }
         }
@@ -1323,7 +1327,7 @@ class EditPage extends React.Component {
                 // Same parent, same index, so do nothing
                 console.log('NII' + newIndex);
                 console.log('NII2 ' + locationInLayout)
-                console.log('Same parent, same index, do nothing')
+                console.log('   Same parent, same index, do nothing')
                 return;
             }
         }
@@ -1340,11 +1344,13 @@ class EditPage extends React.Component {
         let that = this;
 
         if (!newParentId) {
-            console.log('No parent id!');
+            console.log('No new parent id!');
             return;
         }
 
         this.lockEditor();
+
+        console.log('   Attempting to move ' + this.state.selectedBlock + ' ' + this.state.block_originalIndex);
 
         fetch('https://api.webwizards.me/v1/blocks?id=' + this.state.selectedBlock, {
             method: 'PATCH',
@@ -1359,12 +1365,10 @@ class EditPage extends React.Component {
             })
         })
             .then(function (response) {
-
-                console.log('_________');
-                // console.log('VVVVVV');
-
+                console.log('   Moved ' + that.state.selectedBlock + ' ' + that.state.block_originalIndex);
                 that.handleProjectUpdates();
                 that.setup_getProjectData();
+                
             })
             .catch(err => {
                 console.log('ERROR: ', err);
