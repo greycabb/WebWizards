@@ -1265,6 +1265,7 @@ class EditPage extends React.Component {
 
         console.log('DELETE ' + blockId);
         console.log('   Attempting to delete ' + blockId);
+        console.log(this.state.layout);
 
         this.lockEditor();
 
@@ -1312,7 +1313,7 @@ class EditPage extends React.Component {
 
                 for (let i = 0; i < childrenKeys.length; i++) {
                     let currentChild = current.children[childrenKeys[i]];
-                    if (currentChild.index !== blockId) {
+                    if (currentChild.id !== blockId) {
                         newChildrenObject[newChildrenObjectCurrentIndex] = currentChild;
                         newChildrenObjectCurrentIndex += 1;
                     }
@@ -1320,11 +1321,17 @@ class EditPage extends React.Component {
                 current.children = newChildrenObject;
                 delete that.state.layoutBlockLocations[blockId];
 
+                // that.setState({
+                //     layoutBlockLocations: that.state.layoutBlockLocations,
+                //     layout: that.state.layout
+                // });
                 that.forceUpdate();
+                console.log(that.state.layout);
 
                 that.setState({
                     'recursiveLayout': that.recursiveLayout(that.state.layout, true)
                 });
+                that.unlockEditor();
 
 
                 // console.log('   => new children: ' + newChildrenArray);
