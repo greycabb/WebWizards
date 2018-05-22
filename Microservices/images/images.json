@@ -60,7 +60,17 @@
            "https://webwizards.me/img/Moon/Moon1.jpeg",
            "https://webwizards.me/img/Moon/Moon2.jpeg",
            "https://webwizards.me/img/Moon/Moon3.jpeg",
-           "https://webwizards.me/img/Moon/Moon4.png"
+           "https://webwizards.me/img/Moon/Moon4.png",
+           "https://webwizards.me/img/Castle/Castle1.jpg",
+           "https://webwizards.me/img/Castle/Castle2.jpeg",
+           "https://webwizards.me/img/Castle/Castle3.jpeg",
+           "https://webwizards.me/img/Castle/Castle4.jpeg",
+           "https://webwizards.me/img/Castle/Castle5.jpeg",
+           "https://webwizards.me/img/Desert/Desert1.jpeg",
+           "https://webwizards.me/img/Desert/Desert2.jpeg",
+           "https://webwizards.me/img/Desert/Desert3.jpeg",
+           "https://webwizards.me/img/Desert/Desert4.jpeg",
+           "https://webwizards.me/img/Desert/Desert5.jpeg"
         ]
     },
 
@@ -120,7 +130,32 @@
            "https://webwizards.me/img/Patterns/Patterns7.jpeg",
            "https://webwizards.me/img/Patterns/Patterns8.jpeg",
            "https://webwizards.me/img/Patterns/Patterns9.jpeg",
-           "https://webwizards.me/img/Patterns/Patterns10.jpeg"
+           "https://webwizards.me/img/Patterns/Patterns10.jpeg",
+           "https://webwizards.me/img/Patterns/Patterns11.jpeg",
+           "https://webwizards.me/img/Patterns/Patterns12.jpeg",
+           "https://webwizards.me/img/Patterns/Patterns13.jpeg",
+           "https://webwizards.me/img/Patterns/Patterns14.jpeg",
+           "https://webwizards.me/img/Patterns/Patterns15.jpeg",
+           "https://webwizards.me/img/Patterns/Patterns16.jpeg",
+           "https://webwizards.me/img/Patterns/Patterns17.jpeg",
+           "https://webwizards.me/img/Patterns/Patterns18.jpeg",
+           "https://webwizards.me/img/Patterns/Patterns19.jpeg"
+        ]
+    },
+
+    "Sports": {
+        "images": [
+           "https://webwizards.me/img/Sports/Sports1.jpeg",
+           "https://webwizards.me/img/Sports/Sports2.jpeg",
+           "https://webwizards.me/img/Sports/Sports3.jpeg",
+           "https://webwizards.me/img/Sports/Sports4.jpg",
+           "https://webwizards.me/img/Sports/Sports5.jpeg",
+           "https://webwizards.me/img/Sports/Sports6.jpeg",
+           "https://webwizards.me/img/Sports/Sports7.jpeg",
+           "https://webwizards.me/img/Sports/Sports8.jpeg",
+           "https://webwizards.me/img/Sports/Sports9.jpeg",
+           "https://webwizards.me/img/Sports/Sports10.jpeg",
+           "https://webwizards.me/img/Sports/Sports11.jpeg"
         ]
     }
 }

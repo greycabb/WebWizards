@@ -22,7 +22,7 @@ export default class WelcomeBanner extends React.Component {
                     <h3>A fun and enchanted way to learn web development</h3>
                 </div>
                 <div className="img-card welcome-img-card disable-select">
-                    <img src={img} height="300px" className="banner-img"/>  
+                <iframe width="534" height="300" src="https://www.youtube.com/embed/AQ9TEJBOlbc?rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>  
                 </div>
             </div>
         );
