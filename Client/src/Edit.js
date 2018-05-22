@@ -892,7 +892,7 @@ class EditPage extends React.Component {
                         //_________________
                         // Updating the layout object after a creation:
                         // 1) Find the parent of the current block (it's just parentId)
-                        let lil = that.state.layoutBlockLocations[parentId];
+                        /*let lil = that.state.layoutBlockLocations[parentId];
                         let current = that.state.layout;
                         for (let i = 0; i < lil.length; i++) {
                             current = current.children[lil[i]];
@@ -930,6 +930,7 @@ class EditPage extends React.Component {
                             'recursiveLayout': that.recursiveLayout(that.state.layout, true)
                         });
                         that.unlockEditor();
+                        */
 
                     });
                 } else {
@@ -1333,7 +1334,6 @@ class EditPage extends React.Component {
                 //_________________
                 // Updating the layout object after a deletion:
                 // 1) Find the parent of the current block
-                /*
                 let lil = that.state.layoutBlockLocations[blockId];
                 if (lil !== undefined) {
 
@@ -1386,8 +1386,6 @@ class EditPage extends React.Component {
                 // 5) Remove the ID of the block from layoutBlockLocations
 
                 // Last) Refresh the right layout
-
-                */
             })
             .catch(err => {
                 console.log('ERROR: ', err);
