@@ -144,6 +144,7 @@ class EditPage extends React.Component {
     }
 
     componentDidMount() {
+        console.log('=======Start=======');
         document.title = 'Web Wizards';
     }
 
@@ -432,8 +433,8 @@ class EditPage extends React.Component {
 
                 if (response.ok) {
                     response.json().then(function (result) {
-                        console.log('New block - ' + slot);
-                        console.log(result);
+                        console.log('   New block - ' + slot);
+                        // console.log(result);
 
                         // Used to verify when the <html>, <head> and <body> blocks have been created
                         switch (slot) {
@@ -1103,7 +1104,6 @@ class EditPage extends React.Component {
             'block_originalIndex': blockIndex,
             'selectedBlockLocation': locationInLayout
         });
-        console.log('BLOCK INDEX ');
     }
 
 
@@ -1154,13 +1154,13 @@ class EditPage extends React.Component {
         this.increasePointsBy(1);
 
         let brick = this.state.selectedBrick;
-        console.log('Attempting to drop <' + brick + '> in ' + parentId + ' ' + index);
+        console.log('   Attempting to create <' + brick + '> in ' + parentId + ' ' + index);
 
         this.lockEditor();
 
         if (brick && parentId !== undefined && index !== undefined) {
             this.pickup(); // unselect the selected brick
-            console.log('drop <' + brick + '> in ' + parentId + ' ' + index);
+            console.log('   Created <' + brick + '> in ' + parentId + ' ' + index);
             this.createBlock(brick, parentId, index);
         }
     }
@@ -1203,7 +1203,7 @@ class EditPage extends React.Component {
             .then(function (response) {
 
                 if (response.ok) {
-                    console.log(response);
+                    // console.log(response);
                     fetch('https://api.webwizards.me/v1/projects?id=' + that.state.projectId, {
                         method: 'GET',
                         headers: {
@@ -1215,9 +1215,9 @@ class EditPage extends React.Component {
                         .then(function (response2) {
 
                             if (response.ok) {
-                                console.log(response2);
+                                // console.log(response2);
                                 response2.json().then(function (result2) {
-                                    console.log(result2);
+                                    // console.log(result2);
 
                                     // Set projectData state
                                     that.setState({
@@ -1361,7 +1361,7 @@ class EditPage extends React.Component {
             .then(function (response) {
 
                 console.log('_________');
-                console.log('VVVVVV');
+                // console.log('VVVVVV');
 
                 that.handleProjectUpdates();
                 that.setup_getProjectData();
@@ -1431,7 +1431,7 @@ class EditPage extends React.Component {
 
     // Unlock editor when the API calls complete
     unlockEditor() {
-        //console.log('LOCK OFF')
+        console.log('___________________')
         this.setState({
             'lockedEditor': false
         });

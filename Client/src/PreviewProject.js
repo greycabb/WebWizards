@@ -24,7 +24,7 @@ export default class PreviewProject extends React.Component {
             this.blockToHtml(this.props.projectObject.content[0], false).then((string) => {
                 //console.log(string);
                 this.setState({ object: string });
-            });
+            ;});
         }
     }
 
