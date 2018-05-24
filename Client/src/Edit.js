@@ -15,6 +15,7 @@ import OutsideAlerter from './OutsideAlerter';
 
 import img from './img/ProfilePictures/Cow.png';
 import editimg from './img/edit.png';
+import loader from './img/loader.gif';
 
 import pickupSound from './sound/pickup.mp3';
 import dropSound from './sound/drop.mp3';
@@ -1847,7 +1848,7 @@ class EditPage extends React.Component {
                 <div className={editorClasses}>
                     {this.state.lockedEditor === true &&
                         <div className="loading-message">
-                            Loading...
+                            <img src={loader} width="50px" />
                         </div>
                     }
                     {(errorCount > 0) &&
