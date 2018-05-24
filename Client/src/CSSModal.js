@@ -506,6 +506,8 @@ class CSSInputBox extends React.Component {
         this.valHandler = this.valHandler.bind(this);
         this.multiValHandler = this.multiValHandler.bind(this);
         this.typeValHandler = this.typeValHandler.bind(this);
+        this.rangeValHandler = this.rangeValHandler.bind(this);
+        this.rangeReleaseHandler = this.rangeReleaseHandler.bind(this);
     }
 
     colorImgHandler(val) {
@@ -521,6 +523,12 @@ class CSSInputBox extends React.Component {
 
     valHandler(event) {
         this.props.handleChange(this.props.name, event.target.value);
+        this.setState({
+            value: event.target.value
+        });
+    }
+
+    rangeValHandler(event) {
         this.setState({
             value: event.target.value
         });
@@ -554,11 +562,15 @@ class CSSInputBox extends React.Component {
         if (this.state.chosenUnit == "percentage") {
             stringVal += "%";
         }
-        this.props.handleChange(this.props.name, stringVal);
+        //this.props.handleChange(this.props.name, stringVal);
         this.setState({
             value: stringVal,
             numValue: event.target.value
         });
+    }
+
+    rangeReleaseHandler() {
+        this.props.handleChange(this.props.name, this.state.value);
     }
 
     render() {
@@ -588,7 +600,7 @@ class CSSInputBox extends React.Component {
                     {this.props.object.units == 'EO_choices' && this.props.object.extra_options.range &&
                         <span className="css-input-selections">
                             {this.state.numValue} pixels
-                            <input type="range" min={this.props.object.extra_options.range[0]} max={this.props.object.extra_options.range[1]} value={this.state.value}  onChange={this.valHandler} className="slider" id="myRange"/>
+                            <input type="range" min={this.props.object.extra_options.range[0]} max={this.props.object.extra_options.range[1]} defaultValue={this.state.value}  onChange={this.rangeValHandler} onMouseUp={this.rangeReleaseHandler} className="slider" id="myRange"/>
                         </span>
                     }
                     {this.props.object.units == 'EO_many_choices' && this.props.object.extra_options.choices &&
@@ -598,17 +610,17 @@ class CSSInputBox extends React.Component {
                                 {options}
                             </select>
                             {this.state.chosenUnit == "pixels" &&
-                                <input type="range" min={this.props.object.extra_options.pixels[0]} max={this.props.object.extra_options.pixels[1]} value={this.state.numValue}  onChange={this.multiValHandler} className="slider" id="myRange"/>
+                                <input type="range" min={this.props.object.extra_options.pixels[0]} max={this.props.object.extra_options.pixels[1]} defaultValue={this.state.numValue}  onChange={this.multiValHandler}  onMouseUp={this.rangeReleaseHandler} className="slider" id="myRange"/>
                             }
                             {this.state.chosenUnit == "percentage" &&
-                                <input type="range" min={this.props.object.extra_options.percentage[0]} max={this.props.object.extra_options.percentage[1]} value={this.state.numValue}  onChange={this.multiValHandler} className="slider" id="myRange"/>
+                                <input type="range" min={this.props.object.extra_options.percentage[0]} max={this.props.object.extra_options.percentage[1]} defaultValue={this.state.numValue}  onChange={this.multiValHandler}  onMouseUp={this.rangeReleaseHandler} className="slider" id="myRange"/>
                             }
                         </div>
                     }
                     {this.props.object.units == 'px' &&
                         <span className="css-input-selections">
                             {this.state.numValue} pixels
-                            <input type="range" min={this.props.object.extra_options.range[0]} max={this.props.object.extra_options.range[1]} value={this.state.numValue}  onChange={this.multiValHandler} className="slider" id="myRange"/>
+                            <input type="range" min={this.props.object.extra_options.range[0]} max={this.props.object.extra_options.range[1]} defaultValue={this.state.numValue}  onChange={this.multiValHandler}  onMouseUp={this.rangeReleaseHandler} className="slider" id="myRange"/>
                         </span>
                     }
                     {this.props.object.units == "image" &&
