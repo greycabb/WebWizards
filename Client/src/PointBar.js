@@ -55,8 +55,8 @@ export default class PointBar extends React.Component {
                         
                     </div>
                 </div>
-                <div className="point-tooltip-container" onMouseEnter={()=> {this.hoveringToggle(true)}} onMouseLeave={()=> {this.hoveringToggle(false)}}>
-                    What can you do next?
+                <div className="point-tooltip-container">
+                    <span onMouseEnter={()=> {this.hoveringToggle(true)}} onMouseLeave={()=> {this.hoveringToggle(false)}}>What can you do next?</span>
                 </div>
                 {this.state.hovering &&
                     <div id="point-tooltip">
