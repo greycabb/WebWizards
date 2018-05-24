@@ -971,7 +971,7 @@ class EditPage extends React.Component {
                                 that.setState({
                                     'recursiveLayout': that.recursiveLayout(that.state.layout, true)
                                 });
-                                that.unlockEditor();
+                                //that.unlockEditor();
                             }
                         }
 
