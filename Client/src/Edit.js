@@ -1752,7 +1752,7 @@ class EditPage extends React.Component {
 
         let that = this;
 
-        let editorClasses = 'layout-width draggable-space';
+        let editorClasses = 'half-width draggable-space';
         if (this.state.lockedEditor === true) {
             editorClasses += ' locked-editor';
         }
@@ -1782,7 +1782,7 @@ class EditPage extends React.Component {
                 {this.state.userdata !== null && this.state.userdata.userName !== undefined &&
                     <Nav username={this.state.userdata.userName} />
                 }
-                <div className="left-editor-width">
+                <div className="half-width">
                     <div className="edit-bar">
                         {/*<div><h3>&nbsp;{this.state.status}</h3></div>*/}
                         <Link to="/main"><button className="btn yellow-button">Back</button></Link>
