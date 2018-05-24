@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { hashHistory, Link } from 'react-router';
 import Nav from './Nav';
 import PreviewProject from './PreviewProject';
@@ -15,6 +16,7 @@ import OutsideAlerter from './OutsideAlerter';
 
 import img from './img/ProfilePictures/Cow.png';
 import editimg from './img/edit.png';
+import loader from './img/loader.gif';
 
 import pickupSound from './sound/pickup.mp3';
 import dropSound from './sound/drop.mp3';
@@ -118,6 +120,7 @@ class EditPage extends React.Component {
         // 3. Update project
         this.updateProject = this.updateProject.bind(this); // Update project, passing in the ID of the base HTML block
         this.handleProjectUpdates = this.handleProjectUpdates.bind(this); // Updating project
+        this.adjustScroll = this.adjustScroll.bind(this);
 
         // 4. Editor functions
         this.pickup = this.pickup.bind(this); // Grab a block for creating, deleting or moving
@@ -983,11 +986,15 @@ class EditPage extends React.Component {
                                 console.log(that.state.layout);
 
                                 that.handleProjectUpdates();
+                                let node = ReactDOM.findDOMNode(that.refs.draggableSpace);
+                                let currScroll = node.scrollTop;
+
                                 that.forceUpdate();
                                 
                                 that.setState({
                                     'recursiveLayout': that.recursiveLayout(that.state.layout, true)
                                 });
+                                that.adjustScroll(currScroll);
                                 that.unlockEditor();
                             }
                         }
@@ -1448,6 +1455,9 @@ class EditPage extends React.Component {
 
                     that.repairLayoutIndices(current);
 
+                    let node = ReactDOM.findDOMNode(that.refs.draggableSpace);
+                    let currScroll = node.scrollTop;
+
                     // Update object state & reload the right layout, then unlock editor
                     that.handleProjectUpdates();
                     that.forceUpdate();
@@ -1455,7 +1465,9 @@ class EditPage extends React.Component {
                     that.setState({
                         'recursiveLayout': that.recursiveLayout(that.state.layout, true)
                     });
+                    that.adjustScroll(currScroll);
                     that.unlockEditor();
+                    
                 }
             })
             .catch(err => {
@@ -1756,6 +1768,13 @@ class EditPage extends React.Component {
         }
     }
 
+    adjustScroll(originalScroll) {
+        let node = ReactDOM.findDOMNode(this.refs.draggableSpace);
+        console.log("distance from top: " + node.scrollTop);
+        node.scrollTo(0, originalScroll);
+        //node.scrollHeight
+    }
+
     // 
 
     //____________________________________________________________________________
@@ -1848,10 +1867,10 @@ class EditPage extends React.Component {
                         </table>
                     }
                 </div>
-                <div className={editorClasses}>
+                <div className={editorClasses} ref="draggableSpace">
                     {this.state.lockedEditor === true &&
                         <div className="loading-message">
-                            Loading...
+                            <img src={loader} width="50px" />
                         </div>
                     }
                     {(errorCount > 0) &&

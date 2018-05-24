@@ -6,7 +6,6 @@
     "bootstrap": "^3.3.7",
     "chart.js": "^2.4.0",
     "create-react-class": "^15.6.3",
-    "enzyme": "^2.6.0",
     "html2canvas": "^1.0.0-alpha.10",
     "inline-style-prefixer": "^2.0.5",
     "js-md5": "^0.4.1",
@@ -35,6 +34,10 @@
     "deploy": "gh-pages -d build"
   },
   "devDependencies": {
-    "react-test-renderer": "^16.3.1"
+    "enzyme": "^2.9.1",
+    "enzyme-adapter-react-16": "^1.1.1",
+    "react-dnd-test-backend": "^2.6.0",
+    "react-test-renderer": "^16.3.1",
+    "sinon": "^5.0.10"
   }
 }
