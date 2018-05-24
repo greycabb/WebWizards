@@ -884,14 +884,14 @@ class EditPage extends React.Component {
 
                         console.log('   Created <' + slot + '> in ' + parentId + ' ' + index);
 
-                        //if (fromUserAction !== true) {
-                        if (slot === 'title') {//that.state.bricksByName[slot].type === 'textwrapper') {
-                            that.updateProject(that.state.htmlBlockId);
-                            that.createBlock('text-content', result.id, 0, true);
-                        } else {
-                            that.updateProject(that.state.htmlBlockId);
+                        if (fromUserAction !== true) {
+                            if (slot === 'title') {//that.state.bricksByName[slot].type === 'textwrapper') {
+                                that.updateProject(that.state.htmlBlockId);
+                                that.createBlock('text-content', result.id, 0, true);
+                            } else {
+                                that.updateProject(that.state.htmlBlockId);
+                            }
                         }
-                        //}
                         if (textContent === true) {
                             that.changeTextContent(result.id, that.state.projectData.name);
                         }
@@ -937,6 +937,7 @@ class EditPage extends React.Component {
                                     if (currentChild.index === index) {
                                         let newChildLil = lil.slice();
                                         newChildLil.push(index);
+                                        console.log(newChildLil);
 
                                         newChild.locationInLayout = newChildLil;
                                         newChildrenObject[newChildrenObjectCurrentIndex] = newChild;
@@ -947,7 +948,7 @@ class EditPage extends React.Component {
                                     newChildrenObject[newChildrenObjectCurrentIndex] = currentChild;
                                     newChildrenObjectCurrentIndex += 1;
                                 }
-                                //console.log(newChild);
+                                console.log(newChild);
 
                                 if (childrenKeys.length === 0) {
                                     let newChildLil = lil.slice();
@@ -955,13 +956,13 @@ class EditPage extends React.Component {
 
                                     newChild.locationInLayout = newChildLil;
                                     newChildrenObject[0] = newChild;
-                                    newChildrenObjectCurrentIndex += 1;
                                 }
 
                                 // Set the new children
                                 current.children = newChildrenObject;
-                                lil.push(index);
-                                that.state.layoutBlockLocations[result.id] = lil;
+                                let lil2 = lil.slice();
+                                lil2.push(index);
+                                that.state.layoutBlockLocations[result.id] = lil2;
 
                                 that.repairLayoutIndices(current);
 
@@ -971,7 +972,7 @@ class EditPage extends React.Component {
                                 that.setState({
                                     'recursiveLayout': that.recursiveLayout(that.state.layout, true)
                                 });
-                                //that.unlockEditor();
+                                that.unlockEditor();
                             }
                         }
 
@@ -1833,7 +1834,7 @@ class EditPage extends React.Component {
                             Loading...
                         </div>
                     }
-                    {(this.state.lockedEditor === false && errorCount > 0) &&
+                    {(errorCount > 0) &&
                         <div className="error-count" title="Try dragging the red blocks into the trash can!">
                             <div>
                                 {errorCountMessage}
