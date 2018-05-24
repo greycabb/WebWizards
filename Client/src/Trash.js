@@ -49,7 +49,7 @@ class Trash extends Component {
     return connectDropTarget(
       <div>
         {!isOverCurrent &&
-          <div className="trash-bin">
+          <div className="trash-bin" title="If you want to delete a block, drag it here.">
               <img src={img} width="100px"/>
           </div>
         }

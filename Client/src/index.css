@@ -494,11 +494,14 @@ td {
 .error-count {
   color: red;
   font-size: 26px;
-  padding: 6px;
+  padding: 7px;
   margin: 10px;
   padding-right: 0;
   position: fixed;
-  right: 50px;
+  right: 45px;
+}
+.error-count:hover {
+  opacity: 0.6;
 }
 
 /*Message that appears in a block*/
