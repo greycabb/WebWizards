@@ -834,6 +834,13 @@ class EditPage extends React.Component {
                 })
             })
                 .then(function (response) {
+                    let lil = that.state.layoutBlockLocations[blockId];
+                    let current = that.state.layout;
+                    for (let i = 0; i < lil.length; i++) {
+                        current = current.children[lil[i]];
+                    }
+                    current.textContent = newText;
+
                     //that.getBlock(blockId);
                     //that.setup_getProjectData();
                     //that.updateProject(that.state.htmlBlockId);
@@ -1070,7 +1077,7 @@ class EditPage extends React.Component {
                                     newChildren.push(newChild);
                                 }
                             } else {
-                                if (result.children.length > 0) {
+                                if (Object.keys(result.children).length > 0) {
                                     textContent = result.children[0];
                                 } else {
                                     textContent = '';
