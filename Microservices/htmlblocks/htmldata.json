@@ -5,7 +5,7 @@
 		"translation": "html",
 		"description": "A 'html' block defines a HTML document",
 		"type": "wrapper",
-		"unallowed_children": ["html", "title", "p", "div", "text", "h1", "h2", "h3", "h4", "strong", "em", "img", "text-content", "li"]
+		"unallowed_children": ["html", "title", "p", "div", "text", "h1", "h2", "h3", "h4", "strong", "em", "img", "text-content", "li", "ul", "ol", "span"]
 	},
 	{
         "id": 1,
@@ -13,7 +13,7 @@
 		"translation": "head",
 		"description": "A 'head' block defines information about HTML document",
 		"type": "wrapper",
-		"unallowed_children": ["html", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "strong", "em", "img", "text-content", "li"]
+		"unallowed_children": ["html", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "strong", "em", "img", "text-content", "li", "ul", "ol", "span"]
 	},
 	{
         "id": 2,
@@ -21,7 +21,7 @@
 		"translation": "title",
 		"description": "A 'title' block defines the page title",
 		"type": "textwrapper",
-		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "strong", "em", "img", "text-content"]
+		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "strong", "em", "img", "text-content", "ul", "ol", "li", "span"]
 	},
 	{
         "id": 3,
@@ -143,7 +143,7 @@
 		"description": "A list of things with bullets (no numbers)",
 		"type": "wrapper",
 		"css_groups": [],
-		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "strong", "em", "img", "text-content", "ol", "ul"],
+		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "strong", "em", "img", "text-content", "ol", "ul", "span"],
 		"attributes": ["title"]
 	},
 	{
@@ -153,7 +153,7 @@
 		"description": "A list of things with a number for each thing",
 		"type": "wrapper",
 		"css_groups": [],
-		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "strong", "em", "img", "text-content", "ol", "ul"],
+		"unallowed_children": ["html", "head", "title", "body", "p", "div", "text", "h1", "h2", "h3", "h4", "strong", "em", "img", "text-content", "ol", "ul", "span"],
 		"attributes": ["title"]
 	},
 	{
