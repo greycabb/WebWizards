@@ -926,15 +926,17 @@ class EditPage extends React.Component {
                                     css: result.css,
                                     attributes: result.attributes,
                                     parentid: result.parentid,
-                                    index: result.index,
+                                    index: index,
                                     children: {
 
                                     }
                                 }
                                 let newChildrenObjectCurrentIndex = 0;
-                                for (let i = 0; i < childrenKeys.length; i++) {
+                                let hitNewIndex = false;
+                                for (let i = 0; i < childrenKeys.length + 1; i++) {
                                     let currentChild = current.children[childrenKeys[i]];
-                                    if (currentChild.index === index) {
+                                    if (hitNewIndex === false && (i >= childrenKeys.length || currentChild.index === index)) {
+                                        hitNewIndex = true;
                                         let newChildLil = lil.slice();
                                         newChildLil.push(index);
                                         console.log(newChildLil);
@@ -943,10 +945,12 @@ class EditPage extends React.Component {
                                         newChildrenObject[newChildrenObjectCurrentIndex] = newChild;
                                         newChildrenObjectCurrentIndex += 1;
                                     }
-                                    currentChild.index = newChildrenObjectCurrentIndex;
-                                    currentChild.locationInLayout[currentChild.locationInLayout.length - 1] = newChildrenObjectCurrentIndex;
-                                    newChildrenObject[newChildrenObjectCurrentIndex] = currentChild;
-                                    newChildrenObjectCurrentIndex += 1;
+                                    if (i < childrenKeys.length) {
+                                        currentChild.index = newChildrenObjectCurrentIndex;
+                                        currentChild.locationInLayout[currentChild.locationInLayout.length - 1] = newChildrenObjectCurrentIndex;
+                                        newChildrenObject[newChildrenObjectCurrentIndex] = currentChild;
+                                        newChildrenObjectCurrentIndex += 1;
+                                    }
                                 }
                                 console.log(newChild);
 
@@ -1723,11 +1727,11 @@ class EditPage extends React.Component {
             current.locationInLayout = newLil;
             current.index = index;
 
-            //console.log('    New LIL: ' + current.locationInLayout);
+            console.log('    New LIL: ' + current.locationInLayout);
 
             this.state.layoutBlockLocations[current.id] = newLil;
         }//else {
-            //console.log('PARENT ' + current.blocktype);
+        //console.log('PARENT ' + current.blocktype);
         //}
 
         let childrenKeys = Object.keys(current.children);
