@@ -688,6 +688,9 @@ class EditPage extends React.Component {
             if (current.textContent !== undefined) {
                 text = current.textContent;
             }
+            if (current.children[0] !== undefined) {
+                text = current.children[0];
+            }
 
             // Expand block to show all text and allow user to type
             function expandEditText(blockId, newText) {
