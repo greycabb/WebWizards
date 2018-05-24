@@ -982,7 +982,9 @@ class EditPage extends React.Component {
 
                                 console.log(that.state.layout);
 
+                                that.handleProjectUpdates();
                                 that.forceUpdate();
+                                
                                 that.setState({
                                     'recursiveLayout': that.recursiveLayout(that.state.layout, true)
                                 });
@@ -1447,7 +1449,9 @@ class EditPage extends React.Component {
                     that.repairLayoutIndices(current);
 
                     // Update object state & reload the right layout, then unlock editor
+                    that.handleProjectUpdates();
                     that.forceUpdate();
+                    
                     that.setState({
                         'recursiveLayout': that.recursiveLayout(that.state.layout, true)
                     });
