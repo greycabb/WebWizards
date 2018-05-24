@@ -16,6 +16,9 @@ import OutsideAlerter from './OutsideAlerter';
 import img from './img/ProfilePictures/Cow.png';
 import editimg from './img/edit.png';
 
+import pickupSound from './sound/pickup.mp3';
+import dropSound from './sound/drop.mp3';
+
 class EditPage extends React.Component {
     constructor(props) {
         super(props);
@@ -657,11 +660,11 @@ class EditPage extends React.Component {
 
                         </div>
                         {((!isHeadBodyTitleOrHtml || current.blocktype === 'title') && Object.keys(current.children).length === 0 && (current.blocktype === 'li' || that.state.bricksByName[current.blocktype].type === 'textwrapper')) &&
-                            <button className="black-text" onClick={function (e) { e.stopPropagation(); that.createBlock('text-content', current.id, 0); }}>Write...</button>
+                            <button className="black-text" onClick={function (e) { e.stopPropagation(); that.createBlock('text-content', current.id, 0, false, true); }}>Write...</button>
                         }
                         {b}
                         {(current.blocktype === 'ul' || current.blocktype === 'ol') &&
-                            <button className="black-text" onClick={function (e) { e.stopPropagation(); that.createBlock('li', current.id, Object.keys(current.children).length); }}>Add &lt;li&gt;</button>
+                            <button className="black-text" onClick={function (e) { e.stopPropagation(); that.createBlock('li', current.id, Object.keys(current.children).length, false, true); }}>Add &lt;li&gt;</button>
                         }
                         {endTag.length > 0 &&
                             <div className="disable-select tag-block-span" onDoubleClick={function (e) { let curcontent = current; that.cssModalToggleOn(curcontent) }}>
@@ -904,7 +907,6 @@ class EditPage extends React.Component {
                                 let current = that.state.layout;
                                 for (let i = 0; i < lil.length; i++) {
                                     current = current.children[lil[i]];
-                                    console.log(current);
                                 }
                                 let parentBlock = current.id;
                                 console.log('   => parent block id: ' + current.id);
@@ -945,7 +947,7 @@ class EditPage extends React.Component {
                                     newChildrenObject[newChildrenObjectCurrentIndex] = currentChild;
                                     newChildrenObjectCurrentIndex += 1;
                                 }
-                                console.log(newChild);
+                                //console.log(newChild);
 
                                 if (childrenKeys.length === 0) {
                                     let newChildLil = lil.slice();
@@ -1191,6 +1193,9 @@ class EditPage extends React.Component {
             'block_originalIndex': blockIndex,
             'selectedBlockLocation': locationInLayout
         });
+
+        let snd = new Audio(pickupSound);
+        snd.play();
     }
 
 
@@ -1208,6 +1213,10 @@ class EditPage extends React.Component {
             });
             return;
         }
+
+        let snd = new Audio(pickupSound);
+        snd.play();
+
         if (this.state.bricksByName !== undefined) {
             if (this.state.bricksByName[brickName] !== undefined) {
                 //console.log(brickName);
@@ -1225,7 +1234,10 @@ class EditPage extends React.Component {
     // Place a block into the right, after picking up a brick on the left
     // The type of brick placed is determined by the brick that was picked up on the left, from state
     drop(parentId, index, locationInLayout) {
-        
+
+        let snd = new Audio(dropSound);
+        snd.play();
+
         if (this.state.selectedBrick === undefined) {
             console.log('sb undefined');
             if (this.state.selectedBlock !== undefined) {
@@ -1238,10 +1250,8 @@ class EditPage extends React.Component {
 
             return;
         }
+
         console.log('CREATE ' + parentId + ' ' + index);
-
-
-
 
         this.increasePointsBy(1);
 
@@ -1350,6 +1360,8 @@ class EditPage extends React.Component {
             return;
         }
 
+        let snd = new Audio(dropSound);
+        snd.play();
 
         console.log('DELETE ' + blockId);
         console.log('   Attempting to delete ' + blockId);
@@ -1433,6 +1445,9 @@ class EditPage extends React.Component {
     // Move block
     moveBlock(newParentId, newIndex, locationInLayout, blockIsLastChild) {
 
+        let snd = new Audio(dropSound);
+        snd.play();
+
         console.log(this.state.layout);
 
         let originalNewIndex = newIndex;
@@ -1489,7 +1504,7 @@ class EditPage extends React.Component {
         }
 
         this.lockEditor();
-        
+
 
         console.log('   Attempting to move ' + this.state.selectedBlock + ' ' + this.state.block_originalIndex);
 
@@ -1518,7 +1533,7 @@ class EditPage extends React.Component {
                 //     // Find the parent block's location in the layout
 
                 //     console.log('Part 1');
-                    
+
 
                 //     let current = that.state.layout;
                 //     for (let i = 0; i < lil.length - 1; i++) { // -1 because we're getting the deleted block's parent
@@ -1710,15 +1725,14 @@ class EditPage extends React.Component {
             //console.log('    New LIL: ' + current.locationInLayout);
 
             this.state.layoutBlockLocations[current.id] = newLil;
-        } else {
-            console.log('PARENT ' + current.blocktype);
-        }
+        }//else {
+            //console.log('PARENT ' + current.blocktype);
+        //}
 
         let childrenKeys = Object.keys(current.children);
         for (var i = 0; i < childrenKeys.length; i++) {
             this.repairLayoutIndices(current.children[childrenKeys[i]], current.locationInLayout.slice(), i);
         }
-        console.log(this.state.layout);
     }
 
     // 
