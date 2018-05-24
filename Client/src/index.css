@@ -493,11 +493,10 @@ td {
 }
 .error-count {
   color: red;
-  font-size: 24px;
-
-  font-size: 24px;
-  padding: 20px;
-  margin: 20px;
+  font-size: 26px;
+  padding: 6px;
+  margin: 10px;
+  padding-right: 0;
   position: fixed;
   right: 50px;
 }
