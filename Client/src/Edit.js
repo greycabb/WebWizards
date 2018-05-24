@@ -1243,8 +1243,7 @@ class EditPage extends React.Component {
     // The type of brick placed is determined by the brick that was picked up on the left, from state
     drop(parentId, index, locationInLayout) {
 
-        let snd = new Audio(dropSound);
-        snd.play();
+
 
         if (this.state.selectedBrick === undefined) {
             console.log('sb undefined');
@@ -1270,6 +1269,9 @@ class EditPage extends React.Component {
 
         if (brick && parentId !== undefined && index !== undefined) {
             this.pickup(); // unselect the selected brick
+
+            let snd = new Audio(dropSound);
+            snd.play();
 
             this.createBlock(brick, parentId, index, false, true);
         }
