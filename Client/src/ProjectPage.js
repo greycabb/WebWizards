@@ -1,6 +1,8 @@
 import React from 'react';
 import './ProjectPage.css';
 
+import { hashHistory } from 'react-router';
+
 export default class ProjectPage extends React.Component {
     constructor(props) {
         super(props);
@@ -19,8 +21,14 @@ export default class ProjectPage extends React.Component {
         document.title = "Project Page"
         var that = this;
 
+        var id = this.props.params.id; 
+
+        if (id == "5ae6838429694f0001479f08") {
+            id = '5af35cfeffb4a50001918c6a';
+        }
+
         // Get the project's data
-        fetch('https://api.webwizards.me/v1/projects?id=' + this.props.params.id, {
+        fetch('https://api.webwizards.me/v1/projects?id=' + id, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
