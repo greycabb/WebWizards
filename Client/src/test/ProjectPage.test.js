@@ -2,7 +2,7 @@ import React from 'react';
 import {shallow} from 'enzyme';
 import sinon from 'sinon';
 
-import Edit from '../Edit';
+import ProjectPage from '../ProjectPage';
 
 /*describe('<DogList /> component', () => {
   it('should render the Dog Cards', () => {
