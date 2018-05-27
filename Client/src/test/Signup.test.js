@@ -46,7 +46,10 @@ describe('<SignupPage /> component', () => {
     });
 
     it('should show error when passwords do not match', () => {
-
+        const wrapper = shallow(<SignupPage />);
+        wrapper.find('input').at(1).simulate('change', {target:{value: 'test'}});
+        wrapper.find('input').at(2).simulate('change', {target:{value: 'test2'}});
+        wrapper.find('p.help-block').text().toEqual("Passwords need to be the same");
     });
 
     it('should show error when username exists', () => {
