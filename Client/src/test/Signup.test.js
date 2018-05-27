@@ -1,8 +1,12 @@
 import React from 'react';
-import {shallow} from 'enzyme';
+import {shallow, mount} from 'enzyme';
 import sinon from 'sinon';
-
+import Enzyme from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
 import SignupPage from '../Signup';
+import {ValidatedInput} from '../Signup';
+
+Enzyme.configure({ adapter: new Adapter() });
 
 /*describe('<DogList /> component', () => {
   it('should render the Dog Cards', () => {
@@ -46,10 +50,11 @@ describe('<SignupPage /> component', () => {
     });
 
     it('should show error when passwords do not match', () => {
-        const wrapper = shallow(<SignupPage />);
+        const wrapper = mount(<SignupPage />);
+        console.log(wrapper.find('input').at(1));
         wrapper.find('input').at(1).simulate('change', {target:{value: 'test'}});
         wrapper.find('input').at(2).simulate('change', {target:{value: 'test2'}});
-        wrapper.find('p.help-block').text().toEqual("Passwords need to be the same");
+        expect(wrapper.find('.help-block').text()).toEqual("Passwords need to be the same");
     });
 
     it('should show error when username exists', () => {
