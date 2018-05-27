@@ -952,7 +952,7 @@ class EditPage extends React.Component {
                                         hitNewIndex = true;
                                         let newChildLil = lil.slice();
                                         newChildLil.push(index);
-                                        console.log(newChildLil);
+                                        //console.log(newChildLil);
 
                                         newChild.locationInLayout = newChildLil;
                                         newChildrenObject[newChildrenObjectCurrentIndex] = newChild;
@@ -965,7 +965,7 @@ class EditPage extends React.Component {
                                         newChildrenObjectCurrentIndex += 1;
                                     }
                                 }
-                                console.log(newChild);
+                                //console.log(newChild);
 
                                 if (childrenKeys.length === 0) {
                                     let newChildLil = lil.slice();
@@ -983,7 +983,7 @@ class EditPage extends React.Component {
 
                                 that.repairLayoutIndices(current);
 
-                                console.log(that.state.layout);
+                                //console.log(that.state.layout);
 
                                 that.handleProjectUpdates();
                                 let node = ReactDOM.findDOMNode(that.refs.draggableSpace);
@@ -1770,8 +1770,12 @@ class EditPage extends React.Component {
 
     adjustScroll(originalScroll) {
         let node = ReactDOM.findDOMNode(this.refs.draggableSpace);
-        console.log("distance from top: " + node.scrollTop);
-        node.scrollTo(0, originalScroll);
+        //console.log("distance from top: " + node.scrollTop);
+        try {
+            node.scrollTo(0, originalScroll)
+        } catch(err) {
+            console.log('Skipped scrollTo');
+        }
         //node.scrollHeight
     }
 
