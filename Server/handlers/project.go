@@ -9,7 +9,7 @@ import (
 
 	"github.com/greycabb/WebWizards/Server/models/projects"
 
-	"github.com/greycabb/WebWizards/server/sessions"
+	"github.com/greycabb/WebWizards/Server/sessions"
 	"gopkg.in/mgo.v2/bson"
 )
 
