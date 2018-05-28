@@ -226,17 +226,17 @@ export default class LoginPage extends React.Component {
                         <Nav login={true} handleLogin={this.handleLogin} handleSignup={this.handleSignup}/>
                         {this.state.loginClicked &&
                             <OutsideAlerter handler={this.handleLogin}>
-                            <div className="arrow_box welcomebox">
+                            <div id="loginPrompt" className="arrow_box welcomebox">
                                 <form>
                                     <div>
-                                        <ValidatedInput field="username" type="username" maxLength="15" label="Username" tabIndex={1} changeCallback={this.handleChange} errors={usernameErrors} />
+                                        <ValidatedInput id="usernameField" field="username" type="username" maxLength="15" label="Username" tabIndex={1} changeCallback={this.handleChange} errors={usernameErrors} />
                                     </div>
                                     <div>
-                                        <ValidatedInput field="password" type="password" maxLength="30" label="Password" tabIndex={2} changeCallback={this.handleChange} errors={passwordErrors} />
+                                        <ValidatedInput id="passwordField" field="password" type="password" maxLength="30" label="Password" tabIndex={2} changeCallback={this.handleChange} errors={passwordErrors} />
                                     </div>
                                     <div className="form-group login-group">
                                         <br />
-                                        <button className="btn yellow-button" disabled={!signInEnabled} onClick={(e) => this.signIn(e)}>Login</button>
+                                        <button id="loginTrigger" className="btn yellow-button" disabled={!signInEnabled} onClick={(e) => this.signIn(e)}>Login</button>
                                         <div id="postError" className="help-block error">{this.state.error}</div>
                                     </div>
 
