@@ -56,27 +56,31 @@ export default class TermsAndConditionsPage extends React.Component {
                         </p>
                     </div>
                     <div>
-                        <h2>5. User-Generated Content</h2>
+                        <h2>5. Data Policy</h2>
+                        <p>Web Wizards has taken all necessary electronic actions to protect the user’s information while using Web Wizards. The only data that is shared with others are projects explicitly marked “share with others” by the user. No matter how effective our actions are, there is always a risk for the data to be intercepted while the user's data is being transmitted over the internet. Please do not share any personal data like addresses, email address, passwords.</p>
+                    </div>
+                    <div>
+                        <h2>6. User-Generated Content</h2>
                         <p>The Web Wizards team encourages users to be creative by posting and sharing code, art, music, and other works. You are responsible for making sure you have the necessary rights, licenses, or permissions for any user-generated content you submit to Web Wizards. The Web Wizards team reserves the right to monitor all uses of the Web Wizards services. The Web Wizards team may edit or delete content that violates the terms of use without notice.</p>
                     </div>
                     <div>
-                        <h2>6. Web Wizards Content and Licensing</h2>
+                        <h2>7. Web Wizards Content and Licensing</h2>
                         <p>Except for any user-generated content, the Web Wizards team owns all rights to the Web Wizards code, design, and functionality, and any software provided through Web Wizards. Contact the Web Wizards team if you intend to use Web Wizards in a way that is not permitted in these terms of use.</p>
                     </div>
                     <div>
-                        <h2>7. Suspension and Termination of Accounts</h2>
+                        <h2>8. Suspension and Termination of Accounts</h2>
                         <p>Web Wizards reserves the right to suspend your account for any violation of the terms of use. Repeat violators may have their account deleted. The Web Wizards team will decide what constitutes a violation of the terms of use.</p>
                     </div>
                     <div>
-                        <h2>8. Third Party Websites</h2>
+                        <h2>9. Third Party Websites</h2>
                         <p>Content on Web Wizards, including user-generated content, may include links to third party websites. The Web Wizards Team assumes no responsibility for the privacy practices, content, or functionality of third party websites. You agree to take responsibility for any and all liability arising from third party websites that you post.</p>
                     </div>
                     <div>
-                        <h2>9. Limitation of Liability</h2>
+                        <h2>10. Limitation of Liability</h2>
                         <p>The Web Wizards entities shall not be liable to you or any third parties for any direct, indirect, special, consequential or punitive damages of any kind, regardless of the type of claim or the nature of the cause of action, even if the Web Wizards Team has been advised of the possibility of such damages. The Web Wizards entities shall have no liability to you or any third parties for damages or harms arising out of user-generated content.</p>
                     </div>
                     <div>
-                        <h2>10. Entire Agreement</h2>
+                        <h2>11. Entire Agreement</h2>
                         <p>This document, along with all appendices, constitutes the entire terms of use. Please do not use Web Wizards if you do not agree or comply with any of the terms set forth on this page. If you have any questions, please contact the Web Wizards Team. Revision date: 29 May 2018.</p>
                         <br />
                     </div>
