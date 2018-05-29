@@ -37,7 +37,7 @@ export default class CreateBanner extends React.Component {
                     </map>
                 </div>
                 <div className="img-card disable-select">
-                    <iframe width="445" height="250" src="https://www.youtube.com/embed/AQ9TEJBOlbc?rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe> 
+                    <iframe width="445" height="250" src="https://www.youtube.com/embed/AQ9TEJBOlbc?rel=0" frameBorder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe> 
                 </div>
                 {this.state.toggle &&
                     <CreateModal toggle={this.toggle}/>

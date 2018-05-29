@@ -135,6 +135,10 @@ body > div > .login-page {
   background-size: cover;
 }
 
+.terms-and-conditions-page {
+  margin-left: 80px;
+}
+
 .header {
   background-color: #196AB5;
   left: 0;
@@ -525,4 +529,12 @@ td {
 .start-tag {
   width: 50px !important;
   display: inline-block;
+}
+
+.terms-and-conditions {
+  font-size: 13pt;
+}
+.terms-and-conditions-link {
+  color: yellow;
+  text-decoration: underline;
 }

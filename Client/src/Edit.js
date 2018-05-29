@@ -616,7 +616,7 @@ class EditPage extends React.Component {
             }
         }
         if (current.blocktype !== 'text-content') {
-            let startTag = '<' + current.blocktype + '>';// + current.id.slice(-2);
+            let startTag = '<' + current.blocktype + '>';// + current.id;
             let endTag = '</' + current.blocktype + '>';
 
             if (current.blocktype === 'img' || that.state.bricksByName[current.blocktype] !== undefined && that.state.bricksByName[current.blocktype].self_closing === true) {

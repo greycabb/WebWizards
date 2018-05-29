@@ -21,7 +21,7 @@ export default class Nav extends React.Component {
                     <Link to="/main"><h1 className="title navbar-title disable-select">Web Wizards</h1></Link>
                     </div>
                     <div className="form-group pull-right navbar-welcome">
-                        {!this.props.login &&
+                        {!this.props.login && this.props !== undefined && this.props.username &&
                             <div>
                                 Welcome, {this.props.username}!
                                 <Link to="/login"><button className="btn yellow-button">Logout</button></Link>

@@ -18,6 +18,7 @@ import EditPage from './Edit';
 import ComponentTesting from './ComponentTesting';
 import ProjectPage from './ProjectPage';
 import ProfilePage from './ProfilePage';
+import TermsAndConditionsPage from './TermsAndConditions';
 
 //can load other CSS files (e.g,. Bootstrap) here
 import 'bootstrap/dist/css/bootstrap.css';
@@ -34,6 +35,7 @@ ReactDOM.render(
       <Route path="signup" component={SignupPage} />
       <Route path="main" component={MainPage} />
       <Route path="edit" component={EditPage} />
+      <Route path="terms-and-conditions" component={TermsAndConditionsPage} />
       <Route path="project/:id" component={ProjectPage} />
       <Route path="testing" component={ComponentTesting} />
       <Route path="user/:username" component={ProfilePage} />
