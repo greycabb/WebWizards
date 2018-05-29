@@ -1,11 +1,11 @@
 package handlers
 
 import (
+	"github.com/greycabb/WebWizards/Server/indexes"
 	"github.com/greycabb/WebWizards/Server/models/blocks"
 	"github.com/greycabb/WebWizards/Server/models/projects"
-	"github.com/greycabb/WebWizards/server/indexes"
-	"github.com/greycabb/WebWizards/server/models/users"
-	"github.com/greycabb/WebWizards/server/sessions"
+	"github.com/greycabb/WebWizards/Server/models/users"
+	"github.com/greycabb/WebWizards/Server/sessions"
 )
 
 //HandlerContext provides access to globals such as the key,

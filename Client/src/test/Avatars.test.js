@@ -9,23 +9,56 @@ import Adapter from 'enzyme-adapter-react-16';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-/*describe('<DogList /> component', () => {
-  it('should render the Dog Cards', () => {
-    const wrapper = shallow(<DogList />);
-    expect(wrapper.find(DogCard).length).toEqual(5);
-  })
+//Signup component
+describe('<AvatarModal /> component', () => {
 
-  it('should filter dogs on search', () => {
-    const wrapper = shallow(<DogList />);
-    wrapper.find('input').simulate('change',{target:{value:'Mix'}});
-    expect(wrapper.find(DogCard).length).toEqual(2);
+  it('should show 5 default avatars', () => {
+
+    global.localStorage = {
+      i2x_token: 'someToken',
+      getItem: function () {
+        return "{\"points\": 49}"
+      }
+    };
+    const wrapper = mount(<AvatarModal />);
+    expect(wrapper.state().imgs.length).toEqual(5);
   });
 
-  it('should search by the entered term', () => {
-    const searchSpy = sinon.spy(DogList.prototype, 'searchDogs'); //spy for search method
-    const wrapper = shallow(<DogList />);
-    wrapper.find('input').simulate('change',{target:{value:'Mix'}});
-    expect(searchSpy.getCall(0).args[0]).toEqual('Mix');
-  })
+   it('should show 5 avatars plus 1 additional based on apprentice point level', () => {
+
+      global.localStorage = {
+        i2x_token: 'someToken',
+        getItem: function () {
+          return "{\"points\": 50}"
+        }
+      };
+      const wrapper = mount(<AvatarModal />);
+      expect(wrapper.state().imgs.length).toEqual(6);
+    });
+
+    it('should show 5 avatars plus 2 additional based on expert point level', () => {
+
+      global.localStorage = {
+        i2x_token: 'someToken',
+        getItem: function () {
+          return "{\"points\": 800}"
+        }
+      };
+      const wrapper = mount(<AvatarModal />);
+      expect(wrapper.state().imgs.length).toEqual(7);
+    });
+
+    it('should show 5 avatars plus 3 additional based on master point level', () => {
+
+      global.localStorage = {
+        i2x_token: 'someToken',
+        getItem: function () {
+          return "{\"points\": 5000}"
+        }
+      };
+      const wrapper = mount(<AvatarModal />);
+      expect(wrapper.state().imgs.length).toEqual(8);
+    });
+
+
 });
-*/
