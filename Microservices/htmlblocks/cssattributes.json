@@ -11,7 +11,7 @@
 		"units": "EO_choices",
 		"default": "Arial",
 		"extra_options": {
-			"choices": ["Arial", "Helvetica", "Times New Roman", "Cursive"]
+			"choices": ["Arial", "Helvetica", "Times New Roman", "Cursive", "Fontdiner Swanky", "Permanent Marker", "Dancing Script", "Amatic SC", "Gloria Hallelujah", "Special Elite"]
 		}
 	},
 	"font-size": {
@@ -53,6 +53,15 @@
 			"choices": ["repeat", "repeat-x", "repeat-y", "no-repeat"]
 		}
 	},
+	"background-size": {
+		"translation": "Background image size",
+		"description": "Edit the background image's size",
+		"units": "EO_choices",
+		"default": "auto",
+		"extra_options": {
+			"choices": ["auto", "contain", "cover"]
+		}
+	},
 	"background-position": {
 		"translation": "Background image position",
 		"description": "Edit where a background image shows up",
@@ -78,7 +87,7 @@
 		"units": "EO_choices",
 		"default": "none",
 		"extra_options": {
-			"choices": ["none", "dotted", "dashed", "solid"]
+			"choices": ["none", "dotted", "dashed", "solid", "border"]
 		}
 	},
 	"border-width": {
@@ -116,6 +125,15 @@
 			"choices": ["auto", "pixels", "percentage"],
 			"pixels": [0, 2000],
 			"percentage": [0, 100]
+		}
+	},
+	"line-height": {
+		"translation": "Line height",
+		"description": "Change space between text",
+		"units": "px",
+		"default": "0px",
+		"extra_options": {
+			"range": [0, 100]
 		}
 	},
 	"margin": {

@@ -2,7 +2,7 @@
     padding: 10px 0px 10px 10px;
     background-color: #F3F3F3;
     width: 500px;
-    height: 300px;
+    height: 370px;
     margin: 0px !important;
     position: absolute;
     z-index: 5;
@@ -33,6 +33,7 @@ button.library-button:focus, button.library-button:active {
 img.library-preview {
     height: 100px;
     margin: 5px;
+    cursor: pointer;
 }
 
 img.library-preview:active {
@@ -42,7 +43,7 @@ img.library-preview:active {
 .library-images-container {
     position: relative;
     text-align: center;
-    height: 230px;
+    height: 300px;
     overflow: scroll;
 }
 

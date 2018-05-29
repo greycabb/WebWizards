@@ -1,6 +1,8 @@
 import React from 'react';
 import './ProjectPage.css';
 
+import { hashHistory } from 'react-router';
+
 export default class ProjectPage extends React.Component {
     constructor(props) {
         super(props);
@@ -19,8 +21,14 @@ export default class ProjectPage extends React.Component {
         document.title = "Project Page"
         var that = this;
 
+        var id = this.props.params.id; 
+
+        if (id == "5ae6838429694f0001479f08") {
+            id = '5af35cfeffb4a50001918c6a';
+        }
+
         // Get the project's data
-        fetch('https://api.webwizards.me/v1/projects?id=' + this.props.params.id, {
+        fetch('https://api.webwizards.me/v1/projects?id=' + id, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
@@ -66,7 +74,7 @@ export default class ProjectPage extends React.Component {
     
     //Should return an array with start tag and end tag
     //Ex: ["<div>", "</div>"]
-    generateHtmlString(blockType, css, attributes) {
+    generateHtmlString(blockType, css, attributes, blockId) {
         if (blockType != "text-content" && blockType != "title") {
 
             //Generate attributes string
@@ -77,11 +85,11 @@ export default class ProjectPage extends React.Component {
             }
 
             //Generate css string
-            var cssString = "";
+            var cssString = ' id="block-' + blockId + '"';
             if (css != null && css.length > 0) {
                 cssString = ' style="';
                 if (blockType == "body" || blockType == "html") {
-                    cssString += "width: 100%; height: 100%;"
+                    cssString += "width: 100%; height: 100%; overflow: scroll;"
                 }
                 for (var i = 0; i < css.length; i++) {
                     cssString += (css[i].attribute + ": " + css[i].value + "; ");
@@ -90,7 +98,7 @@ export default class ProjectPage extends React.Component {
             }
             else {
                 if (blockType == "body" || blockType == "html") {
-                    cssString += " style=\"width: 100%; height: 100%;\"";
+                    cssString += " style=\"width: 100%; height: 100%; overflow: scroll;\"";
                 }
             }
 
@@ -136,6 +144,7 @@ export default class ProjectPage extends React.Component {
                             let css = json.css;
                             let children = json.children;
                             let attributes = json.attributes;
+                            let id = json.id;
 
                             //Need to grab information on current block type
                             fetch('https://api.webwizards.me/v1/htmlblocks?id=' + type, {
@@ -152,7 +161,7 @@ export default class ProjectPage extends React.Component {
                                         let json = response.json().then((blockInfo) => {
 
                                             //Generate a string of this block
-                                            let blockTags = this.generateHtmlString(blockInfo.name, css, attributes);
+                                            let blockTags = this.generateHtmlString(blockInfo.name, css, attributes, id);
 
                                             // An array of child tags 
                                             let childTags = Array(children.length);

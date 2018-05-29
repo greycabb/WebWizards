@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { BlockTypes } from './BlockTypes';
 import { DropTarget } from 'react-dnd';
-import img from './img/trash.png';
-import img2 from './img/trash2.png';
+import img from './img/trash.png'; 
 import './Trash.css';
 
 const target = {
@@ -49,14 +48,14 @@ class Trash extends Component {
     return connectDropTarget(
       <div>
         {!isOverCurrent &&
-          <div className="trash-bin">
+          <div className="trash-bin" title="If you want to delete a block, drag it here.">
               <img src={img} width="100px"/>
           </div>
         }
         
         {isOverCurrent &&
           <div className="trash-bin trash-bin-hover">
-            <img src={img2} width="100px" />
+            <img src={img} width="100px" />
           </div>
         }
       </div>

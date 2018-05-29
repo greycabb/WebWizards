@@ -18,7 +18,8 @@ export default class CSSModal extends React.Component {
             hidden: true,
             allCssGroupData: [],
             buttons: [],
-            attributes: []
+            attributes: [],
+            loaded: false
         };
 
         this.handle = this.handle.bind(this);
@@ -81,6 +82,7 @@ export default class CSSModal extends React.Component {
                                             }
 
                                             that.setState({
+                                                loaded: true,
                                                 buttons: buttons,
                                                 cssGroups: cssGroups,
                                                 allCssGroupData: result2,
@@ -101,6 +103,11 @@ export default class CSSModal extends React.Component {
                                     console.log('caught it!', err);
                                 });
                         }
+                        else {
+                            that.setState({
+                                loaded: true
+                            });
+                        }
                     });
 
 
@@ -120,8 +127,8 @@ export default class CSSModal extends React.Component {
 
         var that = this;
         
-        console.log(name);
-        console.log(value);
+        //console.log(name);
+        //console.log(value);
 
         var found = false;
 
@@ -132,7 +139,7 @@ export default class CSSModal extends React.Component {
         }
 
         for (let j = 0; j < currAttributes.length; j ++) {
-            console.log(currAttributes[j]);
+            //console.log(currAttributes[j]);
             if (currAttributes[j].includes(name)) {
                 currAttributes[j] = name + "=\"" + value + "\"";
                 found = true;
@@ -169,7 +176,7 @@ export default class CSSModal extends React.Component {
                                 var current = this.state.possibleAttributes[i];
                                 // Check to see if this attribute currently exists
                                 var existing = "";
-                                console.log(currAttributes);
+                                //console.log(currAttributes);
                                 for (var j = 0; j < currAttributes.length; j ++) {
                                     if (currAttributes[j].includes(current)) {
                                         existing = currAttributes[j];
@@ -293,8 +300,8 @@ export default class CSSModal extends React.Component {
 
         this.props.increasePointsBy(1);
 
-        console.log(attribute);
-        console.log(value);
+        //console.log(attribute);
+        //console.log(value);
 
         if (!exists) {
             curr.push({attribute: attribute, value: value});
@@ -317,7 +324,7 @@ export default class CSSModal extends React.Component {
 
                 if (response.ok) {
                     response.json().then((result) => {
-                        console.log(curr);
+                        //console.log(curr);
                         this.props.handleChange(result);
                         this.setState({
                             currAppliedCss: curr
@@ -348,6 +355,12 @@ export default class CSSModal extends React.Component {
                                     <h2>Editing &lt;{this.props.currBlock.blocktype}&gt;</h2>
                                     {this.state.attributes}
                                     {this.state.buttons}
+                                    {this.state.loaded && this.state.attributes.length == 0 && this.state.buttons.length == 0 &&
+                                        <span>There are no styles to edit for &lt;{this.props.currBlock.blocktype}&gt;</span>
+                                    }
+                                    {!this.state.loaded &&
+                                        <span>Loading...</span>
+                                    }
                                 </div>
                             }
                             {this.state.viewingCategory &&
@@ -457,7 +470,7 @@ class CSSInputBox extends React.Component {
         var chosenUnit;
         var numValue;
 
-        console.log(this.props.object);
+        //console.log(this.props.object);
 
         if (this.props.object.extra_options || this.props.name == "background-image") {
             //Need to parse value and determine unit type
@@ -476,7 +489,7 @@ class CSSInputBox extends React.Component {
             }
             if (currentVal.includes("url")) {
                 numValue = currentVal.substring(4, currentVal.length - 2);
-                console.log(numValue);
+                //console.log(numValue);
             }
         }
 
@@ -486,13 +499,15 @@ class CSSInputBox extends React.Component {
             chosenUnit: chosenUnit
         }
 
-        console.log(numValue);
-        console.log(currentVal);
+        // console.log(numValue);
+        // console.log(currentVal);
 
         this.colorImgHandler = this.colorImgHandler.bind(this);
         this.valHandler = this.valHandler.bind(this);
         this.multiValHandler = this.multiValHandler.bind(this);
         this.typeValHandler = this.typeValHandler.bind(this);
+        this.rangeValHandler = this.rangeValHandler.bind(this);
+        this.rangeReleaseHandler = this.rangeReleaseHandler.bind(this);
     }
 
     colorImgHandler(val) {
@@ -508,6 +523,12 @@ class CSSInputBox extends React.Component {
 
     valHandler(event) {
         this.props.handleChange(this.props.name, event.target.value);
+        this.setState({
+            value: event.target.value
+        });
+    }
+
+    rangeValHandler(event) {
         this.setState({
             value: event.target.value
         });
@@ -534,18 +555,22 @@ class CSSInputBox extends React.Component {
     multiValHandler(event) {
         var stringVal = event.target.value;
         if (this.state.chosenUnit == "pixels") {
-            console.log(stringVal);
+            //console.log(stringVal);
             stringVal += "px";
-            console.log(stringVal);
+            //console.log(stringVal);
         }
         if (this.state.chosenUnit == "percentage") {
             stringVal += "%";
         }
-        this.props.handleChange(this.props.name, stringVal);
+        //this.props.handleChange(this.props.name, stringVal);
         this.setState({
             value: stringVal,
             numValue: event.target.value
         });
+    }
+
+    rangeReleaseHandler() {
+        this.props.handleChange(this.props.name, this.state.value);
     }
 
     render() {
@@ -575,7 +600,7 @@ class CSSInputBox extends React.Component {
                     {this.props.object.units == 'EO_choices' && this.props.object.extra_options.range &&
                         <span className="css-input-selections">
                             {this.state.numValue} pixels
-                            <input type="range" min={this.props.object.extra_options.range[0]} max={this.props.object.extra_options.range[1]} value={this.state.value}  onChange={this.valHandler} className="slider" id="myRange"/>
+                            <input type="range" min={this.props.object.extra_options.range[0]} max={this.props.object.extra_options.range[1]} defaultValue={this.state.value}  onChange={this.rangeValHandler} onMouseUp={this.rangeReleaseHandler} className="slider" id="myRange"/>
                         </span>
                     }
                     {this.props.object.units == 'EO_many_choices' && this.props.object.extra_options.choices &&
@@ -585,17 +610,17 @@ class CSSInputBox extends React.Component {
                                 {options}
                             </select>
                             {this.state.chosenUnit == "pixels" &&
-                                <input type="range" min={this.props.object.extra_options.pixels[0]} max={this.props.object.extra_options.pixels[1]} value={this.state.numValue}  onChange={this.multiValHandler} className="slider" id="myRange"/>
+                                <input type="range" min={this.props.object.extra_options.pixels[0]} max={this.props.object.extra_options.pixels[1]} defaultValue={this.state.numValue}  onChange={this.multiValHandler}  onMouseUp={this.rangeReleaseHandler} className="slider" id="myRange"/>
                             }
                             {this.state.chosenUnit == "percentage" &&
-                                <input type="range" min={this.props.object.extra_options.percentage[0]} max={this.props.object.extra_options.percentage[1]} value={this.state.numValue}  onChange={this.multiValHandler} className="slider" id="myRange"/>
+                                <input type="range" min={this.props.object.extra_options.percentage[0]} max={this.props.object.extra_options.percentage[1]} defaultValue={this.state.numValue}  onChange={this.multiValHandler}  onMouseUp={this.rangeReleaseHandler} className="slider" id="myRange"/>
                             }
                         </div>
                     }
                     {this.props.object.units == 'px' &&
                         <span className="css-input-selections">
                             {this.state.numValue} pixels
-                            <input type="range" min={this.props.object.extra_options.range[0]} max={this.props.object.extra_options.range[1]} value={this.state.numValue}  onChange={this.multiValHandler} className="slider" id="myRange"/>
+                            <input type="range" min={this.props.object.extra_options.range[0]} max={this.props.object.extra_options.range[1]} defaultValue={this.state.numValue}  onChange={this.multiValHandler}  onMouseUp={this.rangeReleaseHandler} className="slider" id="myRange"/>
                         </span>
                     }
                     {this.props.object.units == "image" &&

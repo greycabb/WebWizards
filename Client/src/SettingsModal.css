@@ -1,0 +1,56 @@
+.delete-button {
+    width: 250px;
+    background-color: #ED3B3B !important;
+    border-radius: 5px !important;
+}
+
+.confirm-button {
+    width: 250px;
+    background-color: #30B04C !important;
+    border-radius: 5px !important;
+    margin-bottom: 20px;
+}
+
+.settings-modal {
+    background-color: white !important;
+    color: black !important;
+}
+
+.settings-warning {
+    color: #E0A738;
+}
+
+.delete-cancel {
+    background-color: #E0A738 !important;
+}
+
+.delete-confirmation {
+    background-color: #ED3B3B !important;
+    font-weight: 800px;
+}
+
+#proj-title {
+    border: 1px solid gray !important;
+    padding: 5px;
+}
+
+#proj-title:focus {
+    outline:none;
+}
+
+.settings-delete-warning {
+    color: #ED3B3B;
+}
+
+.center-div {
+    text-align: center;
+}
+
+.delete-link {
+    color: #ED3B3B;
+    cursor: pointer;
+}
+
+.delete-link:hover {
+    color: #ED3B3B;
+}

@@ -3,7 +3,7 @@ package handlers
 import (
 	"time"
 
-	"github.com/greycabb/WebWizards/server/models/users"
+	"github.com/greycabb/WebWizards/Server/models/users"
 )
 
 //SessionState represents the session's state including the time

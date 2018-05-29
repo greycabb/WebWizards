@@ -22,10 +22,10 @@ export default class LoginPage extends React.Component {
 
         var mobileView = false;
 
-        if (window.innerWidth < 801) {
-            console.log(window.innerWidth);
-            mobileView = true;
-        }
+        // if (window.innerWidth < 801) {
+        //     console.log(window.innerWidth);
+        //     mobileView = true;
+        // }
 
         this.state = {
             'username': undefined,
@@ -36,7 +36,7 @@ export default class LoginPage extends React.Component {
 
         localStorage.clear();
 
-        let auth = localStorage.getItem('Authorization');
+        /*let auth = localStorage.getItem('Authorization');
 
         fetch('https://api.webwizards.me/v1/users/me', {
             method: 'GET',
@@ -58,7 +58,7 @@ export default class LoginPage extends React.Component {
             })
             .catch(err => {
                 console.log('caught it!', err);
-            })
+            }) */
 
         //function binding
         this.handleChange = this.handleChange.bind(this);
@@ -66,8 +66,12 @@ export default class LoginPage extends React.Component {
         this.handleSignup = this.handleSignup.bind(this);
     }
 
+    componentWillMount() {
+
+    }
+
     componentDidMount() {
-        document.title = 'Login - Web Wizards';
+        document.title = 'Web Wizards';
     }
 
     //update state for specific field
@@ -222,17 +226,17 @@ export default class LoginPage extends React.Component {
                         <Nav login={true} handleLogin={this.handleLogin} handleSignup={this.handleSignup}/>
                         {this.state.loginClicked &&
                             <OutsideAlerter handler={this.handleLogin}>
-                            <div className="arrow_box welcomebox">
+                            <div id="loginPrompt" className="arrow_box welcomebox">
                                 <form>
                                     <div>
-                                        <ValidatedInput field="username" type="username" maxLength="15" label="Username" tabIndex={1} changeCallback={this.handleChange} errors={usernameErrors} />
+                                        <ValidatedInput id="usernameField" field="username" type="username" maxLength="15" label="Username" tabIndex={1} changeCallback={this.handleChange} errors={usernameErrors} />
                                     </div>
                                     <div>
-                                        <ValidatedInput field="password" type="password" maxLength="30" label="Password" tabIndex={2} changeCallback={this.handleChange} errors={passwordErrors} />
+                                        <ValidatedInput id="passwordField" field="password" type="password" maxLength="30" label="Password" tabIndex={2} changeCallback={this.handleChange} errors={passwordErrors} />
                                     </div>
                                     <div className="form-group login-group">
                                         <br />
-                                        <button className="btn yellow-button" disabled={!signInEnabled} onClick={(e) => this.signIn(e)}>Login</button>
+                                        <button id="loginTrigger" className="btn yellow-button" disabled={!signInEnabled} onClick={(e) => this.signIn(e)}>Login</button>
                                         <div id="postError" className="help-block error">{this.state.error}</div>
                                     </div>
 

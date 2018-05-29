@@ -14,7 +14,8 @@ const basicAvatarUrls = [
 
 const specialAvatarUrls = {
     "apprentice": "https://webwizards.me/img/Avatars/Apprentice.png",
-    "expert": "https://webwizards.me/img/Avatars/Expert.png"
+    "expert": "https://webwizards.me/img/Avatars/Expert.png",
+    "master": "https://webwizards.me/img/Avatars/Master.png"
 };
 
 export default class AvatarModal extends React.Component {
@@ -35,6 +36,9 @@ export default class AvatarModal extends React.Component {
 
         if (ud.points > 799) {
             availableImgs.push(<img src={specialAvatarUrls.expert} key={"expert"} width="100px" onClick={() => this.handleImgChange(specialAvatarUrls.expert)} className="avatar-img-preview"/>);
+        }
+        if (ud.points > 4999) {
+            availableImgs.push(<img src={specialAvatarUrls.master} key={"master"} width="100px" onClick={() => this.handleImgChange(specialAvatarUrls.master)} className="avatar-img-preview"/>);
         }
 
         this.state = {

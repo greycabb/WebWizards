@@ -27,7 +27,7 @@ class Block extends React.Component {
         super(props);
         var classes = "brick ";
 
-        var primaryBricks = ["div", "ul", "ol", "li"];
+        var primaryBricks = ["div", "span", "ul", "ol", "li"];
         var secondaryBricks = ["img", "text-content"];
         var thirdBricks = ["h1", "h2", "h3", "h4", "p"];
 

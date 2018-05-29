@@ -77,7 +77,7 @@ export default class SignupPage extends React.Component {
                         });
 
                         let auth = response.headers.get('Authorization');
-                    
+
 
                         // Local storage Data setting
                         localStorage.setItem('Authorization', auth);
@@ -188,6 +188,13 @@ export default class SignupPage extends React.Component {
 
                         <ValidatedInput field="passwordMatch" maxLength="30" type="password" label="Re-enter Password" changeCallback={this.handleChange} errors={passwordMatch} />
 
+
+                        <div className="terms-and-conditions">
+                            <br />
+                            By signing up, you agree to the <a href={"#/terms-and-conditions"} className="terms-and-conditions-link" target="_blank">Terms and Conditions</a>.
+                            <br />
+                            <br />
+                        </div>
 
                         <div className="form-group">
                             <button className="btn green-button" disabled={!signUpEnabled} onClick={(e) => this.signUp(e)}>Sign Up</button>

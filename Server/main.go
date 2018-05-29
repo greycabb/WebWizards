@@ -10,11 +10,11 @@ import (
 	"time"
 
 	"github.com/go-redis/redis"
+	"github.com/greycabb/WebWizards/Server/handlers"
 	"github.com/greycabb/WebWizards/Server/models/blocks"
 	"github.com/greycabb/WebWizards/Server/models/projects"
-	"github.com/greycabb/WebWizards/server/handlers"
-	"github.com/greycabb/WebWizards/server/models/users"
-	"github.com/greycabb/WebWizards/server/sessions"
+	"github.com/greycabb/WebWizards/Server/models/users"
+	"github.com/greycabb/WebWizards/Server/sessions"
 	mgo "gopkg.in/mgo.v2"
 )
 

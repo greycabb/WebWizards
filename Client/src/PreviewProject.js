@@ -14,7 +14,7 @@ export default class PreviewProject extends React.Component {
         this.componentDidMount = this.componentDidMount.bind(this);
         this.blockToHtml = this.blockToHtml.bind(this);
         this.blockToHtml(this.props.projectObject.content[0], false).then((string) => {
-            console.log(string);
+            // console.log(string); // removed
         });
     }
 
@@ -22,15 +22,15 @@ export default class PreviewProject extends React.Component {
         if (prevProps.projectObject != this.props.projectObject) {
             this.uploadScreenshot();
             this.blockToHtml(this.props.projectObject.content[0], false).then((string) => {
-                console.log(string);
+                //console.log(string);
                 this.setState({ object: string });
-            });
+            ;});
         }
     }
 
     componentDidMount() {
         this.blockToHtml(this.props.projectObject.content[0], false).then((string) => {
-            console.log(string);
+            // console.log(string); // removed
             this.setState({ object: string });
         });
     }
@@ -38,7 +38,7 @@ export default class PreviewProject extends React.Component {
     //Should return an array with start tag and end tag
     //Ex: ["<div>", "</div>"]
     generateHtmlString(blockType, css, attributes) {
-        if (blockType != "text-content" && blockType != "title") {
+        if (blockType != "text-content" && blockType != "title" && blockType != "head") {
 
             //Generate attributes string
             var attributeString = "";
@@ -51,7 +51,10 @@ export default class PreviewProject extends React.Component {
             var cssString = "";
             if (css != null && css.length > 0) {
                 cssString = ' style="';
-                if (blockType == "body" || blockType == "html") {
+                if (blockType == "body") {
+                    cssString += "width: 100%; height: 100%; overflow: scroll;"
+                }
+                else if(blockType == "html") {
                     cssString += "width: 100%; height: 100%;"
                 }
                 for (var i = 0; i < css.length; i++) {
@@ -60,7 +63,10 @@ export default class PreviewProject extends React.Component {
                 cssString += '"';
             }
             else {
-                if (blockType == "body" || blockType == "html") {
+                if (blockType == "body") {
+                    cssString += " style=\"width: 100%; height: 100%; overflow: scroll;\"";
+                }
+                else if(blockType == "html") {
                     cssString += " style=\"width: 100%; height: 100%;\"";
                 }
             }
@@ -69,7 +75,7 @@ export default class PreviewProject extends React.Component {
             var endTag = "";
 
             //We want to convert head, body, title, and html tags to div tags to be previewable
-            if (blockType == "head" || blockType == "body" || blockType == "html") {
+            if (blockType == "body" || blockType == "html") {
                 startTag = "<div" + cssString + ">";
                 endTag = "</div>";
             }
@@ -90,6 +96,7 @@ export default class PreviewProject extends React.Component {
 
     // Recursive calls
     blockToHtml(id, isTitle) {
+        
         return new Promise((resolve, reject) => {
             var auth = localStorage.getItem('Authorization');
             fetch('https://api.webwizards.me/v1/blocks?id=' + id, {
@@ -159,7 +166,7 @@ export default class PreviewProject extends React.Component {
                                                     sanitizedTextContent = '';
                                                 } else {
                                                     sanitizedTextContent = sanitizeHtml(children[0], {
-                                                        allowedTags: ['b', 'i', 'em', 'strong'],//'a'
+                                                        allowedTags: ['b', 'i', 'em', 'strong', 'br'],//'a'
                                                         allowedAttributes: {
                                                             //'a': ['href']
                                                         }
@@ -197,7 +204,7 @@ export default class PreviewProject extends React.Component {
 
     uploadScreenshot() {
         var that = this;
-        html2canvas(this.refs.container, { width: 540, height: 360 }).then((canvas) => {
+        html2canvas(this.refs.container, { width: 540, height: 360, logging:false }).then((canvas) => {
             var data = canvas.toDataURL('image/jpeg', 0.9);
             var src = encodeURI(data);
             var auth = localStorage.getItem('Authorization');
@@ -214,7 +221,7 @@ export default class PreviewProject extends React.Component {
                 .then((response) => {
 
                     if (response.ok) {
-                        console.log("screenshot saved");
+                        //console.log("screenshot saved");
                     } else {
                         console.log(response.text());
                     }

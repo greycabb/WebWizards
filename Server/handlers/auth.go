@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/greycabb/WebWizards/server/models/users"
-	"github.com/greycabb/WebWizards/server/sessions"
+	"github.com/greycabb/WebWizards/Server/models/users"
+	"github.com/greycabb/WebWizards/Server/sessions"
 	"gopkg.in/mgo.v2/bson"
 )
 

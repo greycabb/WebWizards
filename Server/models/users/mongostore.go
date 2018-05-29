@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/greycabb/WebWizards/server/indexes"
+	"github.com/greycabb/WebWizards/Server/indexes"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )

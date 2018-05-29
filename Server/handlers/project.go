@@ -9,7 +9,7 @@ import (
 
 	"github.com/greycabb/WebWizards/Server/models/projects"
 
-	"github.com/greycabb/WebWizards/server/sessions"
+	"github.com/greycabb/WebWizards/Server/sessions"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -39,22 +39,6 @@ func (ctx *HandlerContext) ProjectHandler(w http.ResponseWriter, r *http.Request
 	switch r.Method {
 	//Case for getting a specific projet by project id
 	case "GET":
-		//Check for authentication
-		authid, err := sessions.GetSessionID(r, ctx.SigningKey)
-		if err != nil {
-			authid = ""
-		}
-		// Get SessionState with sessionID
-		var userID bson.ObjectId
-		if len(authid) > 0 {
-			state := &SessionState{}
-			err = ctx.SessionStore.Get(authid, &state)
-			if err != nil {
-				http.Error(w, fmt.Sprintf("error retrieving SessionState"), http.StatusUnauthorized)
-				return
-			}
-			userID = state.Authenticated.ID
-		}
 
 		id := r.URL.Query().Get("id")
 		if len(id) == 0 {
@@ -65,10 +49,24 @@ func (ctx *HandlerContext) ProjectHandler(w http.ResponseWriter, r *http.Request
 		proj, err := ctx.projectStore.GetByProjectID(hexed)
 		if err != nil {
 			http.Error(w, fmt.Sprintf("error getting project id: %v", err), http.StatusBadRequest)
-		}
-		if proj.UserID != userID && proj.Private == "y" {
-			http.Error(w, fmt.Sprintf("this project is private"), http.StatusBadRequest)
 			return
+		}
+		if proj.Private == "y" {
+			//Check for authentication
+			authid, err := sessions.GetSessionID(r, ctx.SigningKey)
+			if err != nil {
+				http.Error(w, fmt.Sprintf("this project is private"), http.StatusBadRequest)
+				return
+			}
+			// Get SessionState with sessionID
+			if len(authid) > 0 {
+				state := &SessionState{}
+				err = ctx.SessionStore.Get(authid, &state)
+				if err != nil {
+					http.Error(w, fmt.Sprintf("this project is private"), http.StatusBadRequest)
+					return
+				}
+			}
 		}
 		respond(w, proj)
 
@@ -176,28 +174,11 @@ func (ctx *HandlerContext) ProjectHandler(w http.ResponseWriter, r *http.Request
 	}
 }
 
-//BlocksHandler handles requests for the "blocks" resource if authenticated
+//BlocksHandler handles requests for the "blocks" resource
 func (ctx *HandlerContext) BlocksHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	//Case for getting a block
 	case "GET":
-
-		//Check for authentication
-		authid, err := sessions.GetSessionID(r, ctx.SigningKey)
-		if err != nil {
-			authid = ""
-		}
-		// Get SessionState with sessionID
-		var userID bson.ObjectId
-		if len(authid) > 0 {
-			state := &SessionState{}
-			err = ctx.SessionStore.Get(authid, &state)
-			if err != nil {
-				http.Error(w, fmt.Sprintf("error retrieving SessionState"), http.StatusUnauthorized)
-				return
-			}
-			userID = state.Authenticated.ID
-		}
 
 		id := r.URL.Query().Get("id")
 		if len(id) == 0 {
@@ -208,9 +189,22 @@ func (ctx *HandlerContext) BlocksHandler(w http.ResponseWriter, r *http.Request)
 		block, err := ctx.blockStore.GetByBlockID(hexed)
 		hexedProjectID := bson.ObjectIdHex(block.ProjectID)
 		project, err := ctx.projectStore.GetByProjectID(hexedProjectID)
-		if project.Private == "y" && project.UserID != userID {
-			http.Error(w, "This is a private block!", http.StatusBadRequest)
-			return
+		if project.Private == "y" {
+			//Check for authentication
+			authid, err := sessions.GetSessionID(r, ctx.SigningKey)
+			if err != nil {
+				http.Error(w, "This is a private block!", http.StatusBadRequest)
+				return
+			}
+			// Get SessionState with sessionID
+			if len(authid) > 0 {
+				state := &SessionState{}
+				err = ctx.SessionStore.Get(authid, &state)
+				if err != nil {
+					http.Error(w, "This is a private block!", http.StatusBadRequest)
+					return
+				}
+			}
 		}
 		if err != nil {
 			http.Error(w, fmt.Sprintf("error getting block id: %v", err), http.StatusBadRequest)
@@ -272,6 +266,7 @@ func (ctx *HandlerContext) BlocksHandler(w http.ResponseWriter, r *http.Request)
 			}
 			newParentUpdates := &blocks.BlockUpdates{}
 			newParentUpdates.Children = finalParentChildren
+			newParentUpdates.Index = -1
 			_, err = ctx.blockStore.UpdateBlock(newParentHex, newParentUpdates)
 			if err != nil {
 				http.Error(w, fmt.Sprintf("error updating parent: %v", err), http.StatusBadRequest)
@@ -331,6 +326,7 @@ func (ctx *HandlerContext) BlocksHandler(w http.ResponseWriter, r *http.Request)
 			parentChildren = append(parentChildren[:block.Index], parentChildren[block.Index+1:]...)
 			parentUpdates := &blocks.BlockUpdates{}
 			parentUpdates.Children = parentChildren
+			parentUpdates.Index = -1
 			ctx.blockStore.UpdateBlock(parentHex, parentUpdates)
 			for i, v := range parentChildren {
 				if len(v) > 0 && bson.IsObjectIdHex(v) {
@@ -385,6 +381,7 @@ func (ctx *HandlerContext) BlocksHandler(w http.ResponseWriter, r *http.Request)
 			}
 			newParentUpdates := &blocks.BlockUpdates{}
 			newParentUpdates.Children = finalParentChildren
+			newParentUpdates.Index = -1
 			_, err = ctx.blockStore.UpdateBlock(newParentHex, newParentUpdates)
 			if err != nil {
 				http.Error(w, fmt.Sprintf("error updating parent: %v", err), http.StatusBadRequest)
@@ -444,6 +441,7 @@ func (ctx *HandlerContext) BlocksHandler(w http.ResponseWriter, r *http.Request)
 				}
 				parentUpdates := &blocks.BlockUpdates{}
 				parentUpdates.Children = parentChildren
+				parentUpdates.Index = -1
 				ctx.blockStore.UpdateBlock(parentHex, parentUpdates)
 			}
 			//Now delete original block

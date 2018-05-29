@@ -2,12 +2,12 @@
     {
         "name": "font",
         "description": "These styles change the color, size, and font of text",
-        "attributes": ["color", "font-family", "font-size", "text-align"]
+        "attributes": ["color", "font-family", "font-size", "text-align", "line-height"]
     },
     {
         "name": "background",
         "description": "These styles change the background styles of an element",
-        "attributes": ["background-color", "background-image", "background-repeat", "background-attachment"]
+        "attributes": ["background-color", "background-image", "background-size", "background-repeat", "background-attachment"]
     },
     {
         "name": "border",
