@@ -26,7 +26,7 @@ func TestMongoStore(t *testing.T) {
 		"nnelody",
 		"legend",
 	}
-	mongoSess, err := mgo.Dial("127.0.0.1")
+	mongoSess, err := mgo.Dial("mongodb://localhost:27017")
 	if err != nil {
 		log.Fatalf("error dialing mongo: %v", err)
 	}
