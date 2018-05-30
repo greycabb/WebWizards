@@ -25,11 +25,11 @@ Web Wizards is a web application that allows children to learn web development t
 &nbsp;
 ## Summary of Technology Decisions
 
-We used React.js to make our application because it requires interaction and re-rendering of many individual parts. React.js allowed us to split up the application into a multitude of small components, which in turn provides a fast interface for our users to interact with.
+We used React.js to make our application because it allows interaction and re-rendering of many individual parts. React.js allowed us to split up the application into a multitude of small components, which in turn provides a faster interface for our users to interact with.
 
-React.js has widespread support and a large range of libraries to build off of. For instance, React’s babel functionality means that we can use modern JS techniques even on older machines. This is useful because many schools still use older browsers. 
+React.js has widespread support and a large range of libraries to build off of. For instance, React’s babel functionality means that we can use modern JS techniques on older machines as well as newer ones. This is useful because many schools, which we intend Web Wizards to mainly be user, still use older browsers. 
 
-We used Enzyme with React.js to complete integration testing for several client-side components, as it has a useful mount() method in which we can test the entire DOM as a whole. Node.js was used for stress testing, because it provides a simple and quick way to make asychronous API calls. 
+We used Enzyme with React.js to complete integration testing for several client-side components, as it has a useful mount() method in which we can test the entire DOM as a whole. We then used Node.js for stress testing, because it provides a simple and quick way to make asychronous API calls. 
 
 We chose Golang because of group's familiarity with how the database works. In addition to Golang, we used MongoDB because it is easy to store different types of structures, including complex, nested objects. This was imperative for the complexity of block and project storage.
 
