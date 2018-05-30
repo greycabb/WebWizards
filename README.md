@@ -8,17 +8,17 @@ Web Wizards is a web application that allows children to learn web development t
 * Client
   * React app build
   * React source code
-    *  Images
-    *  Deployment, build, and renewing certificates scripts
+  *  Images
+  *  Deployment, build, and renewing certificates scripts
 * Microservices
   *  Kid friendly image reference points database
   *  HTML block and CSS attributes database
 * Server
   *  Server gateway
   *  Structure Models
-    *   Blocks
-    *   Projects
-    *   Users
+     *   Blocks
+     *   Projects
+     *   Users
   *  Session stores
   *  API handlers
   *  Deployment, build, and renewing certificates scripts
@@ -33,8 +33,11 @@ React.js has many packages that can be installed that allow for many useful tech
 We chose Golang because of group's familiarity with how the database works. In addition to Golang, we used MongoDB because it is easy to store different types of structures, including complex, nested objects. This was imperative for the complexity of block and project storage.
 
 ## Contact Information
-[Melody Lee](genuine.mel@gmail.com)
-[Alyxis Burks](alyxistarynburks@gmail.com)
-[Michael Lew](greycabbage@gmail.com)
-[Andrew Vuong](andrewvuong@outlook.com)
+Melody Lee (Developer): genuine.mel@gmail.com &nbsp;
+
+Michael Lew (Developer): greycabbage@gmail.com &nbsp;
+
+Alyxis Burks (UX Designer): alyxistarynburks@gmail.com &nbsp;
+
+Andrew Vuong (UX Designer): andrewvuong@outlook.com &nbsp;
 
