@@ -1,7 +1,7 @@
 # Web Wizards 
 
 ## Overview of Project
-&nbsp;
+
 Web Wizards is a web application that allows children to learn web development through the use of a simple drag-and-drop interface without the current challenges of typing, navigating a computer, and remembering syntax. Users are able to drag customizable blocks to build their websites with their own personalized design. By creating new websites and interacting with the application, users can earn points to unlock new avatars.
 &nbsp;
 ## List of Contents
