@@ -24,11 +24,12 @@ Web Wizards is a web application that allows children to learn web development t
   *  Deployment, build, and renewing certificates scripts
 &nbsp;
 ## Summary of Technology Decisions
-We used Node.js FILL THIS OUT HERE
 
-We used React.js to make our application. This is because almost anyone who is interested in wanting to create websites will have a computer that will have a web browser that can run it. As it is a website, nothing will have to be downloaded so it will be accessible from school computers which sometimes do not allow applications to be downloaded.
+We used React.js to make our application because it requires interaction and re-rendering of many individual parts. React.js allowed us to split up the application into a multitude of small components, which in turn provides a fast interface for our users to interact with.
 
-React.js has many packages that can be installed that allow for many useful technologies such as unit testing which we used in our app. The web framework with its states also makes development easier as base JavaScript is notoriously hard to manage for complex applications. React’s babel functionality means that we can use modern JS techniques even on older machines which is useful since many schools still use older browsers. 
+React.js has widespread support and a large range of libraries to build off of. For instance, React’s babel functionality means that we can use modern JS techniques even on older machines. This is useful because many schools still use older browsers. 
+
+We used Enzyme with React.js to complete integration testing for several client-side components, as it has a useful mount() method in which we can test the entire DOM as a whole. Node.js was used for stress testing, because it provides a simple and quick way to make asychronous API calls. 
 
 We chose Golang because of group's familiarity with how the database works. In addition to Golang, we used MongoDB because it is easy to store different types of structures, including complex, nested objects. This was imperative for the complexity of block and project storage.
 
